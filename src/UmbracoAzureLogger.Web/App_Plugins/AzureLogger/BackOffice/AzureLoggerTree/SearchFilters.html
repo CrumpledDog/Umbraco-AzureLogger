@@ -1,0 +1,30 @@
+﻿<div class="umbracoDialog umb-dialog" ng-controller="AzureLogger.SearchFiltersController">
+
+    <div class="filters">
+
+        <fieldset>
+            Min Level:
+            <label><input type="radio" ng-model="minLevel" value="DEBUG" />Debug - show all levels</label>
+            <label><input type="radio" ng-model="minLevel" value="INFO" />Info - show all except debug</label>
+            <label><input type="radio" ng-model="minLevel" value="WARN" />Warn - show warn, error and fatal</label>
+            <label><input type="radio" ng-model="minLevel" value="ERROR" />Error - show error and fatal</label>
+            <label><input type="radio" ng-model="minLevel" value="FATAL" />Fatal - show fatal only</label>
+        </fieldset>
+        <label>Host Name: <input type="text" ng-model="hostName" /></label>
+        <label>Logger Name: <input type="text" ng-model="loggerName" /></label>
+
+    </div>
+
+    <div class="umb-pane btn-toolbar umb-btn-toolbar">
+        <div class="control-group umb-control-group">
+
+            <a class="btn btn-link" ng-click="nav.hideDialog()">
+                <localize key="general_cancel">Cancel</localize>
+            </a>
+
+            <input type="submit" name="" value="Save" class="btn btn-primary" ng-click="save(nav)">
+        </div>
+    </div>
+
+</div>
+

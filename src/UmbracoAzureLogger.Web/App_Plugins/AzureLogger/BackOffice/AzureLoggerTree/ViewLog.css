@@ -1,0 +1,85 @@
+﻿.day-breaker {
+    border-bottom: 1px solid #f8f8f8;
+}
+
+
+/* intro row */
+
+.log-item-intro {
+    margin-top:5px;
+    height:3em;
+    padding:5px;
+    cursor:pointer;
+}
+
+.log-item-intro.open, .log-item-intro:hover {
+    background-color:#f8f8f8;
+}
+
+.log-item-intro .eventTimestamp {
+    width:6em;
+    padding-right:10px;
+    float:left;
+    text-align:right;
+}
+
+.log-item-intro .hms {
+    font-size:larger;
+}
+.log-item-intro .ms {
+    font-size:xx-small;
+}
+
+.log-item-intro .host-name, .log-item-intro .logger-name {
+    font-size:larger;
+}
+
+.log-item-intro .message {
+    white-space:nowrap;
+    font-weight:bold;
+}
+
+/* details row */
+
+.log-item-details {
+    display:none;
+    padding-left:calc(6em + 15px);
+    padding-top:10px;
+}
+
+.log-item-details a {
+    color:blue;
+    text-decoration:underline;
+}
+
+.log-item-details dl {
+    margin:0;
+}
+
+
+
+/* level key line */
+
+.level-key {
+    border-left-width:10px;
+    border-left-style:solid;
+}
+
+.level-debug .level-key { border-left-color:grey; }
+.level-info .level-key { border-left-color:green; }
+.level-warn .level-key { border-left-color:yellow; }
+.level-error .level-key, .level-fatal .level-key { border-left-color:red; }
+
+/* ui at bottom of list */
+
+.currently-loading, .finished-loading {
+    background-color:lightgrey;
+    width:100%;
+    height:5em;
+    padding-top:3em;
+    text-align:center;
+}
+
+.get-more-log-items {
+
+}

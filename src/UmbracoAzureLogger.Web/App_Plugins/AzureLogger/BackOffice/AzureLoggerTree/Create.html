@@ -1,0 +1,20 @@
+﻿<!-- TODO: better name would be CreateSearchItem.html -->
+
+<div class="umbracoDialog umb-dialog" ng-controller="AzureLogger.CreateController">
+
+    <label>Name: <input type="text" ng-model="searchItemName" /></label>
+
+
+    <!-- TODO: extract out the repeated markup (also used in SearchFilters) -->
+    <div class="umb-pane btn-toolbar umb-btn-toolbar">
+        <div class="control-group umb-control-group">
+
+            <a class="btn btn-link" ng-click="nav.hideDialog()">
+                <localize key="general_cancel">Cancel</localize>
+            </a>
+
+            <input type="submit" name="" value="Save" class="btn btn-primary" ng-click="save(nav)">
+        </div>
+    </div>
+
+</div>

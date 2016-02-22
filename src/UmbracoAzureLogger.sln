@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoAzureLogger.Core", "UmbracoAzureLogger.Core\UmbracoAzureLogger.Core.csproj", "{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoAzureLogger.Web", "UmbracoAzureLogger.Web\UmbracoAzureLogger.Web.csproj", "{FD6F9580-BDCB-4C35-A598-45CD09027AFA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD6F9580-BDCB-4C35-A598-45CD09027AFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD6F9580-BDCB-4C35-A598-45CD09027AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD6F9580-BDCB-4C35-A598-45CD09027AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD6F9580-BDCB-4C35-A598-45CD09027AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
