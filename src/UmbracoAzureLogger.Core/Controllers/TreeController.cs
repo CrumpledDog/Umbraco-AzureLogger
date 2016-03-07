@@ -21,15 +21,13 @@
 
             if (this.IsRoot(id))
             {
-                // Get Searches (each is a tree node)
-
-
-
+                // Get Searches from the azure table
+                TableService.Instance.GetSearchItemTableEntities().ForEach(x => treeNodeCollection.Add(this.CreateTreeNode(x.RowKey, "-1", queryStrings, x.Name, "icon-list", false, this.BuildRoute("ViewLog"))));
 
 
 
                 // TODO: only if connected and there are log items to view
-                treeNodeCollection.Add(this.CreateTreeNode("viewLog", "-1", queryStrings, "View Log", "icon-list", false, this.BuildRoute("ViewLog")));
+                treeNodeCollection.Add(this.CreateTreeNode("viewLog", "-1", queryStrings, "*View Log*", "icon-list", false, this.BuildRoute("ViewLog")));
             }
 
             return treeNodeCollection;

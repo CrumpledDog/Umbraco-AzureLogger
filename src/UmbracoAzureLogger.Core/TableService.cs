@@ -140,16 +140,16 @@
                     : Enumerable.Empty<LogTableEntity>(); // fallback for not connected
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="rowKey"></param>
-        /// <param name="searchFilterState"></param>
-        /// <returns></returns>
-        internal IEnumerable<LogTableEntity> GetLogTableEntites(string rowKey, SearchFiltersState searchFilterState)
-        {
-            return Enumerable.Empty<LogTableEntity>();
-        }
+        ///// <summary>
+        /////
+        ///// </summary>
+        ///// <param name="rowKey"></param>
+        ///// <param name="searchFilterState"></param>
+        ///// <returns></returns>
+        //internal IEnumerable<LogTableEntity> GetLogTableEntites(string rowKey, SearchFiltersState searchFilterState)
+        //{
+        //    return Enumerable.Empty<LogTableEntity>();
+        //}
 
         /// <summary>
         ///
@@ -166,17 +166,25 @@
                     : null;
         }
 
-        internal IEnumerable<SearchItemTableEntity> GetSearchItemEntities()
+        internal IEnumerable<SearchItemTableEntity> GetSearchItemTableEntities()
         {
             return this.Connected.HasValue && this.Connected.Value // if connected
-                    ? this.CloudTable
-                            .ExecuteQuery(new TableQuery<SearchItemTableEntity>())
+                    ? this.CloudTable.ExecuteQuery(new TableQuery<SearchItemTableEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "searchItem")))
                     : Enumerable.Empty<SearchItemTableEntity>();
         }
 
-        //internal void CreateSearchItem(string savedSearchName, FilterState filterState = null)
-        //{
-        //}
+        /// <summary>
+        /// Azure Logger node, create menu item - creates a new 'saved search'
+        /// </summary>
+        /// <param name="SearchItemTableEntity"></param>
+        internal void InsertSearchItemTableEntity(SearchItemTableEntity searchItemTableEntity)
+        {
+            this.Connect();
+            if (this.Connected.HasValue && this.Connected.Value)
+            {
+                this.CloudTable.Execute(TableOperation.Insert(searchItemTableEntity));
+            }
+        }
 
         //internal void UpdateSearchItem(SavedSearchItem savedSearchItem)
         //{

@@ -34,6 +34,18 @@
         }
 
         /// <summary>
+        /// Creates a new SearchItem (a saved search using supplied name)
+        /// </summary>
+        /// <param name="name"></param>
+        [HttpPost]
+        public void Create([FromUri]string name)
+        {
+            SearchItemTableEntity searchItemTableEntity = new SearchItemTableEntity() { PartitionKey = "searchItem", RowKey = Guid.NewGuid().ToString(), Name = name };
+
+            TableService.Instance.InsertSearchItemTableEntity(searchItemTableEntity);
+        }
+
+        /// <summary>
         ///
         /// </summary>
         /// <param name="rowKey">(optional) the row key to start from</param>

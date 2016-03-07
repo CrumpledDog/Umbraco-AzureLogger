@@ -10,13 +10,23 @@
             $scope.save = function (nav) { // TODO: inject nav instead of passing from view ?
                 console.log('create clicked');
 
-                // is there already a searchItem with this name already ?
 
-                // call api to create new azure record for this searchItem
+                $http({
+                    method: 'POST',
+                    url: 'BackOffice/AzureLogger/Api/Create',
+                    params: {
+                        name: $scope.name
+                    }
+                })
+                .then(function (response) {
 
-                // refresh tree
+                    console.log('created...');
 
-                // goto item in tree
+                    // refresh tree
+
+                    // goto item in tree
+
+                });
             };
 
         }]);
