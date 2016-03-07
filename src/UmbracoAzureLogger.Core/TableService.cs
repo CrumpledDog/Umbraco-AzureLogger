@@ -166,12 +166,12 @@
                     : null;
         }
 
-        internal IEnumerable<SearchItemEntity> GetSearchItemEntities()
+        internal IEnumerable<SearchItemTableEntity> GetSearchItemEntities()
         {
             return this.Connected.HasValue && this.Connected.Value // if connected
                     ? this.CloudTable
-                            .ExecuteQuery(new TableQuery<SearchItemEntity>())
-                    : Enumerable.Empty<SearchItemEntity>();
+                            .ExecuteQuery(new TableQuery<SearchItemTableEntity>())
+                    : Enumerable.Empty<SearchItemTableEntity>();
         }
 
         //internal void CreateSearchItem(string savedSearchName, FilterState filterState = null)

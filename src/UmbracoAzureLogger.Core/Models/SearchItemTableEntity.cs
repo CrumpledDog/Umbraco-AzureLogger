@@ -6,7 +6,7 @@
     /// <summary>
     /// This the data for a 'saved search' in the tree (potentially could also user / group indexed)
     /// </summary>
-    public class SearchItemEntity : TableEntity
+    public class SearchItemTableEntity : TableEntity
     {
         /// <summary>
         /// The name of this 'saved search' item
