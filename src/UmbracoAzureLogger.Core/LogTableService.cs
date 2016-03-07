@@ -166,15 +166,23 @@
                     : null;
         }
 
-        //internal IEnumerable<SavedSearchItem> GetSavedSearchItems()
+        internal IEnumerable<SearchItemEntity> GetSearchItemEntities()
+        {
+            return this.Connected.HasValue && this.Connected.Value // if connected
+                    ? this.CloudTable
+                            .ExecuteQuery(new TableQuery<SearchItemEntity>())
+                    : Enumerable.Empty<SearchItemEntity>();
+        }
+
+        //internal void CreateSearchItem(string savedSearchName, FilterState filterState = null)
         //{
         //}
 
-        //internal void CreateSavedSearch(string savedSearchName, FilterState filterState = null)
+        //internal void UpdateSearchItem(SavedSearchItem savedSearchItem)
         //{
         //}
 
-        //internal void UpdateSavedSearch(SavedSearchItem savedSearchItem)
+        //internal void DeleteSearchItem(int id)
         //{
         //}
 
