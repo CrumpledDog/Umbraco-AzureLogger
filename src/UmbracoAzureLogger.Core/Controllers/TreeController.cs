@@ -21,6 +21,13 @@
 
             if (this.IsRoot(id))
             {
+                // Get Searches (each is a tree node)
+
+
+
+
+
+
                 // TODO: only if connected and there are log items to view
                 treeNodeCollection.Add(this.CreateTreeNode("viewLog", "-1", queryStrings, "View Log", "icon-list", false, this.BuildRoute("ViewLog")));
             }

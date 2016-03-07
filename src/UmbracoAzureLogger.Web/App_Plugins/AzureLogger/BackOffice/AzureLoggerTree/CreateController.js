@@ -1,8 +1,8 @@
 ﻿angular
     .module('umbraco')
     .controller('AzureLogger.CreateController', [
-        '$scope',
-        function ($scope) {
+        '$scope', '$http',
+        function ($scope, $http) {
 
             /* scope vars */
 
