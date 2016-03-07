@@ -10,26 +10,26 @@
     using UmbracoAzureLogger.Core.Models;
     using UmbracoAzureLogger.Core.Extensions;
 
-    internal sealed class LogTableService
+    internal sealed class TableService
     {
-        private static readonly LogTableService logTableService = new LogTableService();
+        private static readonly TableService tableService = new TableService();
 
-        static LogTableService()
+        static TableService()
         {
         }
 
         /// <summary>
         /// singleton constructor - construct a reference to the CloudTable property once
         /// </summary>
-        private LogTableService()
+        private TableService()
         {
         }
 
-        internal static LogTableService Instance
+        internal static TableService Instance
         {
             get
             {
-                return logTableService;
+                return tableService;
             }
         }
 

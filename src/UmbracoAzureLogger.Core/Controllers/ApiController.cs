@@ -17,7 +17,7 @@
 
             try
             {
-                LogTableService.Instance.Connect();
+                TableService.Instance.Connect();
             }
             catch(Exception exception)
             {
@@ -26,10 +26,10 @@
 
             return new
             {
-                connected = LogTableService.Instance.Connected.Value, // will have a value, as set in the Connect() method
+                connected = TableService.Instance.Connected.Value, // will have a value, as set in the Connect() method
                 connectionErrorMessage = connectionErrorMessage,
-                connectionString = LogTableService.Instance.ConnectionString,
-                tableName = LogTableService.Instance.TableName
+                connectionString = TableService.Instance.ConnectionString,
+                tableName = TableService.Instance.TableName
             };
         }
 
@@ -47,7 +47,7 @@
                                 [FromUri]string rowKey,
                                 [FromUri]int take) // TODO: add partition key ?
         {
-            return LogTableService
+            return TableService
                     .Instance
                     .GetLogTableEntities(minLevel, hostName, loggerName, rowKey)
                     .Take(take)
@@ -63,7 +63,7 @@
         [HttpGet]
         public LogItemDetail GetLogItemDetail([FromUri]string partitionKey, [FromUri]string rowKey)
         {
-            LogTableEntity logTableEntity = LogTableService.Instance.GetLogTableEntity(partitionKey, rowKey);
+            LogTableEntity logTableEntity = TableService.Instance.GetLogTableEntity(partitionKey, rowKey);
 
             if (logTableEntity != null)
             {
@@ -77,7 +77,7 @@
         [HttpGet]
         public void DeleteLog()
         {
-            LogTableService.Instance.DeleteLog();
+            TableService.Instance.DeleteLog();
         }
     }
 }
