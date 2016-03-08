@@ -22,7 +22,7 @@
             if (this.IsRoot(id))
             {
                 // Get Searches from the azure table
-                TableService.Instance.GetSearchItemTableEntities().ForEach(x => treeNodeCollection.Add(this.CreateTreeNode(x.RowKey, "-1", queryStrings, x.Name, "icon-list", false, this.BuildRoute("ViewLog"))));
+                TableService.Instance.GetSearchItemTableEntities().ForEach(x => treeNodeCollection.Add(this.CreateTreeNode(x.RowKey, "-1", queryStrings, x.Name, "icon-list", false, this.BuildRoute("ViewLog", x.RowKey))));
 
 
 
