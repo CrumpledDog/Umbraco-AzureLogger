@@ -22,12 +22,23 @@
             if (this.IsRoot(id))
             {
                 // Get Searches from the azure table
-                TableService.Instance.GetSearchItemTableEntities().ForEach(x => treeNodeCollection.Add(this.CreateTreeNode(x.RowKey, "-1", queryStrings, x.Name, "icon-list", false, this.BuildRoute("ViewLog", x.RowKey))));
+                TableService
+                    .Instance
+                    .GetSearchItemTableEntities()
+                    .ForEach(
+                        x => treeNodeCollection.Add(this.CreateTreeNode(
+                                                            "searchItem_" + x.RowKey,
+                                                            "-1",
+                                                            queryStrings,
+                                                            x.Name,
+                                                            "icon-list",
+                                                            false,
+                                                            this.BuildRoute("ViewLog", x.RowKey))));
 
 
 
                 // TODO: only if connected and there are log items to view
-                treeNodeCollection.Add(this.CreateTreeNode("viewLog", "-1", queryStrings, "*View Log*", "icon-list", false, this.BuildRoute("ViewLog")));
+                treeNodeCollection.Add(this.CreateTreeNode("searchItem_viewLog", "-1", queryStrings, "*View Log*", "icon-list", false, this.BuildRoute("ViewLog")));
             }
 
             return treeNodeCollection;
@@ -47,7 +58,7 @@
                 menuItemCollection.Items.Add<ActionRefresh>(ui.Text("actions", ActionRefresh.Instance.Alias), true);
 
             }
-            else if (id == "viewLog")
+            else if (id.StartsWith("searchItem_"))
             {
                 //menuItemCollection.Items.Add(new MenuItem("SearchFilters", "Search Filters"));
                 menuItemCollection.Items.Add<SearchFiltersAction>("Filters", false); // NOTE: render name differs - better for user
