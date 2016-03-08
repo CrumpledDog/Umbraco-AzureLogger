@@ -62,7 +62,7 @@
             {
                 //menuItemCollection.Items.Add(new MenuItem("SearchFilters", "Search Filters"));
                 menuItemCollection.Items.Add<SearchFiltersAction>("Filters", false); // NOTE: render name differs - better for user
-                menuItemCollection.Items.Add<ActionDelete>(ui.Text("actions", ActionDelete.Instance.Alias), true);
+                menuItemCollection.Items.Add<ActionDelete>(ui.Text("actions", ActionDelete.Instance.Alias), true); // loads view "Delete.html"
 
                 //menuItemCollection.Items.Add(new MenuItem("Refresh", "Refresh"));
             }

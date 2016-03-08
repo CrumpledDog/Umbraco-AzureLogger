@@ -7,8 +7,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using UmbracoAzureLogger.Core.Models;
     using UmbracoAzureLogger.Core.Extensions;
+    using UmbracoAzureLogger.Core.Models;
+    using UmbracoAzureLogger.Core.Models.TableEntities;
 
     internal sealed class TableService
     {

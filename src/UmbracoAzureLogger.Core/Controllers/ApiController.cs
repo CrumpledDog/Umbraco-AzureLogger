@@ -6,6 +6,7 @@
     using Umbraco.Web.Mvc;
     using Umbraco.Web.WebApi;
     using UmbracoAzureLogger.Core.Models;
+    using UmbracoAzureLogger.Core.Models.TableEntities;
 
     [PluginController("AzureLogger")]
     public class ApiController : UmbracoAuthorizedApiController
@@ -44,6 +45,20 @@
 
             TableService.Instance.InsertSearchItemTableEntity(searchItemTableEntity);
         }
+
+        //[HttpGet]
+        //public SearchItem Get([FromUri]string rowKey)
+        //{
+
+        //}
+
+        [HttpPost]
+        public void Delete([FromUri] string rowKey)
+        {
+
+        }
+
+
 
         /// <summary>
         ///

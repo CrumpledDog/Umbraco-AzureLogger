@@ -1,4 +1,4 @@
-﻿namespace UmbracoAzureLogger.Core.Models
+﻿namespace UmbracoAzureLogger.Core.Models.TableEntities
 {
     using Microsoft.WindowsAzure.Storage.Table;
     using System;
