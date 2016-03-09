@@ -82,6 +82,51 @@
             }
         }
 
+        internal IEnumerable<SearchItemTableEntity> GetSearchItemTableEntities()
+        {
+            return this.Connected.HasValue && this.Connected.Value // if connected
+                    ? this.CloudTable.ExecuteQuery(new TableQuery<SearchItemTableEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "searchItem")))
+                    : Enumerable.Empty<SearchItemTableEntity>();
+        }
+
+        /// <summary>
+        /// Azure Logger node, create menu item - creates a new 'saved search'
+        /// </summary>
+        /// <param name="SearchItemTableEntity"></param>
+        internal void InsertSearchItemTableEntity(string name)
+        {
+            this.Connect();
+            if (this.Connected.HasValue && this.Connected.Value)
+            {
+                this.CloudTable.Execute(
+                    TableOperation.Insert(
+                        new SearchItemTableEntity()
+                        {
+                            PartitionKey = "searchItem",
+                            RowKey = Guid.NewGuid().ToString(),
+                            Name = name
+                        }));
+            }
+        }
+
+        //internal void UpdateSearchItem()
+        //{
+        //}
+
+        /// <summary>
+        /// deletes an item in the table
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="rowKey"></param>
+        internal void DeleteSearchItemTableEntity(string rowKey)
+        {
+            this.Connect();
+            if (this.Connected.HasValue && this.Connected.Value)
+            {
+                this.CloudTable.Execute(TableOperation.Delete(new DynamicTableEntity("searchItem", rowKey) { ETag = "*" }));
+            }
+        }
+
         /// <summary>
         /// https://azure.microsoft.com/en-gb/documentation/articles/storage-dotnet-how-to-use-tables/
         /// </summary>
@@ -167,43 +212,14 @@
                     : null;
         }
 
-        internal IEnumerable<SearchItemTableEntity> GetSearchItemTableEntities()
-        {
-            return this.Connected.HasValue && this.Connected.Value // if connected
-                    ? this.CloudTable.ExecuteQuery(new TableQuery<SearchItemTableEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "searchItem")))
-                    : Enumerable.Empty<SearchItemTableEntity>();
-        }
-
-        /// <summary>
-        /// Azure Logger node, create menu item - creates a new 'saved search'
-        /// </summary>
-        /// <param name="SearchItemTableEntity"></param>
-        internal void InsertSearchItemTableEntity(SearchItemTableEntity searchItemTableEntity)
-        {
-            this.Connect();
-            if (this.Connected.HasValue && this.Connected.Value)
-            {
-                this.CloudTable.Execute(TableOperation.Insert(searchItemTableEntity));
-            }
-        }
-
-        //internal void UpdateSearchItem(SavedSearchItem savedSearchItem)
+        ///// <summary>
+        ///// WARNING: this will delete all
+        ///// </summary>
+        //internal void DeleteLog()
         //{
+        //    // http://stackoverflow.com/questions/16170915/best-practice-in-deleting-azure-table-entities-in-foreach-loop
+        //    // HACK: delete the table - issue puts the table name out of action for a long time
+        //    this.CloudTable.Delete();
         //}
-
-        //internal void DeleteSearchItem(int id)
-        //{
-        //}
-
-        /// <summary>
-        /// WARNING: this will delete all
-        /// </summary>
-        internal void DeleteLog()
-        {
-            // http://stackoverflow.com/questions/16170915/best-practice-in-deleting-azure-table-entities-in-foreach-loop
-
-            // HACK: delete the table - issue puts the table name out of action for a long time
-            this.CloudTable.Delete();
-        }
     }
 }

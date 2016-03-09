@@ -27,7 +27,7 @@
                     .GetSearchItemTableEntities()
                     .ForEach(
                         x => treeNodeCollection.Add(this.CreateTreeNode(
-                                                            "searchItem_" + x.RowKey,
+                                                            "searchItem|" + x.RowKey,
                                                             "-1",
                                                             queryStrings,
                                                             x.Name,
@@ -38,7 +38,7 @@
 
 
                 // TODO: only if connected and there are log items to view
-                treeNodeCollection.Add(this.CreateTreeNode("searchItem_viewLog", "-1", queryStrings, "*View Log*", "icon-list", false, this.BuildRoute("ViewLog")));
+                treeNodeCollection.Add(this.CreateTreeNode("viewLog", "-1", queryStrings, "*View Log*", "icon-list", false, this.BuildRoute("ViewLog")));
             }
 
             return treeNodeCollection;
@@ -58,7 +58,7 @@
                 menuItemCollection.Items.Add<ActionRefresh>(ui.Text("actions", ActionRefresh.Instance.Alias), true);
 
             }
-            else if (id.StartsWith("searchItem_"))
+            else if (id.StartsWith("searchItem"))
             {
                 //menuItemCollection.Items.Add(new MenuItem("SearchFilters", "Search Filters"));
                 menuItemCollection.Items.Add<SearchFiltersAction>("Filters", false); // NOTE: render name differs - better for user

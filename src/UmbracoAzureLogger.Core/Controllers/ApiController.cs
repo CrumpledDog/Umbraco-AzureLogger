@@ -39,26 +39,26 @@
         /// </summary>
         /// <param name="name"></param>
         [HttpPost]
-        public void Create([FromUri]string name)
+        public void Create([FromUri] string name)
         {
-            SearchItemTableEntity searchItemTableEntity = new SearchItemTableEntity() { PartitionKey = "searchItem", RowKey = Guid.NewGuid().ToString(), Name = name };
-
-            TableService.Instance.InsertSearchItemTableEntity(searchItemTableEntity);
+            TableService.Instance.InsertSearchItemTableEntity(name);
         }
 
         //[HttpGet]
         //public SearchItem Get([FromUri]string rowKey)
         //{
+        //}
 
+        //[HttpPost]
+        //public void Update([FromUri] string rowKey, [FromBody] SearchFiltersState searchFiltersState)
+        //{
         //}
 
         [HttpPost]
         public void Delete([FromUri] string rowKey)
         {
-
+            TableService.Instance.DeleteSearchItemTableEntity(rowKey);
         }
-
-
 
         /// <summary>
         ///
@@ -100,11 +100,11 @@
             return null;
         }
 
-        //[Umbraco.Web.WebApi.UmbracoAuthorize(Roles="")]
-        [HttpGet]
-        public void DeleteLog()
-        {
-            TableService.Instance.DeleteLog();
-        }
+        ////[Umbraco.Web.WebApi.UmbracoAuthorize(Roles="")]
+        //[HttpGet]
+        //public void DeleteLog()
+        //{
+        //    TableService.Instance.DeleteLog();
+        //}
     }
 }
