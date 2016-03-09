@@ -1,20 +1,25 @@
 ﻿angular
     .module('umbraco')
     .controller('AzureLogger.DeleteController', [
-        '$scope', '$http',
-        function ($scope, $http) {
+        '$scope', 'navigationService', 'treeService', '$http',
+        function ($scope, navigationService, treeService, $http) {
 
-            /* scope vars */
+            $scope.cancel = function () {
 
-            /* scope methods */
-            $scope.delete = function (nav) { // TODO: inject nav instead of passing from view ?
-                console.log('delete clicked');
+                // both the following methods seem to behave in the same way
+                //navigationService.hideNavigation();
+                navigationService.hideDialog();
+            };
 
-                // call api to delete azure record for this searchItem
+            $scope.delete = function (currentNode) {
 
-                // remove filterState for this searchItem from the resource (if the view for this search item is active, it'll replace itself by retuning to the 'developer' section
+                // TODO: call api to delete azure record for this searchItem (currentNode.id = rowKey)
+
+                // TODO: remove filterState for this searchItem from the resource (if the view for this search item is active, it'll replace itself by retuning to the 'developer' section)
 
                 // refresh tree
+                treeService.removeNode(currentNode);
+                navigationService.hideDialog();
             };
 
         }]);

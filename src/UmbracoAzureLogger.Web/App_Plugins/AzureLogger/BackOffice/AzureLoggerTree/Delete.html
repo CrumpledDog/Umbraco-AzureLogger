@@ -10,11 +10,9 @@
     <div class="umb-pane btn-toolbar umb-btn-toolbar">
         <div class="control-group umb-control-group">
 
-            <a class="btn btn-link" ng-click="nav.hideDialog()">
-                <localize key="general_cancel">Cancel</localize>
-            </a>
+            <a href="" class="btn btn-link" ng-click="cancel()"><localize key="general_cancel">Cancel</localize></a>
+            <a href="" class="btn btn-primary" ng-click="delete(currentNode)"><localize key="general_ok">OK</localize></a>
 
-            <input type="submit" name="" value="OK" class="btn btn-primary" ng-click="delete(nav)">
         </div>
     </div>
 
