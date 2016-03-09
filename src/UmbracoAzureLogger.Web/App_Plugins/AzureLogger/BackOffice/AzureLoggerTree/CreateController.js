@@ -1,15 +1,14 @@
 ﻿angular
     .module('umbraco')
     .controller('AzureLogger.CreateController', [
-        '$scope', '$http',
-        function ($scope, $http) {
+        '$scope', 'navigationService', 'treeService', '$http',
+        function ($scope, navigationService, treeService, $http) {
 
-            /* scope vars */
+            $scope.cancel = function () {
+                navigationService.hideNavigation();
+            };
 
-            /* scope methods */
-            $scope.save = function (nav) { // TODO: inject nav instead of passing from view ?
-                console.log('create clicked');
-
+            $scope.create = function (currentNode) {
 
                 $http({
                     method: 'POST',
@@ -23,8 +22,13 @@
                     console.log('created...');
 
                     // refresh tree
+                    treeService.loadNodeChildren({ node: currentNode })
+                    .then(function () {
 
-                    // goto item in tree
+                        // TODO: goto item in tree
+
+                        navigationService.hideNavigation();
+                    });
 
                 });
             };

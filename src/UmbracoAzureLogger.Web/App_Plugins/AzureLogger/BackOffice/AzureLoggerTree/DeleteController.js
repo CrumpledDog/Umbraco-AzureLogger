@@ -5,10 +5,7 @@
         function ($scope, navigationService, treeService, $http) {
 
             $scope.cancel = function () {
-
-                // both the following methods seem to behave in the same way
-                //navigationService.hideNavigation();
-                navigationService.hideDialog();
+                navigationService.hideNavigation();
             };
 
             $scope.delete = function (currentNode) {
