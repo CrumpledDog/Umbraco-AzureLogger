@@ -1,5 +1,6 @@
 ﻿namespace UmbracoAzureLogger.Core.Controllers
 {
+    using System.Linq;
     using System.Net.Http.Formatting;
     using umbraco;
     using umbraco.BusinessLogic.Actions;
@@ -25,6 +26,7 @@
                 TableService
                     .Instance
                     .GetSearchItemTableEntities()
+                    .OrderBy(x => x.Name)
                     .ForEach(
                         x => treeNodeCollection.Add(this.CreateTreeNode(
                                                             "searchItem|" + x.RowKey,
