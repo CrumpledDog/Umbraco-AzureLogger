@@ -19,13 +19,11 @@
                 })
                 .then(function (response) {
 
-                    console.log('created...');
-
                     // refresh tree
                     treeService.loadNodeChildren({ node: currentNode })
                     .then(function () {
 
-                        // TODO: goto item in tree
+                        // TODO: goto item in tree, and trigger it to update the main view
 
                         navigationService.hideNavigation();
                     });
