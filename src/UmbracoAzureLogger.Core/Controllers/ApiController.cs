@@ -41,7 +41,7 @@
         [HttpPost]
         public void CreateSearchItem([FromUri] string name)
         {
-            TableService.Instance.InsertSearchItemTableEntity(name);
+            TableService.Instance.CreateSearchItemTableEntity(name);
         }
 
         /// <summary>

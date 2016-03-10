@@ -90,10 +90,10 @@
         }
 
         /// <summary>
-        /// Azure Logger node, create menu item - creates a new 'saved search'
+        /// Create a new search item
         /// </summary>
-        /// <param name="SearchItemTableEntity"></param>
-        internal void InsertSearchItemTableEntity(string name) // TODO: rename to CreateSearchItemTableEntity
+        /// <param name="name"></param>
+        internal void CreateSearchItemTableEntity(string name)
         {
             this.Connect();
             if (this.Connected.HasValue && this.Connected.Value)
@@ -203,17 +203,6 @@
                     ? this.CloudTable.ExecuteQuery(tableQuery) // if connected
                     : Enumerable.Empty<LogTableEntity>(); // fallback for not connected
         }
-
-        ///// <summary>
-        /////
-        ///// </summary>
-        ///// <param name="rowKey"></param>
-        ///// <param name="searchFilterState"></param>
-        ///// <returns></returns>
-        //internal IEnumerable<LogTableEntity> GetLogTableEntites(string rowKey, SearchFiltersState searchFilterState)
-        //{
-        //    return Enumerable.Empty<LogTableEntity>();
-        //}
 
         /// <summary>
         ///
