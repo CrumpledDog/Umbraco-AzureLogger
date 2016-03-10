@@ -308,7 +308,6 @@
     <Compile Include="Models\LogItemDetail.cs" />
     <Compile Include="TableService.cs" />
     <Compile Include="Models\TableEntities\LogTableEntity.cs" />
-    <Compile Include="Models\SearchFiltersState.cs" />
     <Compile Include="Models\TableEntities\SearchItemTableEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\TreeController.cs" />

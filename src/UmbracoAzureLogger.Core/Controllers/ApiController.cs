@@ -54,6 +54,10 @@
         //{
         //}
 
+        /// <summary>
+        /// Deletes a SearchItem (aka saved search) from the Azure table
+        /// </summary>
+        /// <param name="rowKey">the guid id</param>
         [HttpPost]
         public void Delete([FromUri] string rowKey)
         {

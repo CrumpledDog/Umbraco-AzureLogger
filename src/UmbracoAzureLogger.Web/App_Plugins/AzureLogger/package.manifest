@@ -1,5 +1,6 @@
 ﻿{
     javascript:[
+		'/App_Plugins/AzureLogger/BackOffice/SearchItemResource.js',
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ConnectionStatusController.js',
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/CreateController.js',
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/DeleteController.js',

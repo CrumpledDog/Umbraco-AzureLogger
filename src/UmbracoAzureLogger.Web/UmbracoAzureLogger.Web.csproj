@@ -319,6 +319,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\AzureLogger\BackOffice\SearchItemResource.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ConnectionStatus.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ConnectionStatusController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\CreateController.js" />

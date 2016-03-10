@@ -17,6 +17,16 @@
 
             $scope.save = function (currentNode) {
 
+                //searchFiltersResource.setSearchFiltersState(
+                //    currentNode.id.split('|')[1],
+                //    {
+                //        minLevel: $scope.minLevel,
+                //        hostHame: $scope.hostName,
+                //        loggerName: $scope.loggerName
+                //    }
+                //);
+
+
                 searchFiltersResource.searchFiltersState.minLevel = $scope.minLevel;
                 searchFiltersResource.searchFiltersState.hostName = $scope.hostName;
                 searchFiltersResource.searchFiltersState.loggerName = $scope.loggerName;
