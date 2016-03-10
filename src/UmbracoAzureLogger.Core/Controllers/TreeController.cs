@@ -36,10 +36,6 @@
                                                             "icon-list",
                                                             false,
                                                             this.BuildRoute("ViewLog", x.RowKey))));
-
-
-                // TODO: only if connected and there are log items to view
-                treeNodeCollection.Add(this.CreateTreeNode("viewLog", "-1", queryStrings, "*View Log*", "icon-list", false, this.BuildRoute("ViewLog")));
             }
 
             return treeNodeCollection;
