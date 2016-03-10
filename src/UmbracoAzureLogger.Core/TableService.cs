@@ -113,7 +113,7 @@
         {
             return this.Connected.HasValue && this.Connected.Value // if connected
                     ? this.CloudTable
-                        .Execute(TableOperation.Retrieve<LogTableEntity>("searchItem", rowKey))
+                        .Execute(TableOperation.Retrieve<SearchItemTableEntity>("searchItem", rowKey))
                         .Result as SearchItemTableEntity
                     : null;
         }

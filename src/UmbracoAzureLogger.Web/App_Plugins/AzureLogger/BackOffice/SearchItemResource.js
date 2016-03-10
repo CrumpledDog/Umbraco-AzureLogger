@@ -33,10 +33,10 @@
                 readSearchItem: function (searchItemId) {
                     console.log('searchItemResource.readSearchItem(' + searchItemId + ')');
 
+                    var deferred = $q.defer();
+
                     // TODO: look in local array for filters, if not there, then ajax request and populate local array
 
-
-                    var deferred = $q.defer();
 
                     $http({
                         method: 'GET',
@@ -46,17 +46,12 @@
                     .then(function (response) {
 
                         // TODO: add to local array
-                        console.log(response.data);
-                        var temp = { name: 'aaasd', minLevel: 'DEBUG', hostName: null, loggerName: null };
 
-                        deferred.resolve(temp);
+                        deferred.resolve(response.data);
 
                     });
 
                     return deferred.promise;
-
-                    // hardcoded debug - return fake searchItemFilterState obj
-                    //return { name: 'example search item name', minLevel: 'DEBUG', hostName: null, loggerName: null };
                 },
 
                 /*
