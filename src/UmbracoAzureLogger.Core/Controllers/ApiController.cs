@@ -39,18 +39,31 @@
         /// </summary>
         /// <param name="name"></param>
         [HttpPost]
-        public void Create([FromUri] string name)
+        public void CreateSearchItem([FromUri] string name)
         {
             TableService.Instance.InsertSearchItemTableEntity(name);
         }
 
-        //[HttpGet]
-        //public SearchItem Get([FromUri]string rowKey)
-        //{
-        //}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="searchItemId">also used as the Azure table rowKey</param>
+        /// <returns></returns>
+        [HttpGet]
+        public SearchItem ReadSearchItem([FromUri] string searchItemId)
+        {
+            SearchItemTableEntity searchItemTableEntity = TableService.Instance.GetSearchItemTableEntity(searchItemId);
+
+            if (searchItemTableEntity != null)
+            {
+                return (SearchItem)searchItemTableEntity;
+            }
+
+            return null;
+        }
 
         //[HttpPost]
-        //public void Update([FromUri] string rowKey, [FromBody] SearchFiltersState searchFiltersState)
+        //public void UpdateSeachItem([FromUri] string rowKey, [FromBody] SearchFiltersState searchFiltersState)
         //{
         //}
 
@@ -59,9 +72,9 @@
         /// </summary>
         /// <param name="rowKey">the guid id</param>
         [HttpPost]
-        public void Delete([FromUri] string rowKey)
+        public void DeleteSearchItem([FromUri] string searchItemId)
         {
-            TableService.Instance.DeleteSearchItemTableEntity(rowKey);
+            TableService.Instance.DeleteSearchItemTableEntity(searchItemId);
         }
 
         /// <summary>

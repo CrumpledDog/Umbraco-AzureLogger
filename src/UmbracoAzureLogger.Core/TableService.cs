@@ -82,7 +82,7 @@
             }
         }
 
-        internal IEnumerable<SearchItemTableEntity> GetSearchItemTableEntities()
+        internal IEnumerable<SearchItemTableEntity> GetSearchItemTableEntities() // TODO: rename to ReadSearchItemTableEntities
         {
             return this.Connected.HasValue && this.Connected.Value // if connected
                     ? this.CloudTable.ExecuteQuery(new TableQuery<SearchItemTableEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "searchItem")))
@@ -93,7 +93,7 @@
         /// Azure Logger node, create menu item - creates a new 'saved search'
         /// </summary>
         /// <param name="SearchItemTableEntity"></param>
-        internal void InsertSearchItemTableEntity(string name)
+        internal void InsertSearchItemTableEntity(string name) // TODO: rename to CreateSearchItemTableEntity
         {
             this.Connect();
             if (this.Connected.HasValue && this.Connected.Value)
@@ -107,6 +107,15 @@
                             Name = name
                         }));
             }
+        }
+
+        internal SearchItemTableEntity GetSearchItemTableEntity(string rowKey) // TODO: rename to ReadSearchItemTableEntity
+        {
+            return this.Connected.HasValue && this.Connected.Value // if connected
+                    ? this.CloudTable
+                        .Execute(TableOperation.Retrieve<LogTableEntity>("searchItem", rowKey))
+                        .Result as SearchItemTableEntity
+                    : null;
         }
 
         //internal void UpdateSearchItem()

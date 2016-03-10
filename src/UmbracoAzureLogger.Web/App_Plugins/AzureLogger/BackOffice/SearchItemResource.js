@@ -16,10 +16,8 @@
 
                     $http({
                         method: 'POST',
-                        url: 'BackOffice/AzureLogger/Api/Create',
-                        params: {
-                            name: name
-                        }
+                        url: 'BackOffice/AzureLogger/Api/CreateSearchItem',
+                        params: { name: name }
                     })
                     .then(function () {
 
@@ -61,10 +59,8 @@
 
                     $http({
                         method: 'POST',
-                        url: 'BackOffice/AzureLogger/Api/Delete',
-                        params: {
-                            rowKey: searchItemId
-                        }
+                        url: 'BackOffice/AzureLogger/Api/DeleteSearchItem',
+                        params: { searchItemId: searchItemId }
                     })
                    .then(function () {
 

@@ -13,9 +13,21 @@
         /// </summary>
         public string Name { get; set; }
 
-        ///// <summary>
-        ///// The state of the filters on this 'saved search' item
-        ///// </summary>
-        //public SearchFiltersState SearchFiltersState { get; set; }
+        //public string MinLevel { get; set; }
+
+        //public string HostName { get; set; }
+
+        //public string LoggerName { get; set; }
+
+        public static explicit operator SearchItem(SearchItemTableEntity searchItemTableEntity)
+        {
+            return new SearchItem()
+                {
+                    Name = searchItemTableEntity.Name//,
+                    //MinLevel = (Level)Enum.Parse(typeof(Level), searchItemTableEntity.MinLevel),
+                    //HostName = searchItemTableEntity.HostName,
+                    //LoggerName = searchItemTableEntity.LoggerName
+                };
+        }
     }
 }

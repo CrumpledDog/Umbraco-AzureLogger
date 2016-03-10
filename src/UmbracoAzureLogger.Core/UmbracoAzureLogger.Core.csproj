@@ -306,6 +306,7 @@
     <Compile Include="Models\Level.cs" />
     <Compile Include="Models\LogItemIntro.cs" />
     <Compile Include="Models\LogItemDetail.cs" />
+    <Compile Include="Models\SearchItem.cs" />
     <Compile Include="TableService.cs" />
     <Compile Include="Models\TableEntities\LogTableEntity.cs" />
     <Compile Include="Models\TableEntities\SearchItemTableEntity.cs" />
