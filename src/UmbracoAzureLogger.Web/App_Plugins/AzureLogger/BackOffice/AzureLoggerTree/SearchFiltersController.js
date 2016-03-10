@@ -13,12 +13,12 @@
                 searchItemId = currentNode.id.split('|')[1]; // strip prefix
 
                 // get filter state for this search item (from resource)
-                var searchItemFilterState = searchItemResource.getSearchItemFilterState(searchItemId);
+                var searchItem = searchItemResource.readSearchItem(searchItemId);
 
                 // set local values (so as to avoid auto 2 way binding on ui update)
-                $scope.minLevel = searchItemFilterState.minLevel;
-                $scope.hostName = searchItemFilterState.hostName;
-                $scope.loggerName = searchItemFilterState.loggerName;
+                $scope.minLevel = searchItem.minLevel;
+                $scope.hostName = searchItem.hostName;
+                $scope.loggerName = searchItem.loggerName;
             }
 
             $scope.cancel = function () {
@@ -27,7 +27,7 @@
 
             $scope.save = function () {
 
-                searchItemResource.setSearchItemFilterState(
+                searchItemResource.updateSearchItem(
                     searchItemId,
                     {
                         minLevel: $scope.minLevel,

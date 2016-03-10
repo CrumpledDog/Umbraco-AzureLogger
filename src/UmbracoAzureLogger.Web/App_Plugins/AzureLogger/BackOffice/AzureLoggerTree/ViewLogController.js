@@ -5,9 +5,9 @@
         function ($scope, $http, $routeParams, navigationService, searchItemResource) {
 
             var searchItemId = $routeParams.id;
-            var searchItemFilterState = searchItemResource.getSearchItemFilterState(searchItemId); //NEW
+            var searchItem = searchItemResource.readSearchItem(searchItemId); //NEW
 
-            $scope.temp = searchItemFilterState; // DEBUG
+            $scope.debug = searchItem; // DEBUG
 
             // forces the tree to highlight (in blue) the associated search item for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
@@ -64,9 +64,9 @@
                         method: 'GET',
                         url: 'BackOffice/AzureLogger/Api/GetLogItemIntros',
                         params: {
-                            minLevel: searchItemFilterState.minLevel,
-                            hostName: searchItemFilterState.hostName != null ? escape(searchItemFilterState.hostName) : '',
-                            loggerName: searchItemFilterState.loggerName != null ? escape(searchItemFilterState.loggerName) : '',
+                            minLevel: searchItem.minLevel,
+                            hostName: searchItem.hostName != null ? escape(searchItem.hostName) : '',
+                            loggerName: searchItem.loggerName != null ? escape(searchItem.loggerName) : '',
                             rowKey: rowKey != null ? escape(rowKey) : '',
                             take: 200
                         }

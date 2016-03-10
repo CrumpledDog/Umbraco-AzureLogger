@@ -26,17 +26,17 @@
 
                 },
 
-                getSearchItemFilterState: function (searchItemId) {
-                    console.log('searchItemResource.getSearchItemFilterState(' + searchItemId + ')');
+                readSearchItem: function (searchItemId) {
+                    console.log('searchItemResource.readSearchItem(' + searchItemId + ')');
 
                     // TODO: look in local array for filters, if not there, then ajax request and populate local array
 
                     // hardcoded debug - return fake searchItemFilterState obj
-                    return { minLevel: 'DEBUG', hostName: null, loggerName: null };
+                    return { name: 'example search item name', minLevel: 'DEBUG', hostName: null, loggerName: null };
                 },
 
-                setSearchItemFilterState: function (searchItemId, searchItemFilterState, callback) {
-                    console.log('searchItemResource.setSearchItemFilterState(' + searchItemId + ')');
+                updateSearchItem: function (searchItemId, searchItemFilterState, callback) {
+                    console.log('searchItemResource.updateSearchItem(' + searchItemId + ')');
                     // searchFiltersState: { minLevel: '', hostName: '', loggerName: '' }
 
                     // TODO: ajax call to persist data, then add / update array here
