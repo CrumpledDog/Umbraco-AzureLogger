@@ -15,11 +15,13 @@
                 return { minLevel: 'DEBUG', hostName: null, loggerName: null };
             },
 
-            setSearchItemFilterState: function (id, searchItemFilterState) {
+            setSearchItemFilterState: function (id, searchItemFilterState, callback) {
                 console.log('searchItemResource.setSearchItemFilterState(' + id + ')');
                 // searchFiltersState: { minLevel: '', hostName: '', loggerName: '' }
 
                 // TODO: ajax call to persist data, then add / update array here
+
+                if (typeof callback === 'function') { callback(); }
             },
 
             deleteSearchItem: function (id) {
