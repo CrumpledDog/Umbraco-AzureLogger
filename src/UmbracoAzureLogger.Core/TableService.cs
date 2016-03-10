@@ -118,15 +118,24 @@
                     : null;
         }
 
-        //internal void UpdateSearchItem()
-        //{
-        //}
+        internal void UpdateSearchItemTableEntity(string rowKey, Level minLevel, string hostName, string loggerName)
+        {
+            this.Connect();
+            if (this.Connected.HasValue && this.Connected.Value)
+            {
+                SearchItemTableEntity searchItemTableEntity = this.GetSearchItemTableEntity(rowKey);
+                searchItemTableEntity.MinLevel = minLevel.ToString();
+                searchItemTableEntity.HostName = hostName;
+                searchItemTableEntity.LoggerName = loggerName;
+
+                this.CloudTable.Execute(TableOperation.Replace(searchItemTableEntity));
+            }
+        }
 
         /// <summary>
-        /// deletes an item in the table
+        /// Deletes a search item form the Azure table (only a rowKey is required, so no need to supply a fully populated SearchItemTableEntity)
         /// </summary>
-        /// <param name="partitionKey"></param>
-        /// <param name="rowKey"></param>
+        /// <param name="rowKey">the searchItemId is the Azure table rowKey</param>
         internal void DeleteSearchItemTableEntity(string rowKey)
         {
             this.Connect();

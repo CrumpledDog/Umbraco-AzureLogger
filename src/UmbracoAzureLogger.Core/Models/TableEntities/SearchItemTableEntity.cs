@@ -13,20 +13,20 @@
         /// </summary>
         public string Name { get; set; }
 
-        //public string MinLevel { get; set; }
+        public string MinLevel { get; set; }
 
-        //public string HostName { get; set; }
+        public string HostName { get; set; }
 
-        //public string LoggerName { get; set; }
+        public string LoggerName { get; set; }
 
         public static explicit operator SearchItem(SearchItemTableEntity searchItemTableEntity)
         {
             return new SearchItem()
                 {
-                    Name = searchItemTableEntity.Name//,
-                    //MinLevel = (Level)Enum.Parse(typeof(Level), searchItemTableEntity.MinLevel),
-                    //HostName = searchItemTableEntity.HostName,
-                    //LoggerName = searchItemTableEntity.LoggerName
+                    Name = searchItemTableEntity.Name,
+                    MinLevel = searchItemTableEntity.MinLevel != null ? (Level)Enum.Parse(typeof(Level), searchItemTableEntity.MinLevel) : Level.DEBUG,
+                    HostName = searchItemTableEntity.HostName,
+                    LoggerName = searchItemTableEntity.LoggerName
                 };
         }
     }

@@ -69,9 +69,7 @@
                             [FromUri] string hostName,
                             [FromUri] string loggerName)
         {
-            //TableService.Instance.UpdateSearchItemTableEntity(new SearchItemTableEntity() {  })
-
-
+            TableService.Instance.UpdateSearchItemTableEntity(searchItemId, minLevel, hostName, loggerName);
         }
 
         /// <summary>
@@ -81,6 +79,7 @@
         [HttpPost]
         public void DeleteSearchItem([FromUri] string searchItemId)
         {
+            // the searchItemId is the same as the Azure table rowKey
             TableService.Instance.DeleteSearchItemTableEntity(searchItemId);
         }
 
