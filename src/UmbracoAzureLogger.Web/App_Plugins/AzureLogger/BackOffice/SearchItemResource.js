@@ -37,7 +37,6 @@
 
                     // TODO: look in local array for filters, if not there, then ajax request and populate local array
 
-
                     $http({
                         method: 'GET',
                         url: 'BackOffice/AzureLogger/Api/ReadSearchItem',
@@ -47,7 +46,7 @@
 
                         // TODO: add to local array
 
-                        deferred.resolve(response.data);
+                        deferred.resolve(response.data); // returns a searchItem
 
                     });
 
@@ -57,9 +56,12 @@
                 /*
                     Update filter properties for a search item, persisting to Azure table storage
                 */
-                updateSearchItem: function (searchItemId, searchItemFilterState, callback) {
+                updateSearchItem: function (searchItemId, searchItem, callback) { // TODO: move id into the searchItem obj
                     console.log('searchItemResource.updateSearchItem(' + searchItemId + ')');
-                    // searchFiltersState: { minLevel: '', hostName: '', loggerName: '' }
+
+
+
+
 
                     // TODO: ajax call to persist data, then add / update array here
 
