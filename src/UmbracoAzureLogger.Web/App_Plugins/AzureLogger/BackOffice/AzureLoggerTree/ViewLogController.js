@@ -67,7 +67,7 @@
                         method: 'GET',
                         url: 'BackOffice/AzureLogger/Api/GetLogItemIntros',
                         params: {
-                            minLevel: 'DEBUG',//$scope.searchItem.minLevel,
+                            minLevel: $scope.searchItem.minLevel,
                             hostName: $scope.searchItem.hostName != null ? escape($scope.searchItem.hostName) : '',
                             loggerName: $scope.searchItem.loggerName != null ? escape($scope.searchItem.loggerName) : '',
                             rowKey: rowKey != null ? escape(rowKey) : '',

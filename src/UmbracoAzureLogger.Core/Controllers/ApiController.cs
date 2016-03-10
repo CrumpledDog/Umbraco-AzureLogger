@@ -62,10 +62,17 @@
             return null;
         }
 
-        //[HttpPost]
-        //public void UpdateSeachItem([FromUri] string rowKey, [FromBody] SearchFiltersState searchFiltersState)
-        //{
-        //}
+        [HttpPost]
+        public void UpdateSearchItem(
+                            [FromUri] string searchItemId,
+                            [FromUri] Level minLevel,
+                            [FromUri] string hostName,
+                            [FromUri] string loggerName)
+        {
+            //TableService.Instance.UpdateSearchItemTableEntity(new SearchItemTableEntity() {  })
+
+
+        }
 
         /// <summary>
         /// Deletes a SearchItem (aka saved search) from the Azure table

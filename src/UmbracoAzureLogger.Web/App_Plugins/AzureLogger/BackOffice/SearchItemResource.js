@@ -59,13 +59,23 @@
                 updateSearchItem: function (searchItemId, searchItem, callback) { // TODO: move id into the searchItem obj
                     console.log('searchItemResource.updateSearchItem(' + searchItemId + ')');
 
+                    $http({
+                        method: 'POST',
+                        url: 'BackOffice/AzureLogger/Api/UpdateSearchItem',
+                        params: {
+                            searchItemId: searchItemId,
+                            minLevel: searchItem.minLevel != null ? searchItem.minLevel : 'DEBUG', // TEMP HACK FIX
+                            hostName: searchItem.hostName != null ? escape(searchItem.hostName) : '',
+                            loggerName: searchItem.loggerName != null ? escape(searchItem.loggerName) : ''
+                        }
+                    })
+                    .then(function () {
 
+                        // TODO: ajax call to persist data, then add / update array here
+                        if (typeof callback === 'function') { callback(); }
 
+                    });
 
-
-                    // TODO: ajax call to persist data, then add / update array here
-
-                    if (typeof callback === 'function') { callback(); }
                 },
 
                 /*
