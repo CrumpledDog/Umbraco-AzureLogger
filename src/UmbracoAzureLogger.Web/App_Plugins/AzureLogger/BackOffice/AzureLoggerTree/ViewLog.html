@@ -5,7 +5,7 @@
             <h1>Azure Logger - View Log</h1>
 
         </div>
-        <p>searchItemFilterState: {{debug}}</p>
+        <p>searchItem: {{searchItem}}</p>
 
         <!--<p>Start Date Time : <input type="text" /></p>-->
 
@@ -14,7 +14,7 @@
     </div>
 
     <div class="umb-panel-body umb-scrollable">
-        <div class="umb-pane" ng-if="connected" lazy-load="getMoreLogItems()">
+        <div class="umb-pane" ng-if="connected && searchItem" lazy-load="getMoreLogItems()">
             <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems">
 
                 <div class="day-breaker" ng-if="differentDays(logItem, logItems[$index - 1])">
@@ -40,7 +40,7 @@
                         <dt>Event Timestamp</dt>
                         <dd>
                             <!--<a href="javascript:alert('reload log starting at this date - updates inline date filter at top of page')">-->
-                                {{logItem.eventTimestamp| date : 'EEE dd MMM yyyy - HH:mm:ss.sss'}}
+                            {{logItem.eventTimestamp| date : 'EEE dd MMM yyyy - HH:mm:ss.sss'}}
                             <!--</a>-->
                         </dd>
 
@@ -101,8 +101,6 @@
                 </div><!-- /log-item-details-row -->
 
             </div><!-- /ng-repeat -->
-
-
             <!-- should never see this link, as the auto scrolling will push it further down the page out of sight -->
             <a class="get-more-log-items" ng-show="!currentlyLoading && !finishedLoading" ng-click="getMoreLogItems()">Get More Log Items</a>
 

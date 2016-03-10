@@ -5,9 +5,10 @@
         function ($scope, $http, $routeParams, navigationService, searchItemResource) {
 
             var searchItemId = $routeParams.id;
-            var searchItem = searchItemResource.readSearchItem(searchItemId); //NEW
 
-            $scope.debug = searchItem; // DEBUG
+            searchItemResource.readSearchItem(searchItemId).then(function (searchItem) {
+                $scope.searchItem = searchItem; // put into scope so view can delay rendering until populated
+            });
 
             // forces the tree to highlight (in blue) the associated search item for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
@@ -57,6 +58,8 @@
                     var rowKey = null;
                     if ($scope.logItems.length > 0) { rowKey = $scope.logItems[$scope.logItems.length - 1].rowKey; }
 
+                    console.log('the...');
+                    console.log($scope.searchItem);
 
                     // NOTE: using nulls to indicate no value instead of empty strings ''
                     // converts to empty strings on api call to ensure method signature matches
@@ -64,9 +67,9 @@
                         method: 'GET',
                         url: 'BackOffice/AzureLogger/Api/GetLogItemIntros',
                         params: {
-                            minLevel: searchItem.minLevel,
-                            hostName: searchItem.hostName != null ? escape(searchItem.hostName) : '',
-                            loggerName: searchItem.loggerName != null ? escape(searchItem.loggerName) : '',
+                            minLevel: 'DEBUG',//$scope.searchItem.minLevel,
+                            hostName: $scope.searchItem.hostName != null ? escape($scope.searchItem.hostName) : '',
+                            loggerName: $scope.searchItem.loggerName != null ? escape($scope.searchItem.loggerName) : '',
                             rowKey: rowKey != null ? escape(rowKey) : '',
                             take: 200
                         }

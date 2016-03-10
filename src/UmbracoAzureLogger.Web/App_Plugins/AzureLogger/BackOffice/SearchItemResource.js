@@ -1,8 +1,8 @@
 ﻿angular
     .module('umbraco.resources')
     .factory('AzureLogger.SearchItemResource', [ // NOTE: named ...Resource (instead of ...Service or ...Factory) to avoid confusion
-        '$http',
-        function ($http) {
+        '$http', '$q',
+        function ($http, $q) {
 
             var searchItems = [];
 
@@ -35,8 +35,28 @@
 
                     // TODO: look in local array for filters, if not there, then ajax request and populate local array
 
+
+                    var deferred = $q.defer();
+
+                    $http({
+                        method: 'GET',
+                        url: 'BackOffice/AzureLogger/Api/ReadSearchItem',
+                        params: { searchItemId: searchItemId }
+                    })
+                    .then(function (response) {
+
+                        // TODO: add to local array
+                        console.log(response.data);
+                        var temp = { name: 'aaasd', minLevel: 'DEBUG', hostName: null, loggerName: null };
+
+                        deferred.resolve(temp);
+
+                    });
+
+                    return deferred.promise;
+
                     // hardcoded debug - return fake searchItemFilterState obj
-                    return { name: 'example search item name', minLevel: 'DEBUG', hostName: null, loggerName: null };
+                    //return { name: 'example search item name', minLevel: 'DEBUG', hostName: null, loggerName: null };
                 },
 
                 /*
