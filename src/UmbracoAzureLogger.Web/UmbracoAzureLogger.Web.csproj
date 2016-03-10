@@ -328,7 +328,6 @@
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\SearchFilters.css" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\SearchFilters.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\SearchFiltersController.js" />
-    <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\SearchFiltersResource.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ViewLog.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ViewLogController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\DeleteLogs.html" />

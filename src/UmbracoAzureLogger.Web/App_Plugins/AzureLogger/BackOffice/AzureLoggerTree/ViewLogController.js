@@ -1,42 +1,37 @@
 ﻿angular
     .module('umbraco')
     .controller('AzureLogger.ViewLogController', [
-        '$scope', '$http', '$routeParams', 'navigationService', 'AzureLogger.SearchFiltersResource', 'AzureLogger.SearchItemResource',
-        function ($scope, $http, $routeParams, navigationService, searchFiltersResource, searchItemResource) {
+        '$scope', '$http', '$routeParams', 'navigationService', 'AzureLogger.SearchItemResource',
+        function ($scope, $http, $routeParams, navigationService, searchItemResource) {
+
+            var searchItemId = $routeParams.id;
+            var searchItemFilterState = searchItemResource.getSearchItemFilterState(searchItemId); //NEW
+
+            $scope.temp = searchItemFilterState; // DEBUG
 
             // forces the tree to highlight (in blue) the associated search item for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
-            navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'searchItem|' + $routeParams.id], forceReload: false });
-
-            /* scope vars */
-            $scope.routeParams = $routeParams;
+            navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'searchItem|' + searchItemId], forceReload: false });
 
             $scope.connected = false;
             //$scope.connectionErrorMessage;
             //$scope.connectionString;
             //$scope.tableName;
 
-            $scope.filter = {};
-            $scope.filter.minLevel = 'Debug';
-            $scope.filter.hostName = '';
-            $scope.filter.loggerName = ''; // UX needs to see log list at the same time
-
             //$scope.startEventTimestamp; // set with date picker
             //$scope.threadIdentity; // built from AppDomainId + ProcessId + ThreadName (set by clicking in details view)
-
 
             $scope.logItems = [];
             //$scope.logItemLimit = 1000; // size of logItems array before it is reset (and a new start date time in the filter)
             $scope.currentlyLoading = false; // true when getting data awaiting a response to set
             $scope.finishedLoading = false; // true once server indicates that there is no more data
 
-            $scope.searchFiltersState = searchFiltersResource.searchFiltersState;
             //$scope.$watch('searchFiltersResource.searchFiltersState', function () { // wouldn't bind
-            $scope.$watch('searchFiltersState', function () {
-                $scope.logItems = [];
-                $scope.finishedLoading = false; // reset
-                $scope.getMoreLogItems();
-            }, true);
+            //$scope.$watch('searchFiltersState', function () {
+            //    $scope.logItems = [];
+            //    $scope.finishedLoading = false; // reset
+            //    $scope.getMoreLogItems();
+            //}, true);
 
 
 
@@ -69,9 +64,9 @@
                         method: 'GET',
                         url: 'BackOffice/AzureLogger/Api/GetLogItemIntros',
                         params: {
-                            minLevel: $scope.searchFiltersState.minLevel,
-                            hostName: $scope.searchFiltersState.hostName != null ? escape($scope.searchFiltersState.hostName) : '',
-                            loggerName: $scope.searchFiltersState.loggerName != null ? escape($scope.searchFiltersState.loggerName) : '',
+                            minLevel: searchItemFilterState.minLevel,
+                            hostName: searchItemFilterState.hostName != null ? escape(searchItemFilterState.hostName) : '',
+                            loggerName: searchItemFilterState.loggerName != null ? escape(searchItemFilterState.loggerName) : '',
                             rowKey: rowKey != null ? escape(rowKey) : '',
                             take: 200
                         }
@@ -128,7 +123,6 @@
 
                 return date.toDateString() !== lastDate.toDateString();
             };
-
 
         }])
         .directive('lazyLoad', ['$timeout', function ($timeout) {

@@ -5,7 +5,6 @@
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/CreateController.js',
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/DeleteController.js',
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/SearchFiltersController.js',
-		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/SearchFiltersResource.js',
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ViewLogController.js'
 	],
     css:[
