@@ -1,8 +1,8 @@
 ﻿angular
     .module('umbraco')
     .controller('AzureLogger.SearchFiltersController', [
-        '$scope', 'navigationService', 'AzureLogger.SearchFiltersResource',
-        function ($scope, navigationService, searchFiltersResource) {
+        '$scope', 'navigationService', 'AzureLogger.SearchFiltersResource', 'AzureLogger.SearchItemResource',
+        function ($scope, navigationService, searchFiltersResource, searchItemResource) {
 
             // $scope.searchFiltersState = searchFiltersResource.searchFiltersState; // this auto binds 2-way to the resource object
             // specifying properties to the primatives prevents 2-way binding, so that we can set all on save (else cancel changes)

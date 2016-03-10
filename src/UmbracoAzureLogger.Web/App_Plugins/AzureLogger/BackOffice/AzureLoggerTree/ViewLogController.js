@@ -1,8 +1,8 @@
 ﻿angular
     .module('umbraco')
     .controller('AzureLogger.ViewLogController', [
-        '$scope', '$http', '$routeParams', 'navigationService', 'AzureLogger.SearchFiltersResource',
-        function ($scope, $http, $routeParams, navigationService, searchFiltersResource) {
+        '$scope', '$http', '$routeParams', 'navigationService', 'AzureLogger.SearchFiltersResource', 'AzureLogger.SearchItemResource',
+        function ($scope, $http, $routeParams, navigationService, searchFiltersResource, searchItemResource) {
 
             // forces the tree to highlight (in blue) the associated search item for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected

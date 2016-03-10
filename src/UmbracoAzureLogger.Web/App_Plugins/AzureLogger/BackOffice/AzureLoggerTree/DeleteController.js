@@ -1,8 +1,8 @@
 ﻿angular
     .module('umbraco')
     .controller('AzureLogger.DeleteController', [
-        '$scope', 'navigationService', 'treeService', '$http',
-        function ($scope, navigationService, treeService, $http) {
+        '$scope', 'navigationService', 'treeService', '$http', 'AzureLogger.SearchItemResource',
+        function ($scope, navigationService, treeService, $http, searchItemResource) {
 
             $scope.cancel = function () {
                 navigationService.hideNavigation();
