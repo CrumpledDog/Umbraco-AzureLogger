@@ -8,6 +8,9 @@
 
             return {
 
+                /*
+                    Creates a new search item (with empty filter properties) and persists to Azure table storage
+                */
                 createSearchItem: function (name, callback) {
                     console.log('searchItemResource.createSearchItem(' + name + ')');
 
@@ -26,6 +29,9 @@
 
                 },
 
+                /*
+                    Reads a search item (either from local array else falls back to requesting from Azure table storage)
+                */
                 readSearchItem: function (searchItemId) {
                     console.log('searchItemResource.readSearchItem(' + searchItemId + ')');
 
@@ -35,6 +41,9 @@
                     return { name: 'example search item name', minLevel: 'DEBUG', hostName: null, loggerName: null };
                 },
 
+                /*
+                    Update filter properties for a search item, persisting to Azure table storage
+                */
                 updateSearchItem: function (searchItemId, searchItemFilterState, callback) {
                     console.log('searchItemResource.updateSearchItem(' + searchItemId + ')');
                     // searchFiltersState: { minLevel: '', hostName: '', loggerName: '' }
@@ -44,6 +53,9 @@
                     if (typeof callback === 'function') { callback(); }
                 },
 
+                /*
+                    Delete a search item from Azure table storage (and local array)
+                */
                 deleteSearchItem: function (searchItemId, callback) {
                     console.log('searchItemResource.deleteSearchItem(' + searchItemId + ')');
 
