@@ -8,6 +8,24 @@
 
             return {
 
+                createSearchItem: function (name, callback) {
+                    console.log('searchItemResource.createSearchItem(' + name + ')');
+
+                    $http({
+                        method: 'POST',
+                        url: 'BackOffice/AzureLogger/Api/Create',
+                        params: {
+                            name: name
+                        }
+                    })
+                    .then(function () {
+
+                        if (typeof callback === 'function') { callback(); }
+
+                    });
+
+                },
+
                 getSearchItemFilterState: function (searchItemId) {
                     console.log('searchItemResource.getSearchItemFilterState(' + searchItemId + ')');
 
