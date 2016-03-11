@@ -5,7 +5,9 @@
             <h1 class="headline">{{searchItem.name}}</h1>
         </div>
 
-        <p>searchItem: {{searchItem}}</p>
+        <span ng-show="searchItem.minLevel != 'DEBUG'">Min Level: {{searchItem.minLevel}}</span>
+        <span ng-show="searchItem.hostName">Host Name: {{searchItem.hostName}}</span>
+        <span ng-show="searchItem.loggerName">Logger Name: {{searchItem.loggerName}}</span>
 
         <!--<p>Start Date Time : <input type="text" /></p>-->
 
@@ -16,8 +18,7 @@
     <div class="umb-panel-body umb-scrollable">
         <div class="umb-pane" ng-if="connected && searchItem" lazy-load="getMoreLogItems()">
 
-
-        <pre style="float:right">searchItems: {{searchItems|json}}</pre>
+            <!--<pre style="float:right">searchItems: {{searchItems|json}}</pre>-->
 
             <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems">
 
