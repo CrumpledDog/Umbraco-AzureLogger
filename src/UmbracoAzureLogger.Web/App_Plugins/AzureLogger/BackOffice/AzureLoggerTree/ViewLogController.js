@@ -6,6 +6,13 @@
 
             var searchItemId = $routeParams.id;
 
+            // DEBUG
+            $scope.searchItems = searchItemResource.searchItems;
+            $scope.$watch('searchItems', function () {
+                console.log('the search items collection changed');
+            }, true);
+            // DEBUG
+
             searchItemResource.readSearchItem(searchItemId).then(function (searchItem) {
                 $scope.searchItem = searchItem; // put into scope so view can delay rendering until populated
             });
@@ -57,9 +64,6 @@
                     // get last known rowKey from array
                     var rowKey = null;
                     if ($scope.logItems.length > 0) { rowKey = $scope.logItems[$scope.logItems.length - 1].rowKey; }
-
-                    console.log('the...');
-                    console.log($scope.searchItem);
 
                     // NOTE: using nulls to indicate no value instead of empty strings ''
                     // converts to empty strings on api call to ensure method signature matches

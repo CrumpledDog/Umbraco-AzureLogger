@@ -15,6 +15,12 @@
                 // get filter state for this search item (from resource)
                 searchItemResource.readSearchItem(searchItemId).then(function (searchItem) {
                     $scope.searchItem = searchItem;
+
+                    // pulling into multiple vars so that auto-binding disabled, and update takes place when user clicks 'save'
+                    $scope.minLevel = searchItem.minLevel;
+                    $scope.hostName = searchItem.hostName;
+                    $scope.loggerName = searchItem.loggerName;
+
                 });
             }
 
@@ -23,6 +29,10 @@
             };
 
             $scope.save = function () {
+
+                $scope.searchItem.minLevel = $scope.minLevel;
+                $scope.searchItem.hostName = $scope.hostName;
+                $scope.searchItem.loggerName = $scope.loggerName;
 
                 searchItemResource.updateSearchItem(
                     searchItemId,

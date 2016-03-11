@@ -1,19 +1,21 @@
 ﻿<div class="umbracoDialog umb-dialog" ng-controller="AzureLogger.SearchFiltersController" ng-init="init(currentNode)">
 
-    <div ng-if="searchItem"> <!-- ensure search item received before rendering ui -->
+    <div> <!-- ensure search item received before rendering ui -->
+
+    <p>minLevel: {{minLevel}}</p>
 
         <div class="filters">
 
             <fieldset>
                 Min Level:
-                <label><input type="radio" ng-model="searchItem.minLevel" value="DEBUG" />Debug - show all levels</label>
-                <label><input type="radio" ng-model="searchItem.minLevel" value="INFO" />Info - show all except debug</label>
-                <label><input type="radio" ng-model="searchItem.minLevel" value="WARN" />Warn - show warn, error and fatal</label>
-                <label><input type="radio" ng-model="searchItem.minLevel" value="ERROR" />Error - show error and fatal</label>
-                <label><input type="radio" ng-model="searchItem.minLevel" value="FATAL" />Fatal - show fatal only</label>
+                <label><input type="radio" ng-model="minLevel" value="DEBUG" />Debug - show all levels</label>
+                <label><input type="radio" ng-model="minLevel" value="INFO" />Info - show all except debug</label>
+                <label><input type="radio" ng-model="minLevel" value="WARN" />Warn - show warn, error and fatal</label>
+                <label><input type="radio" ng-model="minLevel" value="ERROR" />Error - show error and fatal</label>
+                <label><input type="radio" ng-model="minLevel" value="FATAL" />Fatal - show fatal only</label>
             </fieldset>
-            <label>Host Name: <input type="text" ng-model="searchItem.hostName" /></label>
-            <label>Logger Name: <input type="text" ng-model="searchItem.loggerName" /></label>
+            <label>Host Name: <input type="text" ng-model="hostName" /></label>
+            <label>Logger Name: <input type="text" ng-model="loggerName" /></label>
 
         </div>
 
