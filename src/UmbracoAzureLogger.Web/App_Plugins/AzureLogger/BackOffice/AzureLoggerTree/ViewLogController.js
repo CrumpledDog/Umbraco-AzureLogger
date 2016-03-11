@@ -6,16 +6,21 @@
 
             var searchItemId = $routeParams.id;
 
-            // DEBUG
-            $scope.searchItems = searchItemResource.searchItems;
-            $scope.$watch('searchItems', function () {
-                console.log('the search items collection changed');
-            }, true);
-            // DEBUG
+            $scope.init = function () {
+                searchItemResource.readSearchItem(searchItemId).then(function (searchItem) {
+                    $scope.searchItem = searchItem; // put into scope so view can delay rendering until populated
 
-            searchItemResource.readSearchItem(searchItemId).then(function (searchItem) {
-                $scope.searchItem = searchItem; // put into scope so view can delay rendering until populated
-            });
+                    $scope.logItems = [];
+                    $scope.finishedLoading = false;
+                    $scope.getMoreLogItems();
+                });
+            };
+
+            // watch the search items collection in the resource, and trigger init if this search item data is changed
+            $scope.searchItems = searchItemResource.searchItems;
+            $scope.$watch('searchItems["' + searchItemId + '"]', function () {
+                $scope.init();
+            }, true);
 
             // forces the tree to highlight (in blue) the associated search item for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
@@ -29,18 +34,10 @@
             //$scope.startEventTimestamp; // set with date picker
             //$scope.threadIdentity; // built from AppDomainId + ProcessId + ThreadName (set by clicking in details view)
 
-            $scope.logItems = [];
+//            $scope.logItems = [];
             //$scope.logItemLimit = 1000; // size of logItems array before it is reset (and a new start date time in the filter)
-            $scope.currentlyLoading = false; // true when getting data awaiting a response to set
-            $scope.finishedLoading = false; // true once server indicates that there is no more data
-
-            //$scope.$watch('searchFiltersResource.searchFiltersState', function () { // wouldn't bind
-            //$scope.$watch('searchFiltersState', function () {
-            //    $scope.logItems = [];
-            //    $scope.finishedLoading = false; // reset
-            //    $scope.getMoreLogItems();
-            //}, true);
-
+//            $scope.currentlyLoading = false; // true when getting data awaiting a response to set
+//            $scope.finishedLoading = false; // true once server indicates that there is no more data
 
 
             // get connection details (triggering a new connection if required)
@@ -79,7 +76,7 @@
                         }
                     })
                     .then(function (response) {
-                        console.log(response.data.length);
+                        //console.log(response.data.length);
 
                         if (response.data.length > 0) {
                             $scope.logItems = $scope.logItems.concat(response.data); // add new data to array

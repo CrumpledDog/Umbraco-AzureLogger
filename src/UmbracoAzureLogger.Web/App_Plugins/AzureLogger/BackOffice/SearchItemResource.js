@@ -14,7 +14,7 @@
                     and then runs any callback
                 */
                 createSearchItem: function (name, callback) {
-                    console.log('searchItemResource.createSearchItem(' + name + ')');
+                    //console.log('searchItemResource.createSearchItem(' + name + ')');
 
                     $http({
                         method: 'POST',
@@ -36,7 +36,7 @@
                     and returns a promise
                 */
                 readSearchItem: function (searchItemId) {
-                    console.log('searchItemResource.readSearchItem(' + searchItemId + ')');
+                    //console.log('searchItemResource.readSearchItem(' + searchItemId + ')');
 
                     var deferred = $q.defer();
 
@@ -64,7 +64,7 @@
                     and then runs any callback
                 */
                 updateSearchItem: function (searchItemId, searchItem, callback) { // TODO: move id into the searchItem obj
-                    console.log('searchItemResource.updateSearchItem(' + searchItemId + ')');
+                    //console.log('searchItemResource.updateSearchItem(' + searchItemId + ')');
 
                     $http({
                         method: 'POST',
@@ -91,7 +91,7 @@
                     Delete a search item from Azure table storage (and local array)
                 */
                 deleteSearchItem: function (searchItemId, callback) {
-                    console.log('searchItemResource.deleteSearchItem(' + searchItemId + ')');
+                    //console.log('searchItemResource.deleteSearchItem(' + searchItemId + ')');
 
                     $http({
                         method: 'POST',

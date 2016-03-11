@@ -1,9 +1,6 @@
 ﻿<div class="umbracoDialog umb-dialog" ng-controller="AzureLogger.SearchFiltersController" ng-init="init(currentNode)">
 
-    <div> <!-- ensure search item received before rendering ui -->
-
-    <p>minLevel: {{minLevel}}</p>
-
+    <div ng-show="searchItem"> <!-- safety check: ensure search item received before rendering ui -->
         <div class="filters">
 
             <fieldset>
@@ -27,7 +24,6 @@
 
             </div>
         </div>
-
     </div>
 
 </div>
