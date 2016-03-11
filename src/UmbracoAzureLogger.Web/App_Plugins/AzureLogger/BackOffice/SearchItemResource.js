@@ -4,12 +4,14 @@
         '$http', '$q',
         function ($http, $q) {
 
-            var searchItems = [];
+            var searchItems = {}; // { name: '', { minLevel: 'DEBUG', hostName: null, loggerName: null } }
 
             return {
 
+                searchItems: searchItems,
                 /*
-                    Creates a new search item (with empty filter properties) and persists to Azure table storage
+                    Creates a new search item (with empty filter properties) and persists to Azure table storage,
+                    and then runs any callback
                 */
                 createSearchItem: function (name, callback) {
                     console.log('searchItemResource.createSearchItem(' + name + ')');
@@ -19,7 +21,9 @@
                         url: 'BackOffice/AzureLogger/Api/CreateSearchItem',
                         params: { name: name }
                     })
-                    .then(function () {
+                    .then(function () { // TODO: need searchItemId returned
+
+                        // TODO: update local data
 
                         if (typeof callback === 'function') { callback(); }
 
@@ -28,7 +32,8 @@
                 },
 
                 /*
-                    Reads a search item (either from local array else falls back to requesting from Azure table storage)
+                    Reads a search item (either from local array else falls back to requesting from Azure table storage),
+                    and returns a promise
                 */
                 readSearchItem: function (searchItemId) {
                     console.log('searchItemResource.readSearchItem(' + searchItemId + ')');
@@ -44,7 +49,8 @@
                     })
                     .then(function (response) {
 
-                        // TODO: add to local array
+                        // update local data // TODO: return the search id that was created
+                        searchItems[searchItemId] = response.data;
 
                         deferred.resolve(response.data); // returns a searchItem
 
@@ -54,7 +60,8 @@
                 },
 
                 /*
-                    Update filter properties for a search item, persisting to Azure table storage
+                    Update filter properties for a search item, persisting to Azure table storage,
+                    and then runs any callback
                 */
                 updateSearchItem: function (searchItemId, searchItem, callback) { // TODO: move id into the searchItem obj
                     console.log('searchItemResource.updateSearchItem(' + searchItemId + ')');
@@ -71,7 +78,9 @@
                     })
                     .then(function () {
 
-                        // TODO: ajax call to persist data, then add / update array here
+                        //  update local data
+                        searchItems[searchItemId] = searchItem;
+
                         if (typeof callback === 'function') { callback(); }
 
                     });
@@ -91,7 +100,8 @@
                     })
                    .then(function () {
 
-                       // TODO: then remove array here
+                       // remove from local data
+                       searchItems[searchItemId] = null;
 
                        if (typeof callback === 'function') { callback(); }
 
