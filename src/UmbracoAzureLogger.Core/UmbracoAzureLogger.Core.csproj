@@ -90,8 +90,8 @@
       <HintPath>..\packages\UmbracoCms.Core.7.3.7\lib\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net.Appender.Azure, Version=1.4.0.13, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.Appender.Azure.Umbraco.1.4.0.13\lib\net45\log4net.Appender.Azure.dll</HintPath>
+    <Reference Include="log4net.Appender.Azure.Umbraco, Version=1.4.0.14, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.Appender.Azure.Umbraco.1.4.0.14\lib\net45\log4net.Appender.Azure.Umbraco.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Lucene.Net, Version=2.9.4.1, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">

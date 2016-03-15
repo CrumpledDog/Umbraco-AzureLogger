@@ -1,7 +1,7 @@
 ﻿namespace UmbracoAzureLogger.Core
 {
     using log4net;
-    using log4net.Appender;
+    using log4net.Appender.Umbraco;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
     using System;
