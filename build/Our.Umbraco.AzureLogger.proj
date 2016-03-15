@@ -76,8 +76,8 @@
 		<BuildUmbDir>$(BuildDir)\_umbraco</BuildUmbDir>
 		<BuildNuGetDir>$(BuildDir)\_nuget</BuildNuGetDir>
 		<ArtifactsDir>$(RootDir)\artifacts</ArtifactsDir>
-		<CoreProjectDir>$(RootDir)\src\UmbracoAzureLogger.Core</CoreProjectDir>
-    <WebProjectDir>$(RootDir)\src\UmbracoAzureLogger.Web</WebProjectDir>
+		<CoreProjectDir>$(RootDir)\src\Our.Umbraco.AzureLogger.Core</CoreProjectDir>
+    <WebProjectDir>$(RootDir)\src\Our.Umbraco.AzureLogger.Web</WebProjectDir>
 	</PropertyGroup>
 
 	<!-- TARGETS -->
@@ -111,15 +111,15 @@
 
 	<!-- COMPILE -->
 	<Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
-		<MSBuild Projects="$(CoreProjectDir)\UmbracoAzureLogger.Core.csproj" Properties="Configuration=$(BuildConfig)" />
+		<MSBuild Projects="$(CoreProjectDir)\Our.Umbraco.AzureLogger.Core.csproj" Properties="Configuration=$(BuildConfig)" />
 	</Target>
 
 	<!-- PREPARE FILES -->
 	<Target Name="PrepareFiles" DependsOnTargets="Compile">
 		<ItemGroup>
       <!-- Shared -->
-      <BinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\UmbracoAzureLogger.Core.dll" />
-      <PdbFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\UmbracoAzureLogger.Core.dll" />
+      <BinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.AzureLogger.Core.dll" />
+      <PdbFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.AzureLogger.Core.dll" />
       <AppPluginFiles Include="$(WebProjectDir)\App_Plugins\AzureLogger\**\*.*" />
       
       <!-- Umbraco specific -->
