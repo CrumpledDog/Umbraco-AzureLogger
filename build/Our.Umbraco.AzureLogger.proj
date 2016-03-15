@@ -16,7 +16,7 @@
 
 	<!-- SHARED PROPERTIES -->
 	<PropertyGroup>
-		<PackageName>UmbracoAzureLogger</PackageName>
+		<PackageName>Our.Umbraco.AzureLogger</PackageName>
 		<MinUmbracoVersion>7.3.7</MinUmbracoVersion>
 		<Readme>An Azure storage table log4net appender and UI</Readme>
 		<AuthorName>Hendy Racher, Jeavon Leopold</AuthorName>
