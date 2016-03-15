@@ -1,4 +1,4 @@
-﻿namespace UmbracoAzureLogger.Core.Models
+﻿namespace Our.Umbraco.AzureLogger.Core.Models
 {
     using Newtonsoft.Json;
     using System;

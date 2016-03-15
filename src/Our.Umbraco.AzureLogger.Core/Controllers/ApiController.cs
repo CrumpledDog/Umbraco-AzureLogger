@@ -1,12 +1,15 @@
-﻿namespace UmbracoAzureLogger.Core.Controllers
+﻿namespace Our.Umbraco.AzureLogger.Core.Controllers
 {
     using System;
     using System.Linq;
     using System.Web.Http;
-    using Umbraco.Web.Mvc;
-    using Umbraco.Web.WebApi;
-    using UmbracoAzureLogger.Core.Models;
-    using UmbracoAzureLogger.Core.Models.TableEntities;
+
+    using global::Umbraco.Web.Mvc;
+    using global::Umbraco.Web.WebApi;
+
+    using Core;
+    using Models;
+    using Models.TableEntities;
 
     [PluginController("AzureLogger")]
     public class ApiController : UmbracoAuthorizedApiController

@@ -1,4 +1,4 @@
-﻿namespace UmbracoAzureLogger.Core
+﻿namespace Our.Umbraco.AzureLogger.Core
 {
     using log4net;
     using log4net.Appender.Umbraco;
@@ -7,9 +7,10 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using UmbracoAzureLogger.Core.Extensions;
-    using UmbracoAzureLogger.Core.Models;
-    using UmbracoAzureLogger.Core.Models.TableEntities;
+
+    using Extensions;
+    using Models;
+    using Models.TableEntities;
 
     internal sealed class TableService
     {

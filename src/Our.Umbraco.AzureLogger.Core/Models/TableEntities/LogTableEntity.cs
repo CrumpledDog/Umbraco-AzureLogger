@@ -1,4 +1,4 @@
-﻿namespace UmbracoAzureLogger.Core.Models.TableEntities
+﻿namespace Our.Umbraco.AzureLogger.Core.Models.TableEntities
 {
     using Microsoft.WindowsAzure.Storage.Table;
     using System;
@@ -45,7 +45,7 @@
                 {
                     PartitionKey = logTableEntity.PartitionKey,
                     RowKey = logTableEntity.RowKey,
-                    Level = (Level)Enum.Parse(typeof(Level), logTableEntity.Level),
+                    Level = logTableEntity.Level != null ? (Level)Enum.Parse(typeof(Level), logTableEntity.Level) : Models.Level.INFO,
                     LoggerName = logTableEntity.LoggerName,
                     MessageIntro = logTableEntity.Message.Length > 100 ? logTableEntity.Message.Substring(0, 97) + "..." : logTableEntity.Message, // limit message size
                     EventTimestamp = logTableEntity.EventTimeStamp,

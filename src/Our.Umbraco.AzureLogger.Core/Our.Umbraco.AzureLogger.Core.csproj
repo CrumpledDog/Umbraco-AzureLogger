@@ -7,8 +7,8 @@
     <ProjectGuid>{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UmbracoAzureLogger.Core</RootNamespace>
-    <AssemblyName>UmbracoAzureLogger.Core</AssemblyName>
+    <RootNamespace>Our.Umbraco.AzureLogger.Core</RootNamespace>
+    <AssemblyName>Our.Umbraco.AzureLogger.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

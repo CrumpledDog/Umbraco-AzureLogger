@@ -1,15 +1,15 @@
-﻿namespace UmbracoAzureLogger.Core.Controllers
+﻿namespace Our.Umbraco.AzureLogger.Core.Controllers
 {
     using System.Linq;
     using System.Net.Http.Formatting;
     using umbraco;
     using umbraco.BusinessLogic.Actions;
     using umbraco.interfaces;
-    using Umbraco.Core;
-    using Umbraco.Web.Models.Trees;
-    using Umbraco.Web.Mvc;
-    using Umbraco.Web.Trees;
-    using UmbracoTreeController = Umbraco.Web.Trees.TreeController;
+    using global::Umbraco.Core;
+    using global::Umbraco.Web.Models.Trees;
+    using global::Umbraco.Web.Mvc;
+    using global::Umbraco.Web.Trees;
+    using UmbracoTreeController = global::Umbraco.Web.Trees.TreeController;
 
     [Tree("developer", "azureLoggerTree", "Azure Logger", "icon-folder", "icon-folder-open", true, 0)]
     [PluginController("AzureLogger")]

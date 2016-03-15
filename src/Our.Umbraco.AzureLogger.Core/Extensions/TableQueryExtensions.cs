@@ -1,4 +1,4 @@
-﻿namespace UmbracoAzureLogger.Core.Extensions
+﻿namespace Our.Umbraco.AzureLogger.Core.Extensions
 {
     using Microsoft.WindowsAzure.Storage.Table;
 
