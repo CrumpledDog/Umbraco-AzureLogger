@@ -2,9 +2,11 @@
 {
     using System.Linq;
     using System.Net.Http.Formatting;
+
     using umbraco;
     using umbraco.BusinessLogic.Actions;
     using umbraco.interfaces;
+
     using global::Umbraco.Core;
     using global::Umbraco.Web.Models.Trees;
     using global::Umbraco.Web.Mvc;
@@ -15,7 +17,12 @@
     [PluginController("AzureLogger")]
     public class TreeController : UmbracoTreeController
     {
-
+        /// <summary>
+        /// Called by Umbraco to get the nodes for the tree (the 'Reload nodes' menu option will trigger this)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="queryStrings"></param>
+        /// <returns></returns>
         protected override TreeNodeCollection GetTreeNodes(string id, FormDataCollection queryStrings)
         {
             TreeNodeCollection treeNodeCollection = new TreeNodeCollection();
@@ -89,20 +96,15 @@
             return string.Format("/developer/azureLoggerTree/{0}/{1}", htmlView, id);
         }
 
-        private static FormDataCollection Add(FormDataCollection querystring, string key, string value)
-        {
-
-
-            return querystring;
-
-            //queryStrings.ReadAsNameValueCollection().Add("filter", "level");
-        }
+        //private static FormDataCollection Add(FormDataCollection querystring, string key, string value)
+        //{
+        //    return querystring;
+        //    //queryStrings.ReadAsNameValueCollection().Add("filter", "level");
+        //}
     }
-
 
     public class SearchFiltersAction : IAction
     {
-
         public string Alias
         {
             get { return "searchFilters"; }

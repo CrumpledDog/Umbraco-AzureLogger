@@ -85,6 +85,7 @@
 
         internal IEnumerable<SearchItemTableEntity> GetSearchItemTableEntities() // TODO: rename to ReadSearchItemTableEntities
         {
+            this.Connect();
             return this.Connected.HasValue && this.Connected.Value // if connected
                     ? this.CloudTable.ExecuteQuery(new TableQuery<SearchItemTableEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "searchItem")))
                     : Enumerable.Empty<SearchItemTableEntity>();
