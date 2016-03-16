@@ -73,7 +73,8 @@
                             searchItemId: searchItemId,
                             minLevel: searchItem.minLevel != null ? searchItem.minLevel : 'DEBUG', // TEMP HACK FIX
                             hostName: searchItem.hostName != null ? escape(searchItem.hostName) : '',
-                            loggerName: searchItem.loggerName != null ? escape(searchItem.loggerName) : ''
+                            loggerNamesInclude: searchItem.loggerNamesInclude,
+                            loggerNames: searchItem.loggerNames != null ? searchItem.loggerNames : []
                         }
                     })
                     .then(function () {

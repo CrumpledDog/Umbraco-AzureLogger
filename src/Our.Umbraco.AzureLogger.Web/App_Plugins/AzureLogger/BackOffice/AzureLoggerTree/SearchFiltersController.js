@@ -19,8 +19,8 @@
                     // pulling into multiple vars so that auto-binding disabled, and update takes place when user clicks 'save'
                     $scope.minLevel = searchItem.minLevel;
                     $scope.hostName = searchItem.hostName;
-                    $scope.loggerName = searchItem.loggerName;
-
+                    $scope.loggerNamesInclude = searchItem.loggerNamesInclude;
+                    $scope.loggerNames = searchItem.loggerNames;
                 });
             }
 
@@ -32,7 +32,8 @@
 
                 $scope.searchItem.minLevel = $scope.minLevel;
                 $scope.searchItem.hostName = $scope.hostName;
-                $scope.searchItem.loggerName = $scope.loggerName;
+                $scope.searchItem.loggerNamesInclude = $scope.loggerNamesInclude;
+                $scope.searchItem.loggerNames = $scope.loggerNames;
 
                 searchItemResource.updateSearchItem(
                     searchItemId,

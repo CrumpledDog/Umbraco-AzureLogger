@@ -19,7 +19,10 @@
         [JsonProperty("hostName")]
         public string HostName { get; set; }
 
-        [JsonProperty("loggerName")]
-        public string LoggerName { get; set; }
+        [JsonProperty("loggerNamesInclude")]
+        public bool LoggerNamesInclude { get; set; }
+
+        [JsonProperty("loggerNames")]
+        public string[] LoggerNames { get; set; }
     }
 }

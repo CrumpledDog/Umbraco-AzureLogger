@@ -12,7 +12,20 @@
                 <label><input type="radio" ng-model="minLevel" value="FATAL" />Fatal - show fatal only</label>
             </fieldset>
             <label>Host Name: <input type="text" ng-model="hostName" /></label>
-            <label>Logger Name: <input type="text" ng-model="loggerName" /></label>
+
+            <fieldset>
+                Include or Exclude Logger Names:
+                <label><input type="radio" ng-model="loggerNamesInclude" ng-value="true" />Include</label>
+                <label><input type="radio" ng-model="loggerNamesInclude" ng-value="false" />Exclude</label>
+            </fieldset>
+
+            <ul>
+                <li ng-repeat="loggerName in loggerNames track by $index">
+                    <input type="text" ng-model="loggerNames[$index]" />
+                    <a href="" ng-click="loggerNames.splice($index, 1)">DELETE</a>
+                </li>
+            </ul>
+            <a href="" ng-show="loggerNames[loggerNames.length - 1] != ''" ng-click="loggerNames.push('')">ADD</a>
 
         </div>
 

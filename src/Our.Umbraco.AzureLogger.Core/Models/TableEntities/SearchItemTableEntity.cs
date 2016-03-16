@@ -18,11 +18,9 @@
 
         //public bool HostNamesInclude { get; set; } // false means exclude
 
-        public string LoggerName { get; set; }
+        public bool LoggerNamesInclude { get; set;  } // false means exclude
 
-        //public string[] LoggerNames { get; set; }
-
-        //public bool LoggerNamesInclude { get; set;  } // false means exclude
+        public string[] LoggerNames { get; set; }
 
         /// <summary>
         /// Cast to a poco for json serialization (without the weight of inherited TableEntity properties)
@@ -36,7 +34,8 @@
                     Name = searchItemTableEntity.Name,
                     MinLevel = searchItemTableEntity.MinLevel != null ? (Level)Enum.Parse(typeof(Level), searchItemTableEntity.MinLevel) : Level.DEBUG,
                     HostName = searchItemTableEntity.HostName,
-                    LoggerName = searchItemTableEntity.LoggerName
+                    LoggerNamesInclude = searchItemTableEntity.LoggerNamesInclude,
+                    LoggerNames = new string[] {} //(string[])JsonConvert.DeserializeObject(searchItemTableEntity.LoggerNames)
                 };
         }
     }

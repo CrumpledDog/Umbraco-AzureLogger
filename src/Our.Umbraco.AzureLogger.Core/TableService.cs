@@ -1,16 +1,15 @@
 ﻿namespace Our.Umbraco.AzureLogger.Core
 {
+    using Extensions;
     using log4net;
     using log4net.Appender.Umbraco;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
+    using Models;
+    using Models.TableEntities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
-    using Extensions;
-    using Models;
-    using Models.TableEntities;
 
     internal sealed class TableService
     {
@@ -83,14 +82,6 @@
             }
         }
 
-        internal IEnumerable<SearchItemTableEntity> GetSearchItemTableEntities() // TODO: rename to ReadSearchItemTableEntities
-        {
-            this.Connect();
-            return this.Connected.HasValue && this.Connected.Value // if connected
-                    ? this.CloudTable.ExecuteQuery(new TableQuery<SearchItemTableEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "searchItem")))
-                    : Enumerable.Empty<SearchItemTableEntity>();
-        }
-
         /// <summary>
         /// Create a new search item
         /// </summary>
@@ -106,13 +97,25 @@
                         {
                             PartitionKey = "searchItem",
                             RowKey = Guid.NewGuid().ToString(),
-                            Name = name
+                            Name = name//,
+                            ///HostName = null,
+                            //LoggerNamesInclude = false,
+                            //LoggerNames = JsonConvert.SerializeObject(new string[] { })
                         }));
             }
         }
 
+        internal IEnumerable<SearchItemTableEntity> GetSearchItemTableEntities() // TODO: rename to ReadSearchItemTableEntities
+        {
+            this.Connect();
+            return this.Connected.HasValue && this.Connected.Value // if connected
+                    ? this.CloudTable.ExecuteQuery(new TableQuery<SearchItemTableEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "searchItem")))
+                    : Enumerable.Empty<SearchItemTableEntity>();
+        }
+
         internal SearchItemTableEntity GetSearchItemTableEntity(string rowKey) // TODO: rename to ReadSearchItemTableEntity
         {
+            this.Connect();
             return this.Connected.HasValue && this.Connected.Value // if connected
                     ? this.CloudTable
                         .Execute(TableOperation.Retrieve<SearchItemTableEntity>("searchItem", rowKey))
@@ -120,7 +123,7 @@
                     : null;
         }
 
-        internal void UpdateSearchItemTableEntity(string rowKey, Level minLevel, string hostName, string loggerName)
+        internal void UpdateSearchItemTableEntity(string rowKey, Level minLevel, string hostName, bool loggerNamesInclude, string[] loggerNames)
         {
             this.Connect();
             if (this.Connected.HasValue && this.Connected.Value)
@@ -128,7 +131,8 @@
                 SearchItemTableEntity searchItemTableEntity = this.GetSearchItemTableEntity(rowKey);
                 searchItemTableEntity.MinLevel = minLevel.ToString();
                 searchItemTableEntity.HostName = hostName;
-                searchItemTableEntity.LoggerName = loggerName;
+                searchItemTableEntity.LoggerNamesInclude = loggerNamesInclude;
+                //searchItemTableEntity.LoggerNames = JsonConvert.SerializeObject(loggerNames);
 
                 this.CloudTable.Execute(TableOperation.Replace(searchItemTableEntity));
             }

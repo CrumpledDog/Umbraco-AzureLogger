@@ -70,9 +70,10 @@
                             [FromUri] string searchItemId,
                             [FromUri] Level minLevel,
                             [FromUri] string hostName,
-                            [FromUri] string loggerName)
+                            [FromUri] bool loggerNamesInclude,
+                            [FromUri] string[] loggerNames)
         {
-            TableService.Instance.UpdateSearchItemTableEntity(searchItemId, minLevel, hostName, loggerName);
+            TableService.Instance.UpdateSearchItemTableEntity(searchItemId, minLevel, hostName, loggerNamesInclude, loggerNames);
         }
 
         /// <summary>
