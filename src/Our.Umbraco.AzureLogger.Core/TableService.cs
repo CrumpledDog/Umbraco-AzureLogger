@@ -97,10 +97,10 @@
                         {
                             PartitionKey = "searchItem",
                             RowKey = Guid.NewGuid().ToString(),
-                            Name = name//,
-                            ///HostName = null,
-                            //LoggerNamesInclude = false,
-                            //LoggerNames = JsonConvert.SerializeObject(new string[] { })
+                            Name = name,
+                            HostName = null,
+                            LoggerNamesInclude = false,
+                            LoggerNames = string.Empty
                         }));
             }
         }
@@ -132,7 +132,7 @@
                 searchItemTableEntity.MinLevel = minLevel.ToString();
                 searchItemTableEntity.HostName = hostName;
                 searchItemTableEntity.LoggerNamesInclude = loggerNamesInclude;
-                //searchItemTableEntity.LoggerNames = JsonConvert.SerializeObject(loggerNames);
+                searchItemTableEntity.LoggerNames = string.Join("|", loggerNames); // HACK: quick and dirty serialization - will error if logger names contain pipe | characters
 
                 this.CloudTable.Execute(TableOperation.Replace(searchItemTableEntity));
             }
