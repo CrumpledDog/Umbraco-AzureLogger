@@ -22,7 +22,6 @@
                     $scope.loggerNamesInclude = searchItem.loggerNamesInclude;
 
                     $scope.loggerNames = angular.copy(searchItem.loggerNames);
-                    //angular.copy(searchItem.loggerNames, [$scope.loggerNames]); //$scope.loggerNames = searchItem.loggerNames;
                 });
             }
 
@@ -32,14 +31,15 @@
 
             $scope.save = function () {
 
-                $scope.searchItem.minLevel = $scope.minLevel;
-                $scope.searchItem.hostName = $scope.hostName;
-                $scope.searchItem.loggerNamesInclude = $scope.loggerNamesInclude;
-                $scope.searchItem.loggerNames = $scope.loggerNames;
-
                 searchItemResource.updateSearchItem(
                     searchItemId,
-                    $scope.searchItem,
+                    { // rebuild search item obj (as setting properties on the local $scope.searchItem will trigger the watch in the view)
+                        name: $scope.searchItem.name,
+                        minLevel: $scope.minLevel,
+                        hostName: $scope.hostName,
+                        loggerNamesInclude: $scope.loggerNamesInclude,
+                        loggerNames: $scope.loggerNames
+                    },
                     function () { navigationService.hideNavigation(); } // callback as persisting via ajax may take time
                 );
 

@@ -70,12 +70,16 @@
         [HttpPost]
         public void UpdateSearchItem(
                             [FromUri] string searchItemId,
-                            [FromUri] Level minLevel,
-                            [FromUri] string hostName,
-                            [FromUri] bool loggerNamesInclude,
-                            [FromUri] string[] loggerNames)
+                            [FromBody] SearchItem searchItem)
         {
-            TableService.Instance.UpdateSearchItemTableEntity(searchItemId, minLevel, hostName, loggerNamesInclude, loggerNames);
+            TableService
+                .Instance
+                .UpdateSearchItemTableEntity(
+                    searchItemId,
+                    searchItem.MinLevel,
+                    searchItem.HostName,
+                    searchItem.LoggerNamesInclude,
+                    searchItem.LoggerNames);
         }
 
         /// <summary>
