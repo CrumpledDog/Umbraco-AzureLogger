@@ -199,11 +199,27 @@
             if (loggerNames.Any())
             {
                 string queryComparison = loggerNamesInclude ? QueryComparisons.Equal : QueryComparisons.NotEqual;
+                string tableOperator = loggerNamesInclude ? TableOperators.Or : TableOperators.And;
+
+                // full nested clause of filters
+                string loggerNamesFilter;
+
+                // each filter
+                List<string> loggerNameFilters = new List<string>();
 
                 foreach(string loggerName in loggerNames)
                 {
-                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", queryComparison, loggerName));
+                    loggerNameFilters.Add(TableQuery.GenerateFilterCondition("LoggerName", queryComparison, loggerName));
                 }
+
+                loggerNamesFilter = loggerNameFilters.First();
+
+                foreach (string loggerNameFilter in loggerNameFilters.Skip(1))
+                {
+                    loggerNamesFilter += " " + tableOperator + " " + loggerNameFilter;
+                }
+
+                tableQuery.AndWhere(loggerNamesFilter);
             }
 
             if(!string.IsNullOrWhiteSpace(rowKey))

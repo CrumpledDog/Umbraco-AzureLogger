@@ -21,7 +21,7 @@
                     $scope.hostName = searchItem.hostName;
                     $scope.loggerNamesInclude = searchItem.loggerNamesInclude;
 
-                    $scope.loggerNames = searchItem.loggerNames;
+                    $scope.loggerNames = angular.copy(searchItem.loggerNames);
                     //angular.copy(searchItem.loggerNames, [$scope.loggerNames]); //$scope.loggerNames = searchItem.loggerNames;
                 });
             }

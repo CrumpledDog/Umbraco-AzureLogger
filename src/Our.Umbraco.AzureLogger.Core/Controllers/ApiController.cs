@@ -101,7 +101,7 @@
                     .ReadLogTableEntities(searchItem.MinLevel,
                                          searchItem.HostName,
                                          searchItem.LoggerNamesInclude,
-                                         searchItem.LoggerNames,
+                                         searchItem.LoggerNames.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray(),
                                          rowKey)
                     .Take(take)
                     .Select(x => (LogItemIntro)x)
