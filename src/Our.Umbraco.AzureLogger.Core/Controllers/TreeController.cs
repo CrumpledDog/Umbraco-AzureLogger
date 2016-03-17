@@ -32,7 +32,7 @@
                 // Get Searches from the azure table
                 TableService
                     .Instance
-                    .GetSearchItemTableEntities()
+                    .ReadSearchItemTableEntities()
                     .OrderBy(x => x.Name)
                     .ForEach(
                         x => treeNodeCollection.Add(this.CreateTreeNode(

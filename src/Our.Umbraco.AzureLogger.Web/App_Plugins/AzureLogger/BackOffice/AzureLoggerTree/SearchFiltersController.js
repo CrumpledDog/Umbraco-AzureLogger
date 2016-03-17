@@ -20,7 +20,9 @@
                     $scope.minLevel = searchItem.minLevel;
                     $scope.hostName = searchItem.hostName;
                     $scope.loggerNamesInclude = searchItem.loggerNamesInclude;
+
                     $scope.loggerNames = searchItem.loggerNames;
+                    //angular.copy(searchItem.loggerNames, [$scope.loggerNames]); //$scope.loggerNames = searchItem.loggerNames;
                 });
             }
 

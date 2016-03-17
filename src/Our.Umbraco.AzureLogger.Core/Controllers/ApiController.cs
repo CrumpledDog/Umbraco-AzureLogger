@@ -37,6 +37,8 @@
             };
         }
 
+        #region SearchItem
+
         /// <summary>
         /// Creates a new SearchItem (a saved search using supplied name)
         /// </summary>
@@ -55,7 +57,7 @@
         [HttpGet]
         public SearchItem ReadSearchItem([FromUri] string searchItemId)
         {
-            SearchItemTableEntity searchItemTableEntity = TableService.Instance.GetSearchItemTableEntity(searchItemId);
+            SearchItemTableEntity searchItemTableEntity = TableService.Instance.ReadSearchItemTableEntity(searchItemId);
 
             if (searchItemTableEntity != null)
             {
@@ -87,25 +89,23 @@
             TableService.Instance.DeleteSearchItemTableEntity(searchItemId);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="rowKey">(optional) the row key to start from</param>
-        /// <param name="take">max number of items to return</param>
-        /// <returns>a collection of <see cref="LogItemIntro"/> objects</returns>
-        [HttpGet]
-        public LogItemIntro[] GetLogItemIntros(
-                                [FromUri]Level minLevel,
-                                [FromUri]string hostName,
-                                [FromUri]string loggerName,
-                                [FromUri]string rowKey,
-                                [FromUri]int take) // TODO: add partition key ?
+        #endregion
+
+        #region LogItem
+
+        [HttpPost]
+        public LogItemIntro[] ReadLogItemIntros([FromUri] string rowKey, [FromUri] int take, [FromBody] SearchItem searchItem)
         {
             return TableService
                     .Instance
-                    .GetLogTableEntities(minLevel, hostName, loggerName, rowKey)
+                    .ReadLogTableEntities(searchItem.MinLevel,
+                                         searchItem.HostName,
+                                         searchItem.LoggerNamesInclude,
+                                         searchItem.LoggerNames,
+                                         rowKey)
                     .Take(take)
-                    .Select(x => (LogItemIntro)x).ToArray();
+                    .Select(x => (LogItemIntro)x)
+                    .ToArray();
         }
 
         /// <summary>
@@ -115,9 +115,9 @@
         /// <param name="rowKey"></param>
         /// <returns></returns>
         [HttpGet]
-        public LogItemDetail GetLogItemDetail([FromUri]string partitionKey, [FromUri]string rowKey)
+        public LogItemDetail ReadLogItemDetail([FromUri]string partitionKey, [FromUri]string rowKey)
         {
-            LogTableEntity logTableEntity = TableService.Instance.GetLogTableEntity(partitionKey, rowKey);
+            LogTableEntity logTableEntity = TableService.Instance.ReadLogTableEntity(partitionKey, rowKey);
 
             if (logTableEntity != null)
             {
@@ -126,6 +126,8 @@
 
             return null;
         }
+
+        #endregion
 
         ////[Umbraco.Web.WebApi.UmbracoAuthorize(Roles="")]
         //[HttpGet]

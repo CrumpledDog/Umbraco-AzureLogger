@@ -4,7 +4,13 @@
         '$http', '$q',
         function ($http, $q) {
 
-            var searchItems = {}; // { name: '', { minLevel: 'DEBUG', hostName: null, loggerName: null } }
+            /* eg.
+               searchItems = {
+                searchItemId1: { name: 'Item 1', minLevel: 'DEBUG', hostName: null, loggerNamesInclude: false, loggerNames: [] }
+                searchItemId2: { name: 'Item 2', minLevel: 'DEBUG', hostName: null, loggerNamesInclude: false, loggerNames: [] }
+               }
+            */
+            var searchItems = {};
 
             return {
 
@@ -108,6 +114,7 @@
 
                    });
 
+                    console.log(searchItems);
                 }
 
 

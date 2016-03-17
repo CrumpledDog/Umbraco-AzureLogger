@@ -51,19 +51,20 @@
         {
             if (!this.Connected.HasValue) // if connection not yet attempted
             {
-                this.Connected = false; // default
+                //this.Connected = false; // default
 
                 IEnumerable<AzureTableAppender> azureTableAppenders = LogManager.GetLogger(typeof(AzureTableAppender)).Logger.Repository.GetAppenders().Cast<AzureTableAppender>();
 
-                if (!azureTableAppenders.Any())
-                {
-                    throw new Exception("Couldn't find a log4net AzureTableAppender");
-                }
-                else if (azureTableAppenders.Count() > 1)
-                {
-                    throw new Exception("Found more than one log4net AzureTableAppender");
-                }
-                else
+                //if (!azureTableAppenders.Any())
+                //{
+                //    throw new Exception("Couldn't find a log4net AzureTableAppender");
+                //}
+                //else if (azureTableAppenders.Count() > 1)
+                //{
+                //    throw new Exception("Found more than one log4net AzureTableAppender");
+                //}
+                //else
+                if (azureTableAppenders.Count() == 1)
                 {
                     // we have found a single AzureTableAppender
                     AzureTableAppender azureTableAppender = azureTableAppenders.Single();
@@ -105,7 +106,7 @@
             }
         }
 
-        internal IEnumerable<SearchItemTableEntity> GetSearchItemTableEntities() // TODO: rename to ReadSearchItemTableEntities
+        internal IEnumerable<SearchItemTableEntity> ReadSearchItemTableEntities()
         {
             this.Connect();
             return this.Connected.HasValue && this.Connected.Value // if connected
@@ -113,7 +114,7 @@
                     : Enumerable.Empty<SearchItemTableEntity>();
         }
 
-        internal SearchItemTableEntity GetSearchItemTableEntity(string rowKey) // TODO: rename to ReadSearchItemTableEntity
+        internal SearchItemTableEntity ReadSearchItemTableEntity(string rowKey)
         {
             this.Connect();
             return this.Connected.HasValue && this.Connected.Value // if connected
@@ -128,7 +129,7 @@
             this.Connect();
             if (this.Connected.HasValue && this.Connected.Value)
             {
-                SearchItemTableEntity searchItemTableEntity = this.GetSearchItemTableEntity(rowKey);
+                SearchItemTableEntity searchItemTableEntity = this.ReadSearchItemTableEntity(rowKey);
                 searchItemTableEntity.MinLevel = minLevel.ToString();
                 searchItemTableEntity.HostName = hostName;
                 searchItemTableEntity.LoggerNamesInclude = loggerNamesInclude;
@@ -157,7 +158,7 @@
         /// <param name="rowKey">(optional) start at the row key after this one</param>
         /// <param name="take">max number of items to return</param>
         /// <returns></returns>
-        internal IEnumerable<LogTableEntity> GetLogTableEntities(Level minLevel, string hostName, string loggerName, string rowKey)
+        internal IEnumerable<LogTableEntity> ReadLogTableEntities(Level minLevel, string hostName, bool loggerNamesInclude, string[] loggerNames, string rowKey)
         {
             TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>();
 
@@ -195,9 +196,14 @@
                 tableQuery.AndWhere(TableQuery.GenerateFilterCondition("log4net_HostName", QueryComparisons.Equal, hostName));
             }
 
-            if (!string.IsNullOrWhiteSpace(loggerName))
+            if (loggerNames.Any())
             {
-                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", QueryComparisons.Equal, loggerName));
+                string queryComparison = loggerNamesInclude ? QueryComparisons.Equal : QueryComparisons.NotEqual;
+
+                foreach(string loggerName in loggerNames)
+                {
+                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", queryComparison, loggerName));
+                }
             }
 
             if(!string.IsNullOrWhiteSpace(rowKey))
@@ -216,7 +222,7 @@
         /// <param name="partitionKey"></param>
         /// <param name="rowKey"></param>
         /// <returns></returns>
-        internal LogTableEntity GetLogTableEntity(string partitionKey, string rowKey)
+        internal LogTableEntity ReadLogTableEntity(string partitionKey, string rowKey)
         {
             return this.Connected.HasValue && this.Connected.Value // if connected
                     ? this.CloudTable

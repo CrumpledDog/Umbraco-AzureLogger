@@ -62,21 +62,13 @@
                     var rowKey = null;
                     if ($scope.logItems.length > 0) { rowKey = $scope.logItems[$scope.logItems.length - 1].rowKey; }
 
-                    // NOTE: using nulls to indicate no value instead of empty strings ''
-                    // converts to empty strings on api call to ensure method signature matches
                     $http({
-                        method: 'GET',
-                        url: 'BackOffice/AzureLogger/Api/GetLogItemIntros',
-                        params: {
-                            minLevel: $scope.searchItem.minLevel != null ? $scope.searchItem.minLevel : 'DEBUG', // TEMP HACK FIX
-                            hostName: $scope.searchItem.hostName != null ? escape($scope.searchItem.hostName) : '',
-                            loggerName: $scope.searchItem.loggerName != null ? escape($scope.searchItem.loggerName) : '',
-                            rowKey: rowKey != null ? escape(rowKey) : '',
-                            take: 200
-                        }
+                        method: 'POST',
+                        url: 'BackOffice/AzureLogger/Api/ReadLogItemIntros',
+                        params: { 'rowKey': rowKey != null ? escape(rowKey) : '', 'take': 200 },
+                        data: $scope.searchItem // supply the full search item data
                     })
                     .then(function (response) {
-                        //console.log(response.data.length);
 
                         if (response.data.length > 0) {
                             $scope.logItems = $scope.logItems.concat(response.data); // add new data to array
@@ -85,7 +77,9 @@
                         }
 
                         $scope.currentlyLoading = false;
+
                     });
+
                 }
             };
 
@@ -105,7 +99,7 @@
 
                     $http({
                         method: 'GET',
-                        url: 'BackOffice/AzureLogger/Api/GetLogItemDetail',
+                        url: 'BackOffice/AzureLogger/Api/ReadLogItemDetail',
                         params: {
                             partitionKey: logItem.partitionKey,
                             rowKey: logItem.rowKey
