@@ -4,19 +4,19 @@
 	<root>
 		<priority value="Info"/>
 		<appender-ref ref="AsynchronousLog4NetAppender" xdt:Locator="Match(ref)" xdt:Transform="Remove" />
-		<appender-ref ref="AzureTableAppender" xdt:Transform="InsertIfMissing" />
+		<appender-ref ref="AzureTableAppender" xdt:Locator="Match(ref)" xdt:Transform="InsertIfMissing" />
 	</root>
 
-	<appender name="AzureTableAppender" type="log4net.Appender.Umbraco.AzureTableAppender, log4net.Appender.Azure.Umbraco">
-		<param name="TableName" value="UmbracoTraceLog"/>
+	<appender name="AzureTableAppender" type="log4net.Appender.Umbraco.AzureTableAppender, log4net.Appender.Azure.Umbraco" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing">
+		<param name="TableName" value="UmbracoTraceLog" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
 		<!-- You can either specify a connection string or use the ConnectionStringName property instead -->
 		<!--<param name="ConnectionString" value="UseDevelopmentStorage=true"/>-->
-		<param name="ConnectionString" value="UseDevelopmentStorage=true" />
+		<param name="ConnectionString" value="UseDevelopmentStorage=true" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
 		<!-- You can specify this to make each LogProperty as separate Column in TableStorage, 
 	Default: all Custom Properties were logged into one single field -->
-		<param name="PropAsColumn" value="true" />
-		<param name="PartitionKeyType" value="DateReverse" />
-		<bufferSize value="1" />
+		<param name="PropAsColumn" value="true" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+		<param name="PartitionKeyType" value="DateReverse" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+		<bufferSize value="1"  xdt:Transform="InsertIfMissing" />
 	</appender>
 	
 </log4net>
