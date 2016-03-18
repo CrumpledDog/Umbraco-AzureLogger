@@ -15,6 +15,8 @@
     {
         private static readonly TableService tableService = new TableService();
 
+        private const string SearchItemPartitionKey = "searchItem";
+
         static TableService()
         {
         }
@@ -96,7 +98,7 @@
                     TableOperation.Insert(
                         new SearchItemTableEntity()
                         {
-                            PartitionKey = "searchItem",
+                            PartitionKey = TableService.SearchItemPartitionKey,
                             RowKey = Guid.NewGuid().ToString(),
                             Name = name,
                             HostName = null,
@@ -110,7 +112,7 @@
         {
             this.Connect();
             return this.Connected.HasValue && this.Connected.Value // if connected
-                    ? this.CloudTable.ExecuteQuery(new TableQuery<SearchItemTableEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "searchItem")))
+                    ? this.CloudTable.ExecuteQuery(new TableQuery<SearchItemTableEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, TableService.SearchItemPartitionKey)))
                     : Enumerable.Empty<SearchItemTableEntity>();
         }
 
@@ -119,7 +121,7 @@
             this.Connect();
             return this.Connected.HasValue && this.Connected.Value // if connected
                     ? this.CloudTable
-                        .Execute(TableOperation.Retrieve<SearchItemTableEntity>("searchItem", rowKey))
+                        .Execute(TableOperation.Retrieve<SearchItemTableEntity>(TableService.SearchItemPartitionKey, rowKey))
                         .Result as SearchItemTableEntity
                     : null;
         }
@@ -148,7 +150,7 @@
             this.Connect();
             if (this.Connected.HasValue && this.Connected.Value)
             {
-                this.CloudTable.Execute(TableOperation.Delete(new DynamicTableEntity("searchItem", rowKey) { ETag = "*" }));
+                this.CloudTable.Execute(TableOperation.Delete(new DynamicTableEntity(TableService.SearchItemPartitionKey, rowKey) { ETag = "*" }));
             }
         }
 
@@ -162,7 +164,7 @@
         {
             TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>();
 
-            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, "searchItem"));
+            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, TableService.SearchItemPartitionKey));
 
             if (minLevel != Level.DEBUG)
             {
