@@ -47,7 +47,7 @@
                     RowKey = logTableEntity.RowKey,
                     Level = logTableEntity.Level != null ? (Level)Enum.Parse(typeof(Level), logTableEntity.Level) : Models.Level.INFO,
                     LoggerName = logTableEntity.LoggerName,
-                    MessageIntro = logTableEntity.Message.Length > 100 ? logTableEntity.Message.Substring(0, 97) + "..." : logTableEntity.Message, // limit message size
+                    MessageIntro = logTableEntity.Message != null && logTableEntity.Message.Length > 100 ? logTableEntity.Message.Substring(0, 97) + "..." : logTableEntity.Message, // limit message size
                     EventTimestamp = logTableEntity.EventTimeStamp,
                     HostName = logTableEntity.log4net_HostName
                 };
