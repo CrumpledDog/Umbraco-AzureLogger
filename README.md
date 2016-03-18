@@ -20,6 +20,6 @@ Example:
 
 As a useful enhancement we also now store to URL which tiggered the log entry to be made, this can be very handy for tracking down issues.
 
-![Url Example](https://raw.githubusercontent.com/CrumpledDog/Umbraco-Azure-Logger/develop/Docs/url-example.png)
+![Url Example](https://raw.githubusercontent.com/CrumpledDog/Umbraco-Azure-Logger/develop/docs/url-example.png)
 
 Currently this package is available only as a pre-release NuGet package from MyGet https://www.myget.org/gallery/umbracoazurelogger We will create a Umbraco installer package before RTM.
