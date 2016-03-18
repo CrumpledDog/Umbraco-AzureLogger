@@ -1,0 +1,22 @@
+﻿<?xml version="1.0"?>
+<log4net xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+
+	<root>
+		<priority value="Info"/>
+		<appender-ref ref="AsynchronousLog4NetAppender" xdt:Locator="Match(ref)" xdt:Transform="Remove" />
+		<appender-ref ref="AzureTableAppender" xdt:Transform="InsertIfMissing" />
+	</root>
+
+	<appender name="AzureTableAppender" type="log4net.Appender.Umbraco.AzureTableAppender, log4net.Appender.Azure.Umbraco">
+		<param name="TableName" value="UmbracoTraceLog"/>
+		<!-- You can either specify a connection string or use the ConnectionStringName property instead -->
+		<!--<param name="ConnectionString" value="UseDevelopmentStorage=true"/>-->
+		<param name="ConnectionString" value="UseDevelopmentStorage=true" />
+		<!-- You can specify this to make each LogProperty as separate Column in TableStorage, 
+	Default: all Custom Properties were logged into one single field -->
+		<param name="PropAsColumn" value="true" />
+		<param name="PartitionKeyType" value="DateReverse" />
+		<bufferSize value="1" />
+	</appender>
+	
+</log4net>

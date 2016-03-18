@@ -77,7 +77,7 @@
 		<BuildNuGetDir>$(BuildDir)\_nuget</BuildNuGetDir>
 		<ArtifactsDir>$(RootDir)\artifacts</ArtifactsDir>
 		<CoreProjectDir>$(RootDir)\src\Our.Umbraco.AzureLogger.Core</CoreProjectDir>
-    <WebProjectDir>$(RootDir)\src\Our.Umbraco.AzureLogger.Web</WebProjectDir>
+		<WebProjectDir>$(RootDir)\src\Our.Umbraco.AzureLogger.Web</WebProjectDir>
 	</PropertyGroup>
 
 	<!-- TARGETS -->
@@ -100,13 +100,13 @@
 
   <!-- UPDATE PROJECT ASSEMBLEY VERSION -->
   <Target Name="UpdateAssemblyInfo" DependsOnTargets="Clean">
-    <FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
+	<FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
+	<FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
+	<FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
 
-    <FileUpdate Encoding="ASCII" Files="$(WebProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(WebProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
-    <FileUpdate Encoding="ASCII" Files="$(WebProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
+	<FileUpdate Encoding="ASCII" Files="$(WebProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
+	<FileUpdate Encoding="ASCII" Files="$(WebProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
+	<FileUpdate Encoding="ASCII" Files="$(WebProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
   </Target>
 
 	<!-- COMPILE -->
@@ -117,31 +117,35 @@
 	<!-- PREPARE FILES -->
 	<Target Name="PrepareFiles" DependsOnTargets="Compile">
 		<ItemGroup>
-      <!-- Shared -->
-      <BinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.AzureLogger.Core.dll" />
-      <PdbFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.AzureLogger.Core.dll" />
-      <AppPluginFiles Include="$(WebProjectDir)\App_Plugins\AzureLogger\**\*.*" />
-      
-      <!-- Umbraco specific -->
-      <PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
-      
-      <!-- NuGet specific -->
-      <SrcFiles Include="$(CoreProjectDir)\**\*.cs" Exclude="$(CoreProjectDir)\obj\**"/>
-			<NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
-    </ItemGroup>
+		<!-- Shared -->
+		<BinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.AzureLogger.Core.dll" />
+		<BinFilesAppender Include="$(CoreProjectDir)\bin\$(BuildConfig)\log4net.Appender.Azure.Umbraco.dll" />
+		<PdbFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.AzureLogger.Core.dll" />
+		<AppPluginFiles Include="$(WebProjectDir)\App_Plugins\AzureLogger\**\*.*" />
+		<Log4NetConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\log4net.config.install.xdt" />
+		
+		<!-- Umbraco specific -->
+		<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
 
-    <!-- Umbraco -->
-    <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
-    <Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)" />
+		<!-- NuGet specific -->
+		<SrcFiles Include="$(CoreProjectDir)\**\*.cs" Exclude="$(CoreProjectDir)\obj\**"/>
+		<NuSpecFile Include="$(MSBuildProjectDirectory)\package.nuspec" />
+	</ItemGroup>
 
-    <!--NuGet -->
-    <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
-		<Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />    
-    <Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<!-- Umbraco -->
+	<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildUmbDir)\bin" />
+	<Copy SourceFiles="@(PackageFile)" DestinationFolder="$(BuildUmbDir)" />
 
-    <Copy SourceFiles="@(AppPluginFiles)" DestinationFiles="@(AppPluginFiles->'$(BuildNuGetDir)\Content\App_Plugins\AzureLogger\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
-    
+	<!--NuGet -->
+	<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
+	<Copy SourceFiles="@(BinFilesAppender)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
+	<Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
+	<Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<Copy SourceFiles="@(Log4NetConfigXDTInstallFile)" DestinationFolder="$(BuildNuGetDir)\Content\Config" />
+
+	<Copy SourceFiles="@(AppPluginFiles)" DestinationFiles="@(AppPluginFiles->'$(BuildNuGetDir)\Content\App_Plugins\AzureLogger\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
+	
   </Target>
 
 	<!-- MANIFEST UMBRACO -->

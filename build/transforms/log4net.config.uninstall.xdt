@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"?>
+<log4net xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+
+	<root>
+		<priority value="Info"/>
+		<appender-ref ref="AsynchronousLog4NetAppender" xdt:Transform="InsertIfMissing" />
+		<appender-ref ref="AzureTableAppender" xdt:Locator="Match(ref)" xdt:Transform="Remove" />
+	</root>
+
+	<appender name="AzureTableAppender" type="log4net.Appender.Umbraco.AzureTableAppender, log4net.Appender.Azure.Umbraco" xdt:Locator="Match(name)" xdt:Transform="Remove">
+	</appender>
+
+</log4net>
