@@ -8,11 +8,19 @@
 
             $scope.init = function () {
                 searchItemResource.readSearchItem(searchItemId).then(function (searchItem) {
-                    $scope.searchItem = searchItem; // put into scope so view can delay rendering until populated
 
-                    $scope.logItems = [];
-                    $scope.finishedLoading = false;
-                    $scope.getMoreLogItems();
+                    //if (searchItem == null) {
+                    //    // search item has been deleted from the tree, so reset this view to the main dev area
+                    //    navigationService.changeSection('developer');
+
+                    //} else {
+                        $scope.searchItem = searchItem; // put into scope so view can delay rendering until populated
+
+                        $scope.logItems = [];
+                        $scope.finishedLoading = false;
+                        $scope.getMoreLogItems();
+                    //}
+
                 });
             };
 

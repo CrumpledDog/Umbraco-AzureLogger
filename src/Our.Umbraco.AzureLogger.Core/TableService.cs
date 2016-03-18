@@ -162,6 +162,8 @@
         {
             TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>();
 
+            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, "searchItem"));
+
             if (minLevel != Level.DEBUG)
             {
                 switch (minLevel)
