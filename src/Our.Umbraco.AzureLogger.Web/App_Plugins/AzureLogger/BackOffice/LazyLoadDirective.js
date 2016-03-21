@@ -10,11 +10,7 @@
                 var lazyLoad = function () {
                     var overlap = 500;
 
-                    console.log('scrolly');
-                    console.log(element.offset().top);
-                    console.log(element.height());
-                    console.log($(window).height());
-
+                    // element.offset().top = amount of element above the screen (expected to be a negative number)
                     return (element.offset().top + element.height() < $(window).height() + overlap);
                 };
 
