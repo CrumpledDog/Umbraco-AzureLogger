@@ -11,26 +11,32 @@
 
     internal sealed partial class TableService
     {
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="loggingEvents">collection of log4net logging events to persist into Azure table storage</param>
         internal void CreateLogTableEntities(LoggingEvent[] loggingEvents)
         {
             this.Connect();
             if (this.Connected.HasValue && this.Connected.Value)
             {
-                // group logging events into sub groups by their date (this will be the basis of the Azure table partion key)
-                foreach(IGrouping<DateTime, LoggingEvent> dayGroupedLoggingEvents in loggingEvents.GroupBy(x => x.TimeStamp.Date))
+                // group by logging event date - each group equates to an Azure table partition key
+                // (all items in the same Azure table batch operation must use the same partition key)
+                foreach(IGrouping<DateTime, LoggingEvent> groupedLoggingEvents in loggingEvents.GroupBy(x => x.TimeStamp.Date))
                 {
-                    DateTime date = dayGroupedLoggingEvents.Key; // current date grouping
+                    DateTime date = groupedLoggingEvents.Key; // date for current grouping
 
                     // set partition key for this batch of inserts
                     string partitionKey = string.Format("{0:D19}", DateTime.MaxValue.Ticks - date.AddDays(date.Day).Ticks + 1);
 
-                    // TODO: ensure collection not more than 100 items (otherwise batch them up)
-
-                    TableBatchOperation tableBatchOperation = new TableBatchOperation();
-
-                    foreach(LoggingEvent loggingEvent in dayGroupedLoggingEvents)
+                    // ensure 100 or less items are inserted per Azure table batch insert operation
+                    foreach(IEnumerable<LoggingEvent> batchLoggingEvents in groupedLoggingEvents.Batch(100))
                     {
-                        tableBatchOperation.Insert(
+                        TableBatchOperation tableBatchOperation = new TableBatchOperation();
+
+                        foreach(LoggingEvent loggingEvent in batchLoggingEvents)
+                        {
+                            tableBatchOperation.Insert(
                                 new LogTableEntity()
                                 {
                                     PartitionKey = partitionKey,
@@ -49,9 +55,10 @@
                                     //log4net_HostName = ,
                                     //url =
                                 });
-                    }
+                        }
 
-                    this.CloudTable.ExecuteBatch(tableBatchOperation);
+                        this.CloudTable.ExecuteBatch(tableBatchOperation);
+                    }
                 }
             }
         }
