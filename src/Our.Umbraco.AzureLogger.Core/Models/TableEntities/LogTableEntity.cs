@@ -34,6 +34,11 @@
 
         public string url { get; set; }
 
+        ///// <summary>
+        ///// Gets or sets a value indicating any custom note associated with this log entry
+        ///// </summary>
+        //public string CustomNote { get; set; }
+
         /// <summary>
         /// Cast to a lightweight POCO for serialization
         /// </summary>

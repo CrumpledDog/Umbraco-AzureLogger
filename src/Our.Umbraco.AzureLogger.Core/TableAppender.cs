@@ -24,6 +24,11 @@
         /// <param name="events"></param>
         protected override void SendBuffer(LoggingEvent[] events)
         {
+            // NOTE: Azure Table Storage can handle batch inserts of up to 100 items
+
+
+
+
         }
     }
 }
