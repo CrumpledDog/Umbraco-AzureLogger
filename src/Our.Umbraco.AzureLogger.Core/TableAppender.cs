@@ -8,10 +8,20 @@
     /// </summary>
     public class TableAppender : BufferingAppenderSkeleton
     {
+        /// <summary>
+        /// From configuration setting
+        /// </summary>
         public string ConnectionString { get; set; }
 
+        /// <summary>
+        /// From configuration setting
+        /// </summary>
         public string TableName { get; set; }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="events"></param>
         protected override void SendBuffer(LoggingEvent[] events)
         {
         }
