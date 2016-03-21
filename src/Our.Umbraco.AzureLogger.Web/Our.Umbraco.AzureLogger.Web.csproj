@@ -59,6 +59,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\AzureLogger\BackOffice\LazyLoadDirective.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\SearchItemResource.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ConnectionStatus.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ConnectionStatusController.js" />
