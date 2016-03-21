@@ -1,14 +1,53 @@
 ﻿namespace Our.Umbraco.AzureLogger.Core
 {
     using Extensions;
+    using log4net.Core;
     using Microsoft.WindowsAzure.Storage.Table;
     using Models;
     using Models.TableEntities;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Level = Our.Umbraco.AzureLogger.Core.Models.Level;
 
     internal sealed partial class TableService
     {
+        internal void CreateLogTableEntities(LoggingEvent[] loggingEvents)
+        {
+            this.Connect();
+            if (this.Connected.HasValue && this.Connected.Value)
+            {
+                // TODO: ensure collection not more than 100 items (otherwise batch them up)
+
+                TableBatchOperation tableBatchOperation = new TableBatchOperation();
+
+                foreach(LoggingEvent loggingEvent in loggingEvents)
+                {
+                    tableBatchOperation.Insert(
+                        new LogTableEntity()
+                        {
+                            PartitionKey = "log",
+                            RowKey = string.Format("{0:D19}.{1}", DateTime.MaxValue.Ticks - loggingEvent.TimeStamp.Ticks, Guid.NewGuid().ToString().ToLower()),
+                            Domain = loggingEvent.Domain,
+                            Identity = loggingEvent.Identity,
+                            Level = loggingEvent.Level.ToString(),
+                            LoggerName = loggingEvent.LoggerName,
+                            Message = loggingEvent.RenderedMessage + Environment.NewLine + loggingEvent.GetExceptionString(),
+                            EventTimeStamp = loggingEvent.TimeStamp,
+                            ThreadName = loggingEvent.ThreadName,
+                            UserName = loggingEvent.UserName,
+                            Location = loggingEvent.LocationInformation.FullInfo,
+                            // processId = ,
+                            // appDomainId = ,
+                            //log4net_HostName = ,
+                            //url =
+                        });
+                }
+
+                this.CloudTable.ExecuteBatch(tableBatchOperation);
+            }
+        }
+
         /// <summary>
         /// https://azure.microsoft.com/en-gb/documentation/articles/storage-dotnet-how-to-use-tables/
         /// </summary>
@@ -19,7 +58,9 @@
         {
             TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>();
 
-            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, TableService.SearchItemPartitionKey));
+            //tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, TableService.SearchItemPartitionKey));
+            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "log"));
+
 
             if (minLevel != Level.DEBUG)
             {
