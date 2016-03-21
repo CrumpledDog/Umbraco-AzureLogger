@@ -14,8 +14,8 @@
         <!--detail-count: {{ detailCount }}-->
     </div>
 
-    <div class="umb-panel-body umb-scrollable">
-        <div class="umb-pane" ng-if="connected && searchItem" lazy-load="getMoreLogItems()">
+    <div class="umb-panel-body umb-scrollable" ng-if="connected && searchItem">
+        <div class="umb-pane" lazy-load="getMoreLogItems()">
 
             <!--<pre style="float:right">searchItems: {{searchItems|json}}</pre>-->
 
