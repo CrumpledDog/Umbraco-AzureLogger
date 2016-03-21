@@ -2,7 +2,6 @@
 {
     using Extensions;
     using log4net;
-    using log4net.Appender.Umbraco;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
     using Models;
@@ -55,7 +54,7 @@
             {
                 //this.Connected = false; // default
 
-                IEnumerable<AzureTableAppender> azureTableAppenders = LogManager.GetLogger(typeof(AzureTableAppender)).Logger.Repository.GetAppenders().Cast<AzureTableAppender>();
+                IEnumerable<TableAppender> tableAppenders = LogManager.GetLogger(typeof(TableAppender)).Logger.Repository.GetAppenders().Cast<TableAppender>();
 
                 //if (!azureTableAppenders.Any())
                 //{
@@ -66,13 +65,13 @@
                 //    throw new Exception("Found more than one log4net AzureTableAppender");
                 //}
                 //else
-                if (azureTableAppenders.Count() == 1)
+                if (tableAppenders.Count() == 1)
                 {
                     // we have found a single AzureTableAppender
-                    AzureTableAppender azureTableAppender = azureTableAppenders.Single();
+                    TableAppender tableAppender = tableAppenders.Single();
 
-                    this.ConnectionString = azureTableAppender.ConnectionString;
-                    this.TableName = azureTableAppender.TableName;
+                    this.ConnectionString = tableAppender.ConnectionString;
+                    this.TableName = tableAppender.TableName;
 
                     CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(this.ConnectionString);
 
