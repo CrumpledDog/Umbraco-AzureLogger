@@ -3,7 +3,6 @@
     using Extensions;
     using log4net.Core;
     using Microsoft.WindowsAzure.Storage.Table;
-    using Models;
     using Models.TableEntities;
     using System;
     using System.Collections.Generic;
@@ -17,34 +16,43 @@
             this.Connect();
             if (this.Connected.HasValue && this.Connected.Value)
             {
-                // TODO: ensure collection not more than 100 items (otherwise batch them up)
-
-                TableBatchOperation tableBatchOperation = new TableBatchOperation();
-
-                foreach(LoggingEvent loggingEvent in loggingEvents)
+                // group logging events into sub groups by their date (this will be the basis of the Azure table partion key)
+                foreach(IGrouping<DateTime, LoggingEvent> dayGroupedLoggingEvents in loggingEvents.GroupBy(x => x.TimeStamp.Date))
                 {
-                    tableBatchOperation.Insert(
-                        new LogTableEntity()
-                        {
-                            PartitionKey = "log",
-                            RowKey = string.Format("{0:D19}.{1}", DateTime.MaxValue.Ticks - loggingEvent.TimeStamp.Ticks, Guid.NewGuid().ToString().ToLower()),
-                            Domain = loggingEvent.Domain,
-                            Identity = loggingEvent.Identity,
-                            Level = loggingEvent.Level.ToString(),
-                            LoggerName = loggingEvent.LoggerName,
-                            Message = loggingEvent.RenderedMessage + Environment.NewLine + loggingEvent.GetExceptionString(),
-                            EventTimeStamp = loggingEvent.TimeStamp,
-                            ThreadName = loggingEvent.ThreadName,
-                            UserName = loggingEvent.UserName,
-                            Location = loggingEvent.LocationInformation.FullInfo,
-                            // processId = ,
-                            // appDomainId = ,
-                            //log4net_HostName = ,
-                            //url =
-                        });
-                }
+                    DateTime date = dayGroupedLoggingEvents.Key; // current date grouping
 
-                this.CloudTable.ExecuteBatch(tableBatchOperation);
+                    // set partition key for this batch of inserts
+                    string partitionKey = string.Format("{0:D19}", DateTime.MaxValue.Ticks - date.AddDays(date.Day).Ticks + 1);
+
+                    // TODO: ensure collection not more than 100 items (otherwise batch them up)
+
+                    TableBatchOperation tableBatchOperation = new TableBatchOperation();
+
+                    foreach(LoggingEvent loggingEvent in dayGroupedLoggingEvents)
+                    {
+                        tableBatchOperation.Insert(
+                                new LogTableEntity()
+                                {
+                                    PartitionKey = partitionKey,
+                                    RowKey = string.Format("{0:D19}.{1}", DateTime.MaxValue.Ticks - loggingEvent.TimeStamp.Ticks, Guid.NewGuid().ToString().ToLower()),
+                                    Domain = loggingEvent.Domain,
+                                    Identity = loggingEvent.Identity,
+                                    Level = loggingEvent.Level.ToString(),
+                                    LoggerName = loggingEvent.LoggerName,
+                                    Message = loggingEvent.RenderedMessage + Environment.NewLine + loggingEvent.GetExceptionString(),
+                                    EventTimeStamp = loggingEvent.TimeStamp,
+                                    ThreadName = loggingEvent.ThreadName,
+                                    UserName = loggingEvent.UserName,
+                                    Location = loggingEvent.LocationInformation.FullInfo,
+                                    // processId = ,
+                                    // appDomainId = ,
+                                    //log4net_HostName = ,
+                                    //url =
+                                });
+                    }
+
+                    this.CloudTable.ExecuteBatch(tableBatchOperation);
+                }
             }
         }
 
@@ -58,9 +66,7 @@
         {
             TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>();
 
-            //tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, TableService.SearchItemPartitionKey));
-            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "log"));
-
+            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, TableService.SearchItemPartitionKey));
 
             if (minLevel != Level.DEBUG)
             {
