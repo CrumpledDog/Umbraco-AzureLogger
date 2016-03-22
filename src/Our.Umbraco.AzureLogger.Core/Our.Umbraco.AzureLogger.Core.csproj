@@ -295,6 +295,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Controllers\ApiController_Log.cs" />
+    <Compile Include="Controllers\ApiController_SearchItem.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\TableQueryExtensions.cs" />
     <Compile Include="Models\Level.cs" />
