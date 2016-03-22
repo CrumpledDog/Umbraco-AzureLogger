@@ -33,7 +33,7 @@
 		<Owners>Jeavon Leopold</Owners>
 		<Description>An Azure storage table log4net appender and UI</Description>
 		<IconUrl>https://raw.githubusercontent.com/CrumpledDog/Umbraco-Azure-Logger/develop/build/assets/logo/azure-logo-128.png</IconUrl>
-		<Tags>umbraco azure media table log4net</Tags>
+		<Tags>umbraco azure table storage logging log4net</Tags>
 		<Language>en-GB</Language>
 		<RequireLicenseAcceptance>false</RequireLicenseAcceptance>
 	</PropertyGroup>
