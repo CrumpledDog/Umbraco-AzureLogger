@@ -51,11 +51,21 @@
         /// <param name="rowKey">(optional) start at the row key after this one</param>
         /// <param name="take">max number of items to return</param>
         /// <returns></returns>
-        internal IEnumerable<LogTableEntity> ReadLogTableEntities(Level minLevel, string hostName, bool loggerNamesInclude, string[] loggerNames, string rowKey)
+        internal IEnumerable<LogTableEntity> ReadLogTableEntities(string partitionKey, string rowKey, Level minLevel, string hostName, bool loggerNamesInclude, string[] loggerNames)
         {
             TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>();
 
-            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, TableService.SearchItemPartitionKey));
+            if (!string.IsNullOrWhiteSpace(partitionKey))
+            {
+                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, partitionKey));
+            }
+
+            if (!string.IsNullOrWhiteSpace(rowKey))
+            {
+                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.GreaterThan, rowKey));
+            }
+
+            //tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, TableService.SearchItemPartitionKey));
 
             if (minLevel != Level.DEBUG)
             {
@@ -115,11 +125,6 @@
                 }
 
                 tableQuery.AndWhere(loggerNamesFilter);
-            }
-
-            if (!string.IsNullOrWhiteSpace(rowKey))
-            {
-                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.GreaterThan, rowKey));
             }
 
             return this.Connected.HasValue && this.Connected.Value

@@ -30,31 +30,24 @@
                 $scope.init();
             }, true);
 
-            // forces the tree to highlight (in blue) the associated search item for this view
+            // forces the tree to highlight the associated search item for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
             navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'searchItem|' + searchItemId], forceReload: false });
 
             $scope.connected = false;
-            //$scope.connectionErrorMessage;
-            //$scope.connectionString;
-            //$scope.tableName;
 
             //$scope.startEventTimestamp; // set with date picker
             //$scope.threadIdentity; // built from AppDomainId + ProcessId + ThreadName (set by clicking in details view)
 
-            //            $scope.logItems = [];
+            //$scope.logItems = [];
             //$scope.logItemLimit = 1000; // size of logItems array before it is reset (and a new start date time in the filter)
-            //            $scope.currentlyLoading = false; // true when getting data awaiting a response to set
-            //            $scope.finishedLoading = false; // true once server indicates that there is no more data
-
+            //$scope.currentlyLoading = false; // true when getting data awaiting a response to set
+            //$scope.finishedLoading = false; // true once server indicates that there is no more data
 
             // get connection details (triggering a new connection if required)
             $http.get('BackOffice/AzureLogger/Api/Connect')
                 .then(function (response) {
                     $scope.connected = response.data.connected;
-                    //$scope.connectionErrorMessage = response.data.connectionErrorMessage;
-                    //$scope.connectionString = response.data.connectionString;
-                    //$scope.tableName = response.data.tableName;
                 });
 
 
@@ -66,14 +59,25 @@
                 if (!$scope.finishedLoading && !$scope.currentlyLoading) {
                     $scope.currentlyLoading = true;
 
-                    // get last known rowKey from array
+                    // get last known partitionKey and rowKey
+                    var partitionKey = null;
                     var rowKey = null;
-                    if ($scope.logItems.length > 0) { rowKey = $scope.logItems[$scope.logItems.length - 1].rowKey; }
+                    if ($scope.logItems.length > 0) {
+
+                        var lastLogItem = $scope.logItems[$scope.logItems.length - 1];
+
+                        partitionKey = lastLogItem.partitionKey;
+                        rowKey = lastLogItem.rowKey;
+                    }
 
                     $http({
                         method: 'POST',
                         url: 'BackOffice/AzureLogger/Api/ReadLogItemIntros',
-                        params: { 'rowKey': rowKey != null ? escape(rowKey) : '', 'take': 200 },
+                        params: {
+                            'partitionKey' : partitionKey != null ? escape(partitionKey) : '',
+                            'rowKey': rowKey != null ? escape(rowKey) : '',
+                            'take': 200
+                        },
                         data: $scope.searchItem // supply the full search item data
                     })
                     .then(function (response) {

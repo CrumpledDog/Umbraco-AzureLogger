@@ -12,15 +12,17 @@
     public partial class ApiController
     {
         [HttpPost]
-        public LogItemIntro[] ReadLogItemIntros([FromUri] string rowKey, [FromUri] int take, [FromBody] SearchItem searchItem)
+        public LogItemIntro[] ReadLogItemIntros([FromUri] string partitionKey, [FromUri] string rowKey, [FromUri] int take, [FromBody] SearchItem searchItem)
         {
             return TableService
                     .Instance
-                    .ReadLogTableEntities(searchItem.MinLevel,
-                                         searchItem.HostName,
-                                         searchItem.LoggerNamesInclude,
-                                         searchItem.LoggerNames.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray(),
-                                         rowKey)
+                    .ReadLogTableEntities(
+                            partitionKey,
+                            rowKey,
+                            searchItem.MinLevel,
+                            searchItem.HostName,
+                            searchItem.LoggerNamesInclude,
+                            searchItem.LoggerNames.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray())
                     .Take(take)
                     .Select(x => (LogItemIntro)x)
                     .ToArray();
