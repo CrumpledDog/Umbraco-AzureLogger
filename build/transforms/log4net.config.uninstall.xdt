@@ -4,10 +4,10 @@
 	<root>
 		<priority value="Info"/>
 		<appender-ref ref="AsynchronousLog4NetAppender" xdt:Transform="InsertIfMissing" />
-		<appender-ref ref="AzureTableAppender" xdt:Locator="Match(ref)" xdt:Transform="Remove" />
+		<appender-ref ref="TableAppender" xdt:Locator="Match(ref)" xdt:Transform="Remove" />
 	</root>
 
-	<appender name="AzureTableAppender" type="log4net.Appender.Umbraco.AzureTableAppender, log4net.Appender.Azure.Umbraco" xdt:Locator="Match(name)" xdt:Transform="Remove">
+	<appender name="TableAppender" type="Our.Umbraco.AzureLogger.Core.TableAppender, Our.Umbraco.AzureLogger.Core" xdt:Locator="Match(name)" xdt:Transform="Remove">
 	</appender>
 
 </log4net>

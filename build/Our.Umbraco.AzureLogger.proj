@@ -119,8 +119,7 @@
 		<ItemGroup>
 		<!-- Shared -->
 		<BinFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.AzureLogger.Core.dll" />
-		<BinFilesAppender Include="$(CoreProjectDir)\bin\$(BuildConfig)\log4net.Appender.Azure.Umbraco.dll" />
-		<PdbFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.AzureLogger.Core.dll" />
+		<PdbFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.AzureLogger.Core.pdb" />
 		<AppPluginFiles Include="$(WebProjectDir)\App_Plugins\AzureLogger\**\*.*" />
 		<Log4NetConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\log4net.config.install.xdt" />
 		
