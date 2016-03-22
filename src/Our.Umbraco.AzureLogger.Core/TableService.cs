@@ -75,7 +75,10 @@
 
                     this.CloudTable = cloudTableClient.GetTableReference(this.TableName);
 
-                    this.Connected = true;
+					// create the storage table if it isn't already there
+					this.CloudTable.CreateIfNotExists();
+
+					this.Connected = true;
                 }
             }
         }
