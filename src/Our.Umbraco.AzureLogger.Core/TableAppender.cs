@@ -25,9 +25,6 @@
         public TableAppender()
         {
             this.Lossy = false;
-
-            // TODO: make this a config parameter
-            this.BufferSize = 9; // a value of 100 will buffer 101 items as zero indexed
         }
 
         /// <summary>

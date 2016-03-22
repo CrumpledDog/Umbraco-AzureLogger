@@ -64,12 +64,13 @@
                 tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, partitionKey));
             }
 
+            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, TableService.SearchItemPartitionKey));
+
             if (!string.IsNullOrWhiteSpace(rowKey))
             {
                 tableQuery.AndWhere(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.GreaterThan, rowKey));
             }
 
-            //tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, TableService.SearchItemPartitionKey));
 
             if (minLevel != Level.DEBUG)
             {

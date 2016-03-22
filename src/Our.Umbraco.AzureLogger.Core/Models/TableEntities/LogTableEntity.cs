@@ -3,6 +3,7 @@
     using log4net.Core;
     using Microsoft.WindowsAzure.Storage.Table;
     using System;
+    using System.Collections;
     using Level = Our.Umbraco.AzureLogger.Core.Models.Level;
 
     /// <summary>
@@ -35,10 +36,28 @@
             this.ThreadName = loggingEvent.ThreadName;
             this.UserName = loggingEvent.UserName;
             this.Location = loggingEvent.LocationInformation.FullInfo;
-            // this.processId = ,
-            // this.appDomainId = ,
-            // this.log4net_HostName = ,
-            // this.url =
+
+            foreach(DictionaryEntry dictionaryEntry in loggingEvent.Properties)
+            {
+                switch (dictionaryEntry.Key.ToString())
+                {
+                    case "processId":
+                        this.processId = (int)dictionaryEntry.Value;
+                        break;
+
+                    case "appDomainId":
+                        this.appDomainId = (int)dictionaryEntry.Value;
+                        break;
+
+                    case "log4net_HostName":
+                        this.log4net_HostName = (string)dictionaryEntry.Value;
+                        break;
+
+                    case "url":
+                        this.url = (string)dictionaryEntry.Value;
+                        break;
+                }
+            }
         }
 
         public string Domain { get; set; }
