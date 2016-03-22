@@ -19,6 +19,9 @@
         /// </summary>
         public string TableName { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public TableAppender()
         {
             this.Lossy = false;
@@ -53,13 +56,11 @@
         }
 
         /// <summary>
-        ///
+        /// log4net calls this to persist the logging events
         /// </summary>
-        /// <param name="events"></param>
+        /// <param name="events">the log events to persist</param>
         protected override void SendBuffer(LoggingEvent[] loggingEvents)
         {
-            // NOTE: Azure Table Storage can handle batch inserts of up to 100 items
-
             TableService.Instance.CreateLogTableEntities(loggingEvents);
         }
     }

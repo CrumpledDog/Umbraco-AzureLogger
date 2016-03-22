@@ -3,7 +3,7 @@
     using Extensions;
     using log4net.Core;
     using Microsoft.WindowsAzure.Storage.Table;
-    using Models.TableEntities;
+    using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -36,25 +36,7 @@
 
                         foreach(LoggingEvent loggingEvent in batchLoggingEvents)
                         {
-                            tableBatchOperation.Insert(
-                                new LogTableEntity()
-                                {
-                                    PartitionKey = partitionKey,
-                                    RowKey = string.Format("{0:D19}.{1}", DateTime.MaxValue.Ticks - loggingEvent.TimeStamp.Ticks, Guid.NewGuid().ToString().ToLower()),
-                                    Domain = loggingEvent.Domain,
-                                    Identity = loggingEvent.Identity,
-                                    Level = loggingEvent.Level.ToString(),
-                                    LoggerName = loggingEvent.LoggerName,
-                                    Message = loggingEvent.RenderedMessage + Environment.NewLine + loggingEvent.GetExceptionString(),
-                                    EventTimeStamp = loggingEvent.TimeStamp,
-                                    ThreadName = loggingEvent.ThreadName,
-                                    UserName = loggingEvent.UserName,
-                                    Location = loggingEvent.LocationInformation.FullInfo,
-                                    // processId = ,
-                                    // appDomainId = ,
-                                    //log4net_HostName = ,
-                                    //url =
-                                });
+                            tableBatchOperation.Insert(new LogTableEntity(partitionKey, loggingEvent));
                         }
 
                         this.CloudTable.ExecuteBatch(tableBatchOperation);
