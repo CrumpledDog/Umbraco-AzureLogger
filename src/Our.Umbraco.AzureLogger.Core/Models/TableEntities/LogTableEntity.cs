@@ -1,13 +1,46 @@
 ﻿namespace Our.Umbraco.AzureLogger.Core.Models.TableEntities
 {
+    using log4net.Core;
     using Microsoft.WindowsAzure.Storage.Table;
     using System;
+    using Level = Our.Umbraco.AzureLogger.Core.Models.Level;
 
     /// <summary>
     /// POCO to match the field names in the Azure table (NOTE: casing of properties matches the Azure field names)
     /// </summary>
     public class LogTableEntity : TableEntity
     {
+        /// <summary>
+        /// Default Constructor, as required by the Azure storage api
+        /// </summary>
+        public LogTableEntity()
+        {
+        }
+
+        /// <summary>
+        /// Constructor to create a LogTableEntity from a log4net LoggingEvent
+        /// </summary>
+        /// <param name="partitionKey">the Azure Table partition key to use</param>
+        /// <param name="loggingEvent">the log4net LoggingEvent object</param>
+        internal LogTableEntity(string partitionKey, LoggingEvent loggingEvent)
+        {
+            this.PartitionKey = partitionKey;
+            this.RowKey = string.Format("{0:D19}.{1}", DateTime.MaxValue.Ticks - loggingEvent.TimeStamp.Ticks, Guid.NewGuid().ToString().ToLower());
+            this.Domain = loggingEvent.Domain;
+            this.Identity = loggingEvent.Identity;
+            this.Level = loggingEvent.Level.ToString();
+            this.LoggerName = loggingEvent.LoggerName;
+            this.Message = loggingEvent.RenderedMessage + Environment.NewLine + loggingEvent.GetExceptionString();
+            this.EventTimeStamp = loggingEvent.TimeStamp;
+            this.ThreadName = loggingEvent.ThreadName;
+            this.UserName = loggingEvent.UserName;
+            this.Location = loggingEvent.LocationInformation.FullInfo;
+            // this.processId = ,
+            // this.appDomainId = ,
+            // this.log4net_HostName = ,
+            // this.url =
+        }
+
         public string Domain { get; set; }
 
         public string Identity { get; set; }
