@@ -5,6 +5,9 @@
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
     using System.Web.Http;
 
+    /// <summary>
+    /// This partial contains CRUD methods for the SearchItem (aka saved search) items
+    /// </summary>
     public partial class ApiController
     {
         /// <summary>

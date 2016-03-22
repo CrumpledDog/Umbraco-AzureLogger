@@ -20,7 +20,7 @@
 
         public DateTime EventTimeStamp { get; set; }
 
-        public string ThreadName { get; set; } // int didn't work
+        public string ThreadName { get; set; }
 
         public string UserName { get; set; }
 

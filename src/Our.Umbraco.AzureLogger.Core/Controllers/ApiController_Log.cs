@@ -6,6 +6,9 @@
     using System.Linq;
     using System.Web.Http;
 
+    /// <summary>
+    /// This partial contains read methods for Log items
+    /// </summary>
     public partial class ApiController
     {
         [HttpPost]
@@ -41,12 +44,5 @@
 
             return null;
         }
-
-        ////[Umbraco.Web.WebApi.UmbracoAuthorize(Roles="")]
-        //[HttpGet]
-        //public void DeleteLog()
-        //{
-        //    TableService.Instance.DeleteLog();
-        //}
     }
 }
