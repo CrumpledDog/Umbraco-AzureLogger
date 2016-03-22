@@ -8,17 +8,18 @@ If your site is making a lot of log entries (e.g. you've set to DEBUG level) you
 
 Example:
 
-    <appender name="AzureTableAppender" type="log4net.Appender.Umbraco.AzureTableAppender, log4net.Appender.Azure.Umbraco">
-    	<param name="TableName" value="UmbracoTraceLog"/>
-    	<!-- You can either specify a connection string or use the ConnectionStringName property instead -->
-    	<!--<param name="ConnectionString" value="UseDevelopmentStorage=true"/>-->
-    	<param name="ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=somecrazyrandomtokenthing"/>
-    	<param name="PropAsColumn" value="true"/>
-    	<param name="PartitionKeyType" value="DateReverse"/>
-    	<bufferSize value="1"/>
-    </appender>
+    <root>
+    	<priority value="Debug"/>
+    	<appender-ref ref="TableAppender" />
+    </root>
 
-As a useful enhancement we also now store to URL which tiggered the log entry to be made, this can be very handy for tracking down issues.
+    <appender name="TableAppender" type="Our.Umbraco.AzureLogger.Core.TableAppender, Our.Umbraco.AzureLogger.Core">
+    	<param name="ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=somecrazyrandomtokenthing"/>
+    	<param name="TableName" value="UmbracoTraceLog"/>
+    	<bufferSize value="1"/>
+     </appender>
+
+As a useful enhancement we also now store to URL which triggered the log entry to be made, this can be very handy for tracking down issues.
 
 ![Url Example](https://raw.githubusercontent.com/CrumpledDog/Umbraco-Azure-Logger/develop/docs/url-example.png)
 
