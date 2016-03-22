@@ -20,14 +20,14 @@
             this.Connect();
             if (this.Connected.HasValue && this.Connected.Value)
             {
-                // group by logging event date - each group equates to an Azure table partition key
+                // group by logging event date & hour - each group equates to an Azure table partition key
                 // (all items in the same Azure table batch operation must use the same partition key)
-                foreach(IGrouping<DateTime, LoggingEvent> groupedLoggingEvents in loggingEvents.GroupBy(x => x.TimeStamp.Date))
+                foreach(IGrouping<DateTime, LoggingEvent> groupedLoggingEvents in loggingEvents.GroupBy(x => x.TimeStamp.Date.AddHours(x.TimeStamp.Hour)))
                 {
-                    DateTime date = groupedLoggingEvents.Key; // date for current grouping
+                    DateTime dateHour = groupedLoggingEvents.Key; // date for current grouping
 
                     // set partition key for this batch of inserts
-                    string partitionKey = string.Format("{0:D19}", DateTime.MaxValue.Ticks - date.AddDays(date.Day).Ticks + 1);
+                    string partitionKey = string.Format("{0:D19}", DateTime.MaxValue.Ticks - dateHour.Ticks + 1);
 
                     // ensure 100 or less items are inserted per Azure table batch insert operation
                     foreach(IEnumerable<LoggingEvent> batchLoggingEvents in groupedLoggingEvents.Batch(100))
@@ -48,9 +48,13 @@
         /// <summary>
         /// https://azure.microsoft.com/en-gb/documentation/articles/storage-dotnet-how-to-use-tables/
         /// </summary>
-        /// <param name="rowKey">(optional) start at the row key after this one</param>
-        /// <param name="take">max number of items to return</param>
-        /// <returns></returns>
+        /// <param name="partitionKey">null or the last known partition key</param>
+        /// <param name="rowKey">null or the last known row key</param>
+        /// <param name="minLevel">the min level of log items to return</param>
+        /// <param name="hostName">null or the hostname to filter on</param>
+        /// <param name="loggerNamesInclude">indicates whether the loggerNames should be included or excluded in the filter query</param>
+        /// <param name="loggerNames">array of logger names</param>
+        /// <returns>a collection of log items matchin the supplied filter criteria</returns>
         internal IEnumerable<LogTableEntity> ReadLogTableEntities(string partitionKey, string rowKey, Level minLevel, string hostName, bool loggerNamesInclude, string[] loggerNames)
         {
             TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>();
