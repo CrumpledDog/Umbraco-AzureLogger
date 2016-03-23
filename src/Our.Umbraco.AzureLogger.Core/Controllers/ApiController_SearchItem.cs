@@ -38,6 +38,11 @@
             return null;
         }
 
+        /// <summary>
+        /// Saves the new filter state for a search item
+        /// </summary>
+        /// <param name="searchItemId"></param>
+        /// <param name="searchItem"></param>
         [HttpPost]
         public void UpdateSearchItem([FromUri] string searchItemId, [FromBody] SearchItem searchItem)
         {

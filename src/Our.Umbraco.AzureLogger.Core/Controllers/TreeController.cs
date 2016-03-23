@@ -53,9 +53,7 @@
             if (this.IsRoot(id))
             {
                 //menuItemCollection.Items.Add(new MenuItem("ConnectionStatus", "Connection Status"));
-
-                // TODO: only if connected and there are logs to delete
-                //menuItemCollection.Items.Add(new MenuItem("DeleteLogs", "Delete Logs"));
+                //menuItemCollection.Items.Add(new MenuItem("DeleteLogs", "Delete Logs")); // TODO: only if connected and there are logs to delete
                 menuItemCollection.Items.Add<ActionNew>(ui.Text("actions", ActionNew.Instance.Alias), false); // loads view "Create.html"
                 menuItemCollection.Items.Add<ActionRefresh>(ui.Text("actions", ActionRefresh.Instance.Alias), true);
 

@@ -11,6 +11,14 @@
     /// </summary>
     public partial class ApiController
     {
+        /// <summary>
+        /// Gets the log items to render in the main list
+        /// </summary>
+        /// <param name="partitionKey">the last known partitionKey</param>
+        /// <param name="rowKey">the last known rowKey</param>
+        /// <param name="take">number of log items to get</param>
+        /// <param name="searchItem">object representing the state of all the filters</param>
+        /// <returns></returns>
         [HttpPost]
         public LogItemIntro[] ReadLogItemIntros([FromUri] string partitionKey, [FromUri] string rowKey, [FromUri] int take, [FromBody] SearchItem searchItem)
         {
@@ -31,8 +39,8 @@
         /// <summary>
         /// Get more detailed information on a log item
         /// </summary>
-        /// <param name="partitionKey"></param>
-        /// <param name="rowKey"></param>
+        /// <param name="partitionKey">the partition key for the log item</param>
+        /// <param name="rowKey">the row key for the log item</param>
         /// <returns></returns>
         [HttpGet]
         public LogItemDetail ReadLogItemDetail([FromUri]string partitionKey, [FromUri]string rowKey)
