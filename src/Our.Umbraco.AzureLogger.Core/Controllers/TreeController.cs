@@ -1,12 +1,12 @@
 ﻿namespace Our.Umbraco.AzureLogger.Core.Controllers
 {
     using global::Umbraco.Core;
+    using global::Umbraco.Core.Services;
     using global::Umbraco.Web.Models.Trees;
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.Trees;
     using System.Linq;
     using System.Net.Http.Formatting;
-    using umbraco;
     using umbraco.BusinessLogic.Actions;
     using umbraco.interfaces;
     using UmbracoTreeController = global::Umbraco.Web.Trees.TreeController;
@@ -50,21 +50,19 @@
         {
             MenuItemCollection menuItemCollection = new MenuItemCollection();
 
+            ILocalizedTextService localizedTextService = ApplicationContext.Services.TextService;
+
             if (this.IsRoot(id))
             {
                 //menuItemCollection.Items.Add(new MenuItem("ConnectionStatus", "Connection Status"));
                 //menuItemCollection.Items.Add(new MenuItem("DeleteLogs", "Delete Logs")); // TODO: only if connected and there are logs to delete
-                menuItemCollection.Items.Add<ActionNew>(ui.Text("actions", ActionNew.Instance.Alias), false); // loads view "Create.html"
-                menuItemCollection.Items.Add<ActionRefresh>(ui.Text("actions", ActionRefresh.Instance.Alias), true);
-
+                menuItemCollection.Items.Add<ActionNew>(localizedTextService.Localize(ActionNew.Instance.Alias), false); // loads view "Create.html"
+                menuItemCollection.Items.Add<ActionRefresh>(localizedTextService.Localize(ActionRefresh.Instance.Alias), true);
             }
             else if (id.StartsWith("searchItem"))
             {
-                //menuItemCollection.Items.Add(new MenuItem("SearchFilters", "Search Filters"));
                 menuItemCollection.Items.Add<SearchFiltersAction>("Filters", false); // NOTE: render name differs - better for user
-                menuItemCollection.Items.Add<ActionDelete>(ui.Text("actions", ActionDelete.Instance.Alias), true); // loads view "Delete.html"
-
-                //menuItemCollection.Items.Add(new MenuItem("Refresh", "Refresh"));
+                menuItemCollection.Items.Add<ActionDelete>(localizedTextService.Localize(ActionDelete.Instance.Alias), true); // loads view "Delete.html"
             }
 
             return menuItemCollection;
