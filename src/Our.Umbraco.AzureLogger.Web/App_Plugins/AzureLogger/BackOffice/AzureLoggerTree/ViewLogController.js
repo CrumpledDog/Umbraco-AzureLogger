@@ -8,19 +8,20 @@
 
             $scope.init = function () {
                 searchItemResource.readSearchItem(searchItemId).then(function (searchItem) {
+                    if (searchItem == 'null') { // TODO: change API controller to return a real null !
 
-                    //if (searchItem == null) {
-                    //    // search item has been deleted from the tree, so reset this view to the main dev area
-                    //    navigationService.changeSection('developer');
+                        navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1'], forceReload: false });
+                        navigationService.changeSection('developer');
 
-                    //} else {
-                    $scope.searchItem = searchItem; // put into scope so view can delay rendering until populated
+                    } else {
 
-                    $scope.logItems = [];
-                    $scope.finishedLoading = false;
-                    $scope.getMoreLogItems();
-                    //}
+                        $scope.searchItem = searchItem; // put into scope so view can delay rendering until populated
 
+                        $scope.logItems = [];
+                        $scope.finishedLoading = false;
+                        $scope.getMoreLogItems();
+
+                    }
                 });
             };
 
