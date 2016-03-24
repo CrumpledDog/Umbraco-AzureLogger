@@ -122,7 +122,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(TargetDir)*.dll" "$(SolutionDir)..\www\bin\" /Y
+    <PostBuildEvent>XCOPY "$(TargetDir)Our.Umbraco.AzureLogger.*.dll" "$(SolutionDir)..\www\bin\" /Y
 
 IF NOT EXIST "$(SolutionDir)..\www\App_Plugins\AzureLogger" MKDIR "$(SolutionDir)..\www\App_Plugins\AzureLogger"
 
