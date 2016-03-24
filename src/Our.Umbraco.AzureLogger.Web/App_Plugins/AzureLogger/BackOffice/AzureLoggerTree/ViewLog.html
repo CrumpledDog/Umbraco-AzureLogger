@@ -17,8 +17,6 @@
     <div class="umb-panel-body umb-scrollable" ng-if="connected && searchItem">
         <div class="umb-pane" lazy-load="getMoreLogItems()">
 
-            <!--<pre style="float:right">searchItems: {{searchItems|json}}</pre>-->
-
             <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems">
 
                 <div class="day-breaker" ng-if="differentDays(logItem, logItems[$index - 1])">

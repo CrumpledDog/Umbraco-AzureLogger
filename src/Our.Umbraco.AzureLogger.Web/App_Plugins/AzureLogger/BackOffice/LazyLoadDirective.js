@@ -8,8 +8,7 @@
 
                 // returns true if the element doesn't stretch below the bottom of the view
                 var elementCanExpand = function () {
-                    var overlap = 500;
-                    return (element.offset().top + element.height() < $(window).height() + overlap);
+                    return (element.offset().top + element.height() < $(window).height() + 500); // 500 = number of pixels below view
                 };
 
                 // initialize to ensure content is loaded to fill the initial screen (before any scroll activity)

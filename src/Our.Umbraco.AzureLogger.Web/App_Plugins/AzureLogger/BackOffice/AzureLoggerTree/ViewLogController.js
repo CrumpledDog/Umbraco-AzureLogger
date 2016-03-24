@@ -77,7 +77,7 @@
                         params: {
                             'partitionKey' : partitionKey != null ? escape(partitionKey) : '',
                             'rowKey': rowKey != null ? escape(rowKey) : '',
-                            'take': 5
+                            'take': 50
                         },
                         data: $scope.searchItem // supply the full search item data
                     })
