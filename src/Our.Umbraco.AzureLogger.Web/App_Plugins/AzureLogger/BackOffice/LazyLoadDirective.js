@@ -6,33 +6,27 @@
             restrict: 'A',
             link: function (scope, element, attrs) {
 
-                // returns true if the element hasn't overlaped the bottom of the view
-                var lazyLoad = function () {
+                // returns true if the element doesn't stretch below the bottom of the view
+                var elementCanExpand = function () {
                     var overlap = 500;
-
-                    // element.offset().top = amount of element above the screen (expected to be a negative number)
                     return (element.offset().top + element.height() < $(window).height() + overlap);
                 };
 
                 // initialize to ensure content is loaded to fill the initial screen (before any scroll activity)
-                $timeout(function () {
-                    //TODO: check the lazy load has filled the screen
-                    if (lazyLoad()) {
-                        scope.$apply(attrs.lazyLoad);
-                    }
-                });
+                $timeout(function () { scope.$apply(attrs.lazyLoad); })
 
-                var scrollDelayTimer;
-                // jQuery walk up tree from element to find div with class 'umb-scrollable', to hook into when this is scrolled
+                // timer to delay event until scrolling stopped
+                var delayTimer;
+
+                // jQuery find div with class 'umb-scrollable', as it's this outer element that is scrolled
                 $(element).closest('.umb-scrollable').bind('scroll', function () {
 
-                    // cancel any previous timer and set new one
-                    if (scrollDelayTimer) {
-                        $timeout.cancel(scrollDelayTimer);
-                    }
+                    // cancel any previous timer
+                    if (delayTimer) { $timeout.cancel(delayTimer); }
 
-                    scrollDelayTimer = $timeout(function () {
-                        if (lazyLoad()) {
+                    // set new timer
+                    delayTimer = $timeout(function () {
+                        if (elementCanExpand()) {
                             scope.$apply(attrs.lazyLoad);
                         }
                     }, 250);

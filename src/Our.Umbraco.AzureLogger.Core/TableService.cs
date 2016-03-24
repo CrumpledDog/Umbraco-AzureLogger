@@ -17,7 +17,7 @@
         }
 
         /// <summary>
-        /// singleton constructor - construct a reference to the CloudTable property once
+        /// singleton constructor
         /// </summary>
         private TableService()
         {

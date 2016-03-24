@@ -19,7 +19,6 @@
 
                         $scope.logItems = [];
                         $scope.finishedLoading = false;
-                        $scope.getMoreLogItems();
 
                     }
                 });
@@ -58,6 +57,7 @@
 
                 // only request, if there isn't already a request pending and there might be data to get
                 if (!$scope.finishedLoading && !$scope.currentlyLoading) {
+
                     $scope.currentlyLoading = true;
 
                     // get last known partitionKey and rowKey
@@ -77,7 +77,7 @@
                         params: {
                             'partitionKey' : partitionKey != null ? escape(partitionKey) : '',
                             'rowKey': rowKey != null ? escape(rowKey) : '',
-                            'take': 200
+                            'take': 5
                         },
                         data: $scope.searchItem // supply the full search item data
                     })
@@ -90,9 +90,7 @@
                         }
 
                         $scope.currentlyLoading = false;
-
                     });
-
                 }
             };
 
