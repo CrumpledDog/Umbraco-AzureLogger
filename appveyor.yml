@@ -6,6 +6,10 @@ version: 0.1.0.{build}
 cache:
   - src\packages -> **\packages.config   # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
 
+branches:
+  only:
+    - develop
+
 # UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
 init:
