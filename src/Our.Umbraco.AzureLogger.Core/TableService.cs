@@ -3,6 +3,7 @@
     using log4net;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -17,7 +18,7 @@
         }
 
         /// <summary>
-        /// singleton constructor
+        /// prevent external construction (as is singleton)
         /// </summary>
         private TableService()
         {
@@ -42,7 +43,11 @@
 
         internal string TableName { get; private set; }
 
-        private CloudTable CloudTable { get; set;}
+        [Obsolete("updating this service to handle multiple tables")]
+        private CloudTable CloudTable { get; set;} // HACK: uses first found appender
+
+        // to become repacement for above
+        private CloudTable[] CloudTables { get; set; }
 
         internal void Connect()
         {

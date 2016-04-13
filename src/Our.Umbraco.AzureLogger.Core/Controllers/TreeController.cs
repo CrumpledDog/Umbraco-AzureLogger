@@ -5,6 +5,8 @@
     using global::Umbraco.Web.Models.Trees;
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.Trees;
+    using log4net;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http.Formatting;
     using umbraco.BusinessLogic.Actions;
@@ -27,20 +29,38 @@
 
             if (this.IsRoot(id))
             {
-                // Get Searches from the azure table
-                TableService
-                    .Instance
-                    .ReadSearchItemTableEntities()
+                // get list of appenders
+                LogManager
+                    .GetLogger(typeof(TableAppender))
+                    .Logger
+                    .Repository
+                    .GetAppenders()
+                    .Cast<TableAppender>()
                     .OrderBy(x => x.Name)
-                    .ForEach(
-                        x => treeNodeCollection.Add(this.CreateTreeNode(
-                                                            "searchItem|" + x.RowKey,
-                                                            "-1",
-                                                            queryStrings,
-                                                            x.Name,
-                                                            "icon-list",
-                                                            false,
-                                                            this.BuildRoute("ViewLog", x.RowKey))));
+                    .ForEach(x => treeNodeCollection.Add(this.CreateTreeNode(
+                                                                "appender|" + x.Name,
+                                                                "-1",
+                                                                queryStrings,
+                                                                x.Name,
+                                                                "icon-list",
+                                                                false,
+                                                                this.BuildRoute("ViewLog", x.Name))));
+
+
+                //// Get Searches from the azure table
+                //TableService
+                //    .Instance
+                //    .ReadSearchItemTableEntities()
+                //    .OrderBy(x => x.Name)
+                //    .ForEach(
+                //        x => treeNodeCollection.Add(this.CreateTreeNode(
+                //                                            "searchItem|" + x.RowKey,
+                //                                            "-1",
+                //                                            queryStrings,
+                //                                            x.Name,
+                //                                            "icon-list",
+                //                                            false,
+                //                                            this.BuildRoute("ViewLog", x.RowKey))));
             }
 
             return treeNodeCollection;
