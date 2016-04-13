@@ -6,7 +6,6 @@
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.Trees;
     using log4net;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http.Formatting;
     using umbraco.BusinessLogic.Actions;
@@ -45,22 +44,6 @@
                                                                 "icon-list",
                                                                 false,
                                                                 this.BuildRoute("ViewLog", x.Name))));
-
-
-                //// Get Searches from the azure table
-                //TableService
-                //    .Instance
-                //    .ReadSearchItemTableEntities()
-                //    .OrderBy(x => x.Name)
-                //    .ForEach(
-                //        x => treeNodeCollection.Add(this.CreateTreeNode(
-                //                                            "searchItem|" + x.RowKey,
-                //                                            "-1",
-                //                                            queryStrings,
-                //                                            x.Name,
-                //                                            "icon-list",
-                //                                            false,
-                //                                            this.BuildRoute("ViewLog", x.RowKey))));
             }
 
             return treeNodeCollection;
@@ -80,12 +63,8 @@
             else if (id.StartsWith("appender"))
             {
                 // TODO: migrate filtering options into here
+                // menuItemCollection.Items.Add<SearchFiltersAction>("Filters", false); // NOTE: render name differs - better for user
             }
-            //else if (id.StartsWith("searchItem"))
-            //{
-            //    menuItemCollection.Items.Add<SearchFiltersAction>("Filters", false); // NOTE: render name differs - better for user
-            //    menuItemCollection.Items.Add<ActionDelete>(localizedTextService.Localize(ActionDelete.Instance.Alias), true); // loads view "Delete.html"
-            //}
 
             return menuItemCollection;
         }
