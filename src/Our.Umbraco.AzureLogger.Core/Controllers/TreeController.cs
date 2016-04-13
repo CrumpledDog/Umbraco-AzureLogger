@@ -41,7 +41,7 @@
                                                                 "appender|" + x.Name,
                                                                 "-1",
                                                                 queryStrings,
-                                                                x.Name,
+                                                                x.TreeName ?? x.Name,
                                                                 "icon-list",
                                                                 false,
                                                                 this.BuildRoute("ViewLog", x.Name))));

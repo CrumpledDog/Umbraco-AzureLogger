@@ -20,6 +20,11 @@
         public string TableName { get; set; }
 
         /// <summary>
+        /// From configuration setting
+        /// </summary>
+        public string TreeName { get; set; }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public TableAppender()
