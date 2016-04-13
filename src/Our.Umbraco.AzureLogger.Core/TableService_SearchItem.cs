@@ -9,29 +9,6 @@
 
     internal sealed partial class TableService
     {
-        /// <summary>
-        /// Create a new search item
-        /// </summary>
-        /// <param name="name"></param>
-        internal void CreateSearchItemTableEntity(string name)
-        {
-            this.Connect();
-            if (this.Connected.HasValue && this.Connected.Value)
-            {
-                this.CloudTable.Execute(
-                    TableOperation.Insert(
-                        new SearchItemTableEntity()
-                        {
-                            PartitionKey = TableService.SearchItemPartitionKey,
-                            RowKey = Guid.NewGuid().ToString(),
-                            Name = name,
-                            HostName = null,
-                            LoggerNamesInclude = false,
-                            LoggerNames = string.Empty
-                        }));
-            }
-        }
-
         internal IEnumerable<SearchItemTableEntity> ReadSearchItemTableEntities()
         {
             this.Connect();

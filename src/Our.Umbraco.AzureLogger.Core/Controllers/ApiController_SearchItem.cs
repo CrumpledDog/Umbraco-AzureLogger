@@ -11,16 +11,6 @@
     public partial class ApiController
     {
         /// <summary>
-        /// Creates a new SearchItem (a saved search using supplied name)
-        /// </summary>
-        /// <param name="name"></param>
-        [HttpPost]
-        public void CreateSearchItem([FromUri] string name)
-        {
-            TableService.Instance.CreateSearchItemTableEntity(name);
-        }
-
-        /// <summary>
         ///
         /// </summary>
         /// <param name="searchItemId">also used as the Azure table rowKey</param>

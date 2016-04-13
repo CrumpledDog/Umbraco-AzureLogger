@@ -63,7 +63,6 @@
     <Content Include="App_Plugins\AzureLogger\BackOffice\SearchItemResource.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ConnectionStatus.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ConnectionStatusController.js" />
-    <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\CreateController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\Delete.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\DeleteController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\SearchFilters.css" />
@@ -73,7 +72,6 @@
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ViewLogController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\DeleteLogs.html" />
     <Content Include="App_Plugins\AzureLogger\package.manifest" />
-    <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\Create.html" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

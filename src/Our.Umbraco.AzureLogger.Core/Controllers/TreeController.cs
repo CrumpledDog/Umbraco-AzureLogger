@@ -75,15 +75,17 @@
             if (this.IsRoot(id))
             {
                 //menuItemCollection.Items.Add(new MenuItem("ConnectionStatus", "Connection Status"));
-                //menuItemCollection.Items.Add(new MenuItem("DeleteLogs", "Delete Logs")); // TODO: only if connected and there are logs to delete
-                menuItemCollection.Items.Add<ActionNew>(localizedTextService.Localize(ActionNew.Instance.Alias), false); // loads view "Create.html"
                 menuItemCollection.Items.Add<ActionRefresh>(localizedTextService.Localize(ActionRefresh.Instance.Alias), true);
             }
-            else if (id.StartsWith("searchItem"))
+            else if (id.StartsWith("appender"))
             {
-                menuItemCollection.Items.Add<SearchFiltersAction>("Filters", false); // NOTE: render name differs - better for user
-                menuItemCollection.Items.Add<ActionDelete>(localizedTextService.Localize(ActionDelete.Instance.Alias), true); // loads view "Delete.html"
+                // TODO: migrate filtering options into here
             }
+            //else if (id.StartsWith("searchItem"))
+            //{
+            //    menuItemCollection.Items.Add<SearchFiltersAction>("Filters", false); // NOTE: render name differs - better for user
+            //    menuItemCollection.Items.Add<ActionDelete>(localizedTextService.Localize(ActionDelete.Instance.Alias), true); // loads view "Delete.html"
+            //}
 
             return menuItemCollection;
         }

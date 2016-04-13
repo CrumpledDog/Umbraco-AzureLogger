@@ -15,26 +15,7 @@
             return {
 
                 searchItems: searchItems,
-                /*
-                    Creates a new search item (with empty filter properties) and persists to Azure table storage,
-                    and then runs any callback
-                */
-                createSearchItem: function (name, callback) {
 
-                    $http({
-                        method: 'POST',
-                        url: 'BackOffice/AzureLogger/Api/CreateSearchItem',
-                        params: { name: name }
-                    })
-                    .then(function () { // TODO: need searchItemId returned
-
-                        // TODO: update local data
-
-                        if (typeof callback === 'function') { callback(); }
-
-                    });
-
-                },
 
                 /*
                     Reads a search item (either from local array else falls back to requesting from Azure table storage),
