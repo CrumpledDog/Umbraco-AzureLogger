@@ -1,17 +1,23 @@
 ﻿namespace Our.Umbraco.AzureLogger.Core
 {
+    using Extensions;
     using log4net;
+    using log4net.Core;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
+    using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    internal sealed partial class TableService
+    internal sealed class TableService
     {
         private static readonly TableService tableService = new TableService();
 
-        private const string SearchItemPartitionKey = "searchItem";
+        /// <summary>
+        /// collection of CloudTable objs, each associated with a unique log4net appender
+        /// </summary>
+        private Dictionary<string, CloudTable> appenderCloudTables = new Dictionary<string, CloudTable>();
 
         static TableService()
         {
@@ -33,59 +39,128 @@
         }
 
         /// <summary>
-        ///  null = not yet attempted to connect
-        ///  true = connected
-        ///  false = connection failed
+        /// Gets the cloud table associated with the supplied appender name (handles lazy loading)
         /// </summary>
-        internal bool? Connected { get; private set;}
-
-        internal string ConnectionString { get; private set; }
-
-        internal string TableName { get; private set; }
-
-        [Obsolete("updating this service to handle multiple tables")]
-        private CloudTable CloudTable { get; set;} // HACK: uses first found appender
-
-        // to become repacement for above
-        private CloudTable[] CloudTables { get; set; }
-
-        internal void Connect()
+        /// <param name="appenderName"></param>
+        /// <returns></returns>
+        internal CloudTable GetCloudTable(string appenderName)
         {
-            if (!this.Connected.HasValue) // if connection not yet attempted
+            if (!this.appenderCloudTables.ContainsKey(appenderName))
             {
-                //this.Connected = false; // default
+                // attempt to get at table from the appender details
+                TableAppender tableAppender = LogManager
+                                                .GetLogger(typeof(TableAppender))
+                                                .Logger
+                                                .Repository
+                                                .GetAppenders()
+                                                .Cast<TableAppender>()
+                                                .SingleOrDefault(x => x.Name == appenderName);
 
-                IEnumerable<TableAppender> tableAppenders = LogManager.GetLogger(typeof(TableAppender)).Logger.Repository.GetAppenders().Cast<TableAppender>();
-
-                //if (!azureTableAppenders.Any())
-                //{
-                //    throw new Exception("Couldn't find a log4net AzureTableAppender");
-                //}
-                //else if (azureTableAppenders.Count() > 1)
-                //{
-                //    throw new Exception("Found more than one log4net AzureTableAppender");
-                //}
-                //else
-                if (tableAppenders.Count() == 1)
+                if (tableAppender != null)
                 {
-                    // we have found a single AzureTableAppender
-                    TableAppender tableAppender = tableAppenders.Single();
-
-                    this.ConnectionString = tableAppender.ConnectionString;
-                    this.TableName = tableAppender.TableName;
-
-                    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(this.ConnectionString);
+                    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(tableAppender.ConnectionString);
 
                     CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
 
-                    this.CloudTable = cloudTableClient.GetTableReference(this.TableName);
+                    CloudTable cloudTable = cloudTableClient.GetTableReference(tableAppender.TableName);
 
-					// create the storage table if it isn't already there
-					this.CloudTable.CreateIfNotExists();
+                    cloudTable.CreateIfNotExists();
 
-					this.Connected = true;
+                    this.appenderCloudTables[appenderName] = cloudTable;
                 }
             }
+
+            return this.appenderCloudTables[appenderName];
+        }
+
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="loggingEvents">collection of log4net logging events to persist into Azure table storage</param>
+        internal void CreateLogTableEntities(string appenderName, LoggingEvent[] loggingEvents)
+        {
+            CloudTable cloudTable = this.GetCloudTable(appenderName);
+
+            if (cloudTable != null)
+            {
+                // group by logging event date & hour - each group equates to an Azure table partition key
+                // (all items in the same Azure table batch operation must use the same partition key)
+                foreach (IGrouping<DateTime, LoggingEvent> groupedLoggingEvents in loggingEvents.GroupBy(x => x.TimeStamp.Date.AddHours(x.TimeStamp.Hour)))
+                {
+                    DateTime dateHour = groupedLoggingEvents.Key; // date for current grouping
+
+                    // set partition key for this batch of inserts
+                    string partitionKey = string.Format("{0:D19}", DateTime.MaxValue.Ticks - dateHour.Ticks + 1);
+
+                    // ensure 100 or less items are inserted per Azure table batch insert operation
+                    foreach (IEnumerable<LoggingEvent> batchLoggingEvents in groupedLoggingEvents.Batch(100))
+                    {
+                        TableBatchOperation tableBatchOperation = new TableBatchOperation();
+
+                        foreach (LoggingEvent loggingEvent in batchLoggingEvents)
+                        {
+                            tableBatchOperation.Insert(new LogTableEntity(partitionKey, loggingEvent));
+                        }
+
+                        cloudTable.ExecuteBatch(tableBatchOperation);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// https://azure.microsoft.com/en-gb/documentation/articles/storage-dotnet-how-to-use-tables/
+        /// </summary>
+        /// <param name="partitionKey">null or the last known partition key</param>
+        /// <param name="rowKey">null or the last known row key</param>
+        /// <param name="minLevel">the min level of log items to return</param>
+        /// <param name="hostName">null or the hostname to filter on</param>
+        /// <param name="loggerNamesInclude">indicates whether the loggerNames should be included or excluded in the filter query</param>
+        /// <param name="loggerNames">array of logger names</param>
+        /// <returns>a collection of log items matchin the supplied filter criteria</returns>
+        internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey)
+        {
+            CloudTable cloudTable = this.GetCloudTable(appenderName);
+
+            if (cloudTable != null)
+            {
+                TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>();
+
+                if (!string.IsNullOrWhiteSpace(partitionKey))
+                {
+                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, partitionKey));
+                }
+
+                if (!string.IsNullOrWhiteSpace(rowKey))
+                {
+                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.GreaterThan, rowKey));
+                }
+
+                return cloudTable.ExecuteQuery(tableQuery);
+            }
+
+            return Enumerable.Empty<LogTableEntity>(); // fallback
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="partitionKey"></param>
+        /// <param name="rowKey"></param>
+        /// <returns></returns>
+        internal LogTableEntity ReadLogTableEntity(string appenderName, string partitionKey, string rowKey)
+        {
+            CloudTable cloudTable = this.GetCloudTable(appenderName);
+
+            if (cloudTable != null)
+            {
+                return cloudTable
+                        .Execute(TableOperation.Retrieve<LogTableEntity>(partitionKey, rowKey))
+                        .Result as LogTableEntity;
+            }
+
+            return null; // fallback
         }
     }
 }

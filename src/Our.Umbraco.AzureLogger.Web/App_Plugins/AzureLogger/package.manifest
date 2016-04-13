@@ -1,14 +1,9 @@
 ﻿{
     javascript:[
 		'/App_Plugins/AzureLogger/BackOffice/LazyLoadDirective.js',
-		'/App_Plugins/AzureLogger/BackOffice/SearchItemResource.js',
-		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ConnectionStatusController.js',
-		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/DeleteController.js',
-		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/SearchFiltersController.js',
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ViewLogController.js'
 	],
     css:[
-        '/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/SearchFilters.css',
         '/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ViewLog.css'
     ]
 }

@@ -20,7 +20,7 @@
         [JsonProperty("level")]
         public Level Level { get; set; }
 
-        [JsonProperty("loggerName")] // NOTE: this seems to always be the same as the PartitionKey
+        [JsonProperty("loggerName")]
         public string LoggerName { get; set; }
 
         /// <summary>

@@ -9,7 +9,6 @@
     using System.Linq;
     using System.Net.Http.Formatting;
     using umbraco.BusinessLogic.Actions;
-    using umbraco.interfaces;
     using UmbracoTreeController = global::Umbraco.Web.Trees.TreeController;
 
     [Tree("developer", "azureLoggerTree", "Azure Logger", "icon-folder", "icon-folder-open", true, 0)]
@@ -37,13 +36,15 @@
                     .Cast<TableAppender>()
                     .OrderBy(x => x.Name)
                     .ForEach(x => treeNodeCollection.Add(this.CreateTreeNode(
-                                                                "appender|" + x.Name,
+                                                                "appender|" + x.Name, // use the distinct appender name
                                                                 "-1",
                                                                 queryStrings,
-                                                                x.TreeName ?? x.Name,
+                                                                x.TreeName ?? x.Name, // use friendly name if available
                                                                 "icon-list",
                                                                 false,
-                                                                this.BuildRoute("ViewLog", x.Name))));
+                                                                this.BuildRoute("ViewLog", x.Name)))); // key is appender name (can use it to get table name)
+
+                // TODO: integrate the previous search item filtering to apply to each appender node
             }
 
             return treeNodeCollection;
@@ -57,13 +58,10 @@
 
             if (this.IsRoot(id))
             {
-                //menuItemCollection.Items.Add(new MenuItem("ConnectionStatus", "Connection Status"));
                 menuItemCollection.Items.Add<ActionRefresh>(localizedTextService.Localize(ActionRefresh.Instance.Alias), true);
             }
             else if (id.StartsWith("appender"))
             {
-                // TODO: migrate filtering options into here
-                // menuItemCollection.Items.Add<SearchFiltersAction>("Filters", false); // NOTE: render name differs - better for user
             }
 
             return menuItemCollection;
@@ -96,43 +94,5 @@
         //    return querystring;
         //    //queryStrings.ReadAsNameValueCollection().Add("filter", "level");
         //}
-    }
-
-    public class SearchFiltersAction : IAction
-    {
-        public string Alias
-        {
-            get { return "searchFilters"; }
-        }
-
-        public bool CanBePermissionAssigned
-        {
-            get { return false; }
-        }
-
-        public string Icon
-        {
-            get { return "filter"; }
-        }
-
-        public string JsFunctionName
-        {
-            get { return null; }
-        }
-
-        public string JsSource
-        {
-            get { return null; }
-        }
-
-        public char Letter
-        {
-            get { return 'f'; } // TODO: check this letter is available
-        }
-
-        public bool ShowInNotifier
-        {
-            get { return false; }
-        }
     }
 }

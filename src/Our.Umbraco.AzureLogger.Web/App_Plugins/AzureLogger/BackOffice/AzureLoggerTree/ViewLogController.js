@@ -1,54 +1,32 @@
 ﻿angular
     .module('umbraco')
     .controller('AzureLogger.ViewLogController', [
-        '$scope', '$http', '$routeParams', 'navigationService', 'AzureLogger.SearchItemResource',
-        function ($scope, $http, $routeParams, navigationService, searchItemResource) {
+        '$scope', '$http', '$routeParams', 'navigationService',
+        function ($scope, $http, $routeParams, navigationService) {
 
-            var searchItemId = $routeParams.id;
+            var appenderName = $routeParams.id;
 
-            $scope.init = function () {
-                searchItemResource.readSearchItem(searchItemId).then(function (searchItem) {
-                    if (searchItem == 'null') { // TODO: change API controller to return a real null !
+            // TODO: get appender details (tree name if available & table name)
 
-                        navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1'], forceReload: false });
-                        navigationService.changeSection('developer');
-
-                    } else {
-
-                        $scope.searchItem = searchItem; // put into scope so view can delay rendering until populated
-
-                        $scope.logItems = [];
-                        $scope.finishedLoading = false;
-
-                    }
-                });
-            };
-
-            // watch the search items collection in the resource, and trigger init if this search item data is changed
-            $scope.searchItems = searchItemResource.searchItems;
-            $scope.$watch('searchItems["' + searchItemId + '"]', function () {
-                $scope.init();
-            }, true);
 
             // forces the tree to highlight the associated search item for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
-            navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'searchItem|' + searchItemId], forceReload: false });
+            navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'appender|' + appenderName], forceReload: false });
 
             $scope.connected = false;
 
             //$scope.startEventTimestamp; // set with date picker
             //$scope.threadIdentity; // built from AppDomainId + ProcessId + ThreadName (set by clicking in details view)
-
-            //$scope.logItems = [];
+            $scope.logItems = [];
             //$scope.logItemLimit = 1000; // size of logItems array before it is reset (and a new start date time in the filter)
             //$scope.currentlyLoading = false; // true when getting data awaiting a response to set
             //$scope.finishedLoading = false; // true once server indicates that there is no more data
 
-            // get connection details (triggering a new connection if required)
-            $http.get('BackOffice/AzureLogger/Api/Connect')
-                .then(function (response) {
-                    $scope.connected = response.data.connected;
-                });
+            //// get connection details (triggering a new connection if required)
+            //$http.get('BackOffice/AzureLogger/Api/Connect') // TODO: supply appenderName
+            //    .then(function (response) {
+            //        $scope.connected = response.data.connected;
+            //    });
 
 
             $scope.getMoreLogItems = function () {
@@ -72,14 +50,14 @@
                     }
 
                     $http({
-                        method: 'POST',
+                        method: 'GET',
                         url: 'BackOffice/AzureLogger/Api/ReadLogItemIntros',
                         params: {
+                            'appenderName' : appenderName,
                             'partitionKey' : partitionKey != null ? escape(partitionKey) : '',
                             'rowKey': rowKey != null ? escape(rowKey) : '',
                             'take': 50
-                        },
-                        data: $scope.searchItem // supply the full search item data
+                        }
                     })
                     .then(function (response) {
 
@@ -112,6 +90,7 @@
                         method: 'GET',
                         url: 'BackOffice/AzureLogger/Api/ReadLogItemDetail',
                         params: {
+                            appenderName: appenderName,
                             partitionKey: logItem.partitionKey,
                             rowKey: logItem.rowKey
                         }

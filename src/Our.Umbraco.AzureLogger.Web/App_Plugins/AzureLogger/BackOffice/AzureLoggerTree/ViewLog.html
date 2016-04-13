@@ -2,19 +2,15 @@
 
     <div class="umb-panel-header">
         <div class="umb-headline-editor-wrapper">
-            <h1 class="headline">{{searchItem.name}}</h1>
+            <h1 class="headline">{{appenderName}}</h1>
         </div>
-
-        <!--<span ng-show="searchItem.minLevel != 'DEBUG'">Min Level: {{searchItem.minLevel}}</span>
-        <span ng-show="searchItem.hostName">Host Name: {{searchItem.hostName}}</span>
-        <span ng-show="searchItem.loggerName">Logger Name: {{searchItem.loggerName}}</span>-->
 
         <!--<p>Start Date Time : <input type="text" /></p>-->
         <!--item-count: {{ logItems.length }}-->
         <!--detail-count: {{ detailCount }}-->
     </div>
 
-    <div class="umb-panel-body umb-scrollable" ng-if="connected && searchItem">
+    <div class="umb-panel-body umb-scrollable">
         <div class="umb-pane" lazy-load="getMoreLogItems()">
 
             <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems">
@@ -110,7 +106,7 @@
             <!--<a ng-show="logItems.length >= logItemLimit">Reset from this log entry event time</a>-->
 
             <div class="currently-loading" ng-show="currentlyLoading">Currently Loading</div>
-            <div class="finished-loading" ng-show="finishedLoading">Finsihed Loading</div>
+            <div class="finished-loading" ng-show="finishedLoading">Finished Loading</div>
 
         </div><!-- /umb-panel-body -->
     </div>

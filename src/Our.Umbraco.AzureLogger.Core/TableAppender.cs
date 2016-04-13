@@ -64,7 +64,7 @@
         /// <param name="events">the log events to persist</param>
         protected override void SendBuffer(LoggingEvent[] loggingEvents)
         {
-            TableService.Instance.CreateLogTableEntities(loggingEvents);
+            TableService.Instance.CreateLogTableEntities(this.Name, loggingEvents);
         }
     }
 }
