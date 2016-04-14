@@ -49,7 +49,7 @@
                         this.appDomainId = (int)dictionaryEntry.Value;
                         break;
 
-                    case "log4net_HostName":
+                    case "log4net:HostName":
                         this.log4net_HostName = (string)dictionaryEntry.Value;
                         break;
 
