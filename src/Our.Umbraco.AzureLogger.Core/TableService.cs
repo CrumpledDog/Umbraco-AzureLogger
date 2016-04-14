@@ -7,6 +7,7 @@
     using Microsoft.WindowsAzure.Storage.Table;
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -17,7 +18,7 @@
         /// <summary>
         /// collection of CloudTable objs, each associated with a unique log4net appender
         /// </summary>
-        private Dictionary<string, CloudTable> appenderCloudTables = new Dictionary<string, CloudTable>();
+        private ConcurrentDictionary<string, CloudTable> appenderCloudTables = new ConcurrentDictionary<string, CloudTable>();
 
         static TableService()
         {
@@ -39,44 +40,9 @@
         }
 
         /// <summary>
-        /// Gets the cloud table associated with the supplied appender name (handles lazy loading)
-        /// </summary>
-        /// <param name="appenderName"></param>
-        /// <returns></returns>
-        internal CloudTable GetCloudTable(string appenderName)
-        {
-            if (!this.appenderCloudTables.ContainsKey(appenderName))
-            {
-                // attempt to get at table from the appender details
-                TableAppender tableAppender = LogManager
-                                                .GetLogger(typeof(TableAppender))
-                                                .Logger
-                                                .Repository
-                                                .GetAppenders()
-                                                .Cast<TableAppender>()
-                                                .SingleOrDefault(x => x.Name == appenderName);
-
-                if (tableAppender != null)
-                {
-                    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(tableAppender.ConnectionString);
-
-                    CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
-
-                    CloudTable cloudTable = cloudTableClient.GetTableReference(tableAppender.TableName);
-
-                    cloudTable.CreateIfNotExists();
-
-                    this.appenderCloudTables[appenderName] = cloudTable;
-                }
-            }
-
-            return this.appenderCloudTables[appenderName];
-        }
-
-
-        /// <summary>
         ///
         /// </summary>
+        /// <param name="appenderName"></param>
         /// <param name="loggingEvents">collection of log4net logging events to persist into Azure table storage</param>
         internal void CreateLogTableEntities(string appenderName, LoggingEvent[] loggingEvents)
         {
@@ -161,6 +127,41 @@
             }
 
             return null; // fallback
+        }
+
+        /// <summary>
+        /// Helper to get the cloud table associated with the supplied appender name
+        /// </summary>
+        /// <param name="appenderName">unique name to identify a log4net Azure TableAppender</param>
+        /// <returns></returns>
+        private CloudTable GetCloudTable(string appenderName)
+        {
+            if (!this.appenderCloudTables.ContainsKey(appenderName))
+            {
+                // attempt to get at table from the appender details
+                TableAppender tableAppender = LogManager
+                                                .GetLogger(typeof(TableAppender))
+                                                .Logger
+                                                .Repository
+                                                .GetAppenders()
+                                                .Cast<TableAppender>()
+                                                .SingleOrDefault(x => x.Name == appenderName);
+
+                if (tableAppender != null)
+                {
+                    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(tableAppender.ConnectionString);
+
+                    CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
+
+                    CloudTable cloudTable = cloudTableClient.GetTableReference(tableAppender.TableName);
+
+                    cloudTable.CreateIfNotExists();
+
+                    this.appenderCloudTables[appenderName] = cloudTable;
+                }
+            }
+
+            return this.appenderCloudTables[appenderName];
         }
     }
 }
