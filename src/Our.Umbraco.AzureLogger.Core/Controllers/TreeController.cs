@@ -33,6 +33,7 @@
                     .Logger
                     .Repository
                     .GetAppenders()
+                    .Where(x => x is TableAppender)
                     .Cast<TableAppender>()
                     .OrderBy(x => x.Name)
                     .ForEach(x => treeNodeCollection.Add(this.CreateTreeNode(

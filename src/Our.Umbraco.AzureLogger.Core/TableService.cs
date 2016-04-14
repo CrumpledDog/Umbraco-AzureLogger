@@ -144,6 +144,7 @@
                                                 .Logger
                                                 .Repository
                                                 .GetAppenders()
+                                                .Where(x => x is TableAppender)
                                                 .Cast<TableAppender>()
                                                 .SingleOrDefault(x => x.Name == appenderName);
 
