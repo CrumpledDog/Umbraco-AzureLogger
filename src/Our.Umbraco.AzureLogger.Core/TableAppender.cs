@@ -2,6 +2,7 @@
 {
     using log4net.Appender;
     using log4net.Core;
+    using System.Threading.Tasks;
     using System.Web;
 
     /// <summary>
@@ -64,7 +65,8 @@
         /// <param name="events">the log events to persist</param>
         protected override void SendBuffer(LoggingEvent[] loggingEvents)
         {
-            TableService.Instance.CreateLogTableEntities(this.Name, loggingEvents);
+            // spin off a new thread to avoid waiting
+            Task.Run(() => TableService.Instance.CreateLogTableEntities(this.Name, loggingEvents));
         }
     }
 }
