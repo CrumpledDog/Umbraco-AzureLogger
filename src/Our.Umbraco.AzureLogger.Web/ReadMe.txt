@@ -11,6 +11,8 @@
 
     <param name="ConnectionString" value="UseDevelopmentStorage=true"/>
     <param name="TableName" value="LogTable"/>
+	<param name="TreeName" value="friendly text"/>
+	<param name="IconName" value="icon-list"/>
 
  </appender>
 

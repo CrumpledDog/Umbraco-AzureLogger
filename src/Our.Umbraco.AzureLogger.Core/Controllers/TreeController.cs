@@ -41,7 +41,7 @@
                                                                 "-1",
                                                                 queryStrings,
                                                                 x.TreeName ?? x.Name, // use friendly name if available
-                                                                "icon-list",
+                                                                !string.IsNullOrWhiteSpace(x.IconName) ? x.IconName : "icon-list",
                                                                 false,
                                                                 this.BuildRoute("ViewLog", x.Name)))); // key is appender name (can use it to get table name)
 

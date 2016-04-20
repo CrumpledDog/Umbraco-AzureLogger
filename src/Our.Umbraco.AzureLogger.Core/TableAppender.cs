@@ -21,9 +21,14 @@
         public string TableName { get; set; }
 
         /// <summary>
-        /// From configuration setting
+        /// From (optional) configuration setting
         /// </summary>
         public string TreeName { get; set; }
+
+        /// <summary>
+        /// From (optional) configuration setting
+        /// </summary>
+        public string IconName { get; set; }
 
         /// <summary>
         /// Constructor
