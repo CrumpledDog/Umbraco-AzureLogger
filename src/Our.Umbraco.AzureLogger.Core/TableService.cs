@@ -9,6 +9,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Linq;
 
     internal sealed class TableService
@@ -150,7 +151,20 @@
 
                 if (tableAppender != null)
                 {
-                    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(tableAppender.ConnectionString);
+                    string connectionString;
+
+                    // attempt to find connection string in web.config
+                    if (ConfigurationManager.ConnectionStrings[tableAppender.ConnectionString] != null)
+                    {
+                        connectionString = ConfigurationManager.ConnectionStrings[tableAppender.ConnectionString].ConnectionString;
+                    }
+                    else
+                    {
+                        // fallback to assuming tableAppender has the full connection string
+                        connectionString = tableAppender.ConnectionString;
+                    }
+
+                    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
 
                     CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
 

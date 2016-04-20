@@ -35,7 +35,6 @@
         /// </summary>
         public TableAppender()
         {
-            // TODO: read this from a config value
             this.Lossy = false;
         }
 
