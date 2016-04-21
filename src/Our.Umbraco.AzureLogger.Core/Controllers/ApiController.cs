@@ -52,5 +52,11 @@
 
             return null;
         }
+
+        [HttpPost]
+        public void Wipe([FromUri]string appenderName)
+        {
+
+        }
     }
 }

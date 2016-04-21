@@ -1,0 +1,16 @@
+﻿<div ng-controller="AzureLogger.WipeLogController" ng-init="init(currentNode)">
+
+    <umb-pane>
+
+        <p>
+            To wipe all entries from a table (without the overhead of requesting and then deleting items),
+            the table is deleted and then re-created. This can take up to a minute, so any events being logged during this
+            time may be lost.
+        </p>
+
+        <a href="" class="btn btn-link" ng-click="cancel()"><localize key="general_cancel">Cancel</localize></a>
+        <a href="" class="btn btn-primary" ng-click="wipe()"><localize key="general_ok">OK</localize></a>
+
+    </umb-pane>
+
+</div>
