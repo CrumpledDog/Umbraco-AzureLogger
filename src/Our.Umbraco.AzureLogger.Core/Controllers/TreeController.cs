@@ -74,7 +74,10 @@
             }
             else if (id.StartsWith("appender"))
             {
+                menuItemCollection.Items.Add(new MenuItem("WipeTable", "Wipe Table") { Icon = "delete" });
 
+                // is the line below legacy as new MenuItem indicates that IActions are legacy ?
+                // menuItemCollection.Items.Add<ActionDelete>(localizedTextService.Localize(ActionDelete.Instance.Alias), true); // would load view "Delete.html"
             }
 
             return menuItemCollection;
