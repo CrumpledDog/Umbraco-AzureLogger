@@ -5,6 +5,7 @@
     using log4net.Core;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
+    using Microsoft.WindowsAzure.Storage.Table.Protocol;
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
     using System;
     using System.Collections.Concurrent;
@@ -132,7 +133,13 @@
 
         internal void TrimLog(string appenderName)
         {
-            // wipe all entries older than now
+            CloudTable cloudTable;
+
+            // if table found in collection, then delete it
+            if (this.appenderCloudTables.TryRemove(appenderName, out cloudTable))
+            {
+                cloudTable.Delete();
+            }
         }
 
         /// <summary>
@@ -175,9 +182,34 @@
 
                     CloudTable cloudTable = cloudTableClient.GetTableReference(tableAppender.TableName);
 
-                    cloudTable.CreateIfNotExists();
+                    bool cloudTableReady = false;
 
-                    this.appenderCloudTables[appenderName] = cloudTable;
+                    //do
+                    //{
+                        try
+                        {
+                            cloudTable.CreateIfNotExists();
+
+                            cloudTableReady = true;
+                        }
+                        catch (StorageException exception)
+                        {
+                            //if (exception.RequestInformation.HttpStatusCode == 409 &&
+                            //    exception.RequestInformation.ExtendedErrorInformation.ErrorCode.Equals(TableErrorCodeStrings.TableBeingDeleted))
+                            //{
+                            //    // TODO: pause and try again ?
+                            //}
+                        }
+                    //} while (!cloudTableReady);
+
+                    if (cloudTableReady)
+                    {
+                        this.appenderCloudTables[appenderName] = cloudTable;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
             }
 
