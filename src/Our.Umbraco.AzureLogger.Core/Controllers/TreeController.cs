@@ -42,11 +42,22 @@
                                                                 queryStrings,
                                                                 x.TreeName ?? x.Name, // use friendly name if available
                                                                 !string.IsNullOrWhiteSpace(x.IconName) ? x.IconName : "icon-list",
-                                                                false,
+                                                                false, // TODO: are there filters associated with this appender ?
                                                                 this.BuildRoute("ViewLog", x.Name)))); // key is appender name (can use it to get table name)
 
                 // TODO: integrate the previous search item filtering to apply to each appender node
             }
+            //else if (id.StartsWith("appender"))
+            //{
+            //    treeNodeCollection.Add(this.CreateTreeNode(
+            //                                    "filter|",
+            //                                    id,
+            //                                    queryStrings,
+            //                                    "example filter node",
+            //                                    "icon-filter",
+            //                                    false,
+            //                                    this.BuildRoute("ViewLog", string.Empty)));
+            //}
 
             return treeNodeCollection;
         }
@@ -63,6 +74,7 @@
             }
             else if (id.StartsWith("appender"))
             {
+
             }
 
             return menuItemCollection;
