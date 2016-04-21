@@ -130,6 +130,11 @@
             return null; // fallback
         }
 
+        internal void TrimLog(string appenderName)
+        {
+            // wipe all entries older than now
+        }
+
         /// <summary>
         /// Helper to get the cloud table associated with the supplied appender name
         /// </summary>
