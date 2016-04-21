@@ -52,23 +52,13 @@
                         <dd>{{logItem.details.identity ? logItem.details.identity : 'Unknown'}}</dd>
 
                         <dt>Level</dt>
-                        <dd>
-                            <!-- only use link if filter doesn't match this exactly -->
-                            <a href="javascript:alert('open left side filter panel and set level')">
-                                {{logItem.level}}
-                            </a>
-                        </dd>
+                        <dd>{{logItem.level}}</dd>
 
                         <dt>Logger Name</dt>
-                        <dd>
-                            <!-- only use link if filter doesn't match this exactly -->
-                            <a href="javascript:alert('open left side filter panel and set logger name')">
-                                {{logItem.loggerName}}
-                            </a>
-                        </dd>
+                        <dd>{{logItem.loggerName}}</dd>
 
                         <dt>Message</dt>
-                        <dd>{{logItem.details.message}}</dd>
+                        <dd><pre>{{logItem.details.message}}</pre></dd>
 
                         <dt>Thread Name</dt>
                         <dd>{{logItem.details.threadName}}</dd>
@@ -86,15 +76,13 @@
                         <dd>{{logItem.details.appDomainId}}</dd>
 
                         <dt>Host Name</dt>
-                        <dd>
-                            <!-- only use link if filter doesn't match this exactly -->
-                            <a href="javascript:alert('open left side filter pabel and set host name')">
-                                {{logItem.hostName}}
-                            </a>
-                        </dd>
+                        <dd>{{logItem.hostName}}</dd>
 
                         <dt>Url</dt>
-                        <dd>{{logItem.details.url ? logItem.details.url : 'Unknown'}}</dd>
+                        <dd>
+                            <a href="{{logItem.details.url}}" ng-show="logItem.details.url">{{logItem.details.url}}</a>
+                            <span ng-show="!logItem.details.url">Unknown</span>
+                        </dd>
                     </dl>
                 </div><!-- /log-item-details-row -->
 
