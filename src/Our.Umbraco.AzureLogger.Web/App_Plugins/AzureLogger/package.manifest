@@ -2,7 +2,7 @@
     javascript:[
 		'/App_Plugins/AzureLogger/BackOffice/LazyLoadDirective.js',
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ViewLogController.js',
-		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/WipeLogController.js'
+		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/RecreateTableController.js'
 	],
     css:[
         '/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ViewLog.css'

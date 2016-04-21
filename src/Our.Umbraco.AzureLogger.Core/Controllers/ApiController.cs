@@ -54,9 +54,9 @@
         }
 
         [HttpPost]
-        public void Wipe([FromUri]string appenderName)
+        public void RecreateTable([FromUri]string appenderName)
         {
-
+            //TableService.Instance.RecreateTable(appenderName)
         }
     }
 }
