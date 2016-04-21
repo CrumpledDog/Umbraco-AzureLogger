@@ -2,7 +2,8 @@
 
     <umb-pane>
         <p>
-            Wiping all existing entries in the log may take some time, but note that the logger may continue adding new log entries.
+            Warning: Any log events destined for this table whilst it is being trimmed will not be captured.
+            The log entries are removed by deleting the Azure table, and then recreating it (which can take up to a minute),
         </p>
 
         <a href="" class="btn btn-link" ng-click="cancel()"><localize key="general_cancel">Cancel</localize></a>

@@ -1,8 +1,8 @@
 ﻿angular
     .module('umbraco')
     .controller('AzureLogger.TrimLogController', [
-        '$scope', '$http', 'navigationService',
-        function ($scope, $http, navigationService) {
+        '$rootScope', '$scope', '$http', 'navigationService',
+        function ($rootScope, $scope, $http, navigationService) {
 
             var appenderName;
 
@@ -26,6 +26,9 @@
                     params: { 'appenderName': appenderName }
                 })
                 .then(function () {
+
+                    $rootScope.$broadcast('TrimmedLog', appenderName);
+
                     navigationService.hideNavigation();
                 });
 

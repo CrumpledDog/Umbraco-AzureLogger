@@ -6,14 +6,9 @@
 
             var appenderName = $routeParams.id;
 
-            // TODO: get appender details (tree name if available & table name)
-
-
             // forces the tree to highlight the associated search item for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
             navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'appender|' + appenderName], forceReload: false });
-
-            $scope.connected = false;
 
             //$scope.startEventTimestamp; // set with date picker
             //$scope.threadIdentity; // built from AppDomainId + ProcessId + ThreadName (set by clicking in details view)
@@ -22,12 +17,12 @@
             //$scope.currentlyLoading = false; // true when getting data awaiting a response to set
             //$scope.finishedLoading = false; // true once server indicates that there is no more data
 
-            //// get connection details (triggering a new connection if required)
-            //$http.get('BackOffice/AzureLogger/Api/Connect') // TODO: supply appenderName
-            //    .then(function (response) {
-            //        $scope.connected = response.data.connected;
-            //    });
-
+            $scope.$on('TrimmedLog', function (event, arg) {
+                if (arg == appenderName) {
+                    $scope.logItems = [];
+                    $scope.getMoreLogItems();
+                }
+            });
 
             $scope.getMoreLogItems = function () {
 
