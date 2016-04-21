@@ -1,6 +1,6 @@
 ﻿angular
     .module('umbraco')
-    .controller('AzureLogger.RecreateTableController', [
+    .controller('AzureLogger.WipeLogController', [
         '$scope', '$http', 'navigationService',
         function ($scope, $http, navigationService) {
 
@@ -16,13 +16,13 @@
                 navigationService.hideNavigation();
             };
 
-            $scope.recreateTable = function () {
+            $scope.wipe = function () {
 
                 // TODO: update ui to indicate operation taking place...
 
                 $http({
                     method: 'POST',
-                    url: 'BackOffice/AzureLogger/Api/RecreateTable',
+                    url: 'BackOffice/AzureLogger/Api/Wipe',
                     params: { 'appenderName': appenderName }
                 })
                 .then(function () {
