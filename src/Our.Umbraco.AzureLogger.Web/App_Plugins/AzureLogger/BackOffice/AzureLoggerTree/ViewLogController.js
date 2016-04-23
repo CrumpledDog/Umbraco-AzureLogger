@@ -24,11 +24,10 @@
                 }
             });
 
-            // returns a promise, a
+            // returns a promise with a bool result
             $scope.getMoreLogItems = function () {
+
                 var deferred = $q.defer();
-                console.log('*');
-                // TODO: if item count < logItemLimit
 
                 // only request, if there isn't already a request pending and there might be data to get
                 if (!$scope.finishedLoading && !$scope.currentlyLoading) {
@@ -66,14 +65,12 @@
 
                         $scope.currentlyLoading = false;
 
-                        // ajax call completed
-                        deferred.resolve();
+                        deferred.resolve(!$scope.finishedLoading); // when true indicates the caller could try again
                     });
                 }
                 else
                 {
-                    // no waiting for ajax call, so resolve immediately
-                    deferred.resolve();
+                    deferred.resolve(false); // return false to indicate caller shouldn't try again
                 }
 
                 return deferred.promise;

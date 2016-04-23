@@ -14,9 +14,10 @@
                 // initialize to ensure content is loaded to fill the initial screen (before any scroll activity)
                 var lazyLoad = function () {
                     $timeout(function () { //timeout to ensure scope is ready
+                        // TODO: to make more generic, check to see if a promise is actually returned
                         scope.$apply(attrs.lazyLoad) // execute angular expression string
-                        .then(function () {
-                            if (elementCanExpand()) { // check to see if screen filled
+                        .then(function (canLoadMore) {
+                            if (canLoadMore && elementCanExpand()) { // check to see if screen filled
                                 lazyLoad(); // try again
                             }
                         });
