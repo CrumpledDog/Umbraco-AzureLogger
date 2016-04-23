@@ -1,4 +1,4 @@
-﻿<div ng-controller="AzureLogger.ViewLogController" ng-init="init()">
+﻿<div ng-controller="AzureLogger.ViewLogController">
 
     <div class="umb-panel-header">
         <div class="umb-headline-editor-wrapper">
@@ -93,8 +93,9 @@
             <!-- angular can't handle 10,000s of this data, so reset start time filter (not saveable) -->
             <!--<a ng-show="logItems.length >= logItemLimit">Reset from this log entry event time</a>-->
 
-            <div class="currently-loading" ng-show="currentlyLoading">Currently Loading</div>
-            <div class="finished-loading" ng-show="finishedLoading">Finished Loading</div>
+            <div class="info-banner" ng-show="currentlyLoading">Loading</div>
+            <div class="info-banner" ng-show="finishedLoading && logItems.length == 0">No Log Items</div>
+            <div class="info-banner" ng-show="finishedLoading && logItems.Length > 0">Finished Loading</div>
 
         </div><!-- /umb-panel-body -->
     </div>

@@ -72,7 +72,7 @@
 
 /* ui at bottom of list */
 
-.currently-loading, .finished-loading {
+.info-banner {
     background-color:lightgrey;
     width:100%;
     height:5em;
