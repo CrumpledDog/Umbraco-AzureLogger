@@ -1,8 +1,8 @@
 ﻿angular
     .module('umbraco')
     .controller('AzureLogger.ViewLogController', [
-        '$scope', '$http', '$routeParams', 'navigationService',
-        function ($scope, $http, $routeParams, navigationService) {
+        '$scope', '$http', '$routeParams', 'navigationService', '$q',
+        function ($scope, $http, $routeParams, navigationService, $q) {
 
             var appenderName = $routeParams.id;
 
@@ -24,8 +24,10 @@
                 }
             });
 
+            // returns a promise, a
             $scope.getMoreLogItems = function () {
-
+                var deferred = $q.defer();
+                console.log('*');
                 // TODO: if item count < logItemLimit
 
                 // only request, if there isn't already a request pending and there might be data to get
@@ -51,7 +53,7 @@
                             'appenderName' : appenderName,
                             'partitionKey' : partitionKey != null ? escape(partitionKey) : '',
                             'rowKey': rowKey != null ? escape(rowKey) : '',
-                            'take': 50
+                            'take': 5
                         }
                     })
                     .then(function (response) {
@@ -63,8 +65,18 @@
                         }
 
                         $scope.currentlyLoading = false;
+
+                        // ajax call completed
+                        deferred.resolve();
                     });
                 }
+                else
+                {
+                    // no waiting for ajax call, so resolve immediately
+                    deferred.resolve();
+                }
+
+                return deferred.promise;
             };
 
             $scope.toggleLogItemDetails = function ($event, logItem) {

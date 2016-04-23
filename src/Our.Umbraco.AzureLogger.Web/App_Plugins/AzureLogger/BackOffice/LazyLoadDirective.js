@@ -12,7 +12,18 @@
                 };
 
                 // initialize to ensure content is loaded to fill the initial screen (before any scroll activity)
-                $timeout(function () { scope.$apply(attrs.lazyLoad); })
+                var lazyLoad = function () {
+                    $timeout(function () { //timeout to ensure scope is ready
+                        scope.$apply(attrs.lazyLoad) // execute angular expression string
+                        .then(function () {
+                            if (elementCanExpand()) { // check to see if screen filled
+                                lazyLoad(); // try again
+                            }
+                        });
+                    });
+                };
+
+                lazyLoad(); // init
 
                 // timer to delay event until scrolling stopped
                 var delayTimer;
