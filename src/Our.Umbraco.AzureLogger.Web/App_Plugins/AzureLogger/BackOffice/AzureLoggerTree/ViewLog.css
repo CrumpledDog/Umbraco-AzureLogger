@@ -3,18 +3,24 @@
     margin:10px 25px 0 0;
 }
 
-.actions label {
-    display:inline;
-}
-
-
 .filters {
-    margin: 10px 0 0 25px;
+    margin: 15px 0 0 25px;
 }
 
-.filters label {
-    float:left;
-    padding-right:20px;
+/*.filters input {
+    width:250px;
+}*/
+
+.filter-machine {
+    width:150px;
+}
+
+.filter-logger {
+    width:250px;
+}
+
+.filter-message {
+    width:300px;
 }
 
 .view-log h1 {
