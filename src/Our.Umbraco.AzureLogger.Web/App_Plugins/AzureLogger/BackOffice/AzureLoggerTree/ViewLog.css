@@ -80,6 +80,8 @@
     text-align:center;
 }
 
-.get-more-log-items {
-
+a.info-banner {
+    display:block;
+    cursor:pointer;
+    background-color:transparent;
 }
