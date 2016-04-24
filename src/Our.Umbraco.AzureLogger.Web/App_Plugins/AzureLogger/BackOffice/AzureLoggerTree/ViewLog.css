@@ -17,7 +17,9 @@
     padding-right:20px;
 }
 
-
+.view-log h1 {
+    margin: 30px 20px;
+}
 
 .day-breaker {
     border-bottom: 1px solid #f8f8f8;

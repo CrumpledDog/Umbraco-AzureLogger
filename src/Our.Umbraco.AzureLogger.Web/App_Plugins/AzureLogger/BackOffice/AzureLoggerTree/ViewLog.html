@@ -1,9 +1,6 @@
-﻿<div ng-controller="AzureLogger.ViewLogController">
+﻿<div ng-controller="AzureLogger.ViewLogController" class="view-log">
 
     <div class="umb-panel-header">
-        <div class="umb-headline-editor-wrapper">
-            <h1 class="headline">{{ headline }}</h1>
-        </div>
 
         <div class="actions">
             <a class="btn" ng-click="updateLogItems()">Update</a><!-- TODO: only show if there are new items to get ng-show="newLogItems"-->
@@ -15,13 +12,13 @@
             <label>Message: <input type="text" ng-model="filter.messageIntro" /></label>
         </div>
 
-
         <!--<p>Start Date Time : <input type="text" /></p>-->
         <!--item-count: {{ logItems.length }}-->
         <!--detail-count: {{ detailCount }}-->
     </div>
 
     <div class="umb-panel-body umb-scrollable">
+        <h1>{{ name }}</h1>
         <div class="umb-pane" lazy-load="getMoreLogItems()">
 
             <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems | filter:filter">
