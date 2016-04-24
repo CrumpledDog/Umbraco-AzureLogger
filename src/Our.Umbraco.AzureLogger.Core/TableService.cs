@@ -131,7 +131,7 @@
             return null; // fallback
         }
 
-        internal void TrimLog(string appenderName)
+        internal void WipeLog(string appenderName)
         {
             CloudTable cloudTable;
 

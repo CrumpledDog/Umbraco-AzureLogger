@@ -1,7 +1,7 @@
 ﻿{
     javascript:[
 		'/App_Plugins/AzureLogger/BackOffice/LazyLoadDirective.js',
-		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/TrimLogController.js',
+		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/WipeLogController.js',
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ViewLogController.js'
 	],
     css:[

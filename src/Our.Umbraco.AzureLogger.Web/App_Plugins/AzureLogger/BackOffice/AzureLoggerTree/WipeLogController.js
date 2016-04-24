@@ -1,6 +1,6 @@
 ﻿angular
     .module('umbraco')
-    .controller('AzureLogger.TrimLogController', [
+    .controller('AzureLogger.WipeLogController', [
         '$rootScope', '$scope', '$http', 'navigationService',
         function ($rootScope, $scope, $http, navigationService) {
 
@@ -16,18 +16,18 @@
                 navigationService.hideNavigation();
             };
 
-            $scope.trimLog = function () {
+            $scope.wipeLog = function () {
 
                 // TODO: update ui to indicate operation taking place...
 
                 $http({
                     method: 'POST',
-                    url: 'BackOffice/AzureLogger/Api/TrimLog',
+                    url: 'BackOffice/AzureLogger/Api/WipeLog',
                     params: { 'appenderName': appenderName }
                 })
                 .then(function () {
 
-                    $rootScope.$broadcast('TrimmedLog', appenderName);
+                    $rootScope.$broadcast('WipedLog', appenderName);
 
                     navigationService.hideNavigation();
                 });

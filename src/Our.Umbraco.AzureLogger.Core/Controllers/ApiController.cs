@@ -54,9 +54,9 @@
         }
 
         [HttpPost]
-        public void TrimLog([FromUri]string appenderName)
+        public void WipeLog([FromUri]string appenderName)
         {
-            TableService.Instance.TrimLog(appenderName);
+            TableService.Instance.WipeLog(appenderName);
         }
     }
 }

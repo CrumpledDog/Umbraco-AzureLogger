@@ -74,10 +74,8 @@
             }
             else if (id.StartsWith("appender"))
             {
-                menuItemCollection.Items.Add(new MenuItem("TrimLog", "Trim Log") { Icon = "cut" });
-
-                // is the line below legacy as new MenuItem indicates that IActions are legacy ?
-                // menuItemCollection.Items.Add<ActionDelete>(localizedTextService.Localize(ActionDelete.Instance.Alias), true); // would load view "Delete.html"
+                menuItemCollection.Items.Add(new MenuItem("WipeLog", "Wipe Log") { Icon = "delete" });
+                //menuItemCollection.Items.Add(new MenuItem("AboutAppender", "About Appender") { Icon = "help-alt", SeperatorBefore = true });
             }
 
             return menuItemCollection;

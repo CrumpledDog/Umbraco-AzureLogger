@@ -20,7 +20,7 @@
 
             $scope.filter = {};
 
-            $scope.$on('TrimmedLog', function (event, arg) {
+            $scope.$on('WipedLog', function (event, arg) {
                 if (arg == appenderName) {
                     $scope.logItems = [];
                     $scope.getMoreLogItems();
