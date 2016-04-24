@@ -18,6 +18,8 @@
             //$scope.currentlyLoading = false; // true when getting data awaiting a response to set
             //$scope.finishedLoading = false; // true once server indicates that there is no more data
 
+            $scope.filter = {};
+
             $scope.$on('TrimmedLog', function (event, arg) {
                 if (arg == appenderName) {
                     $scope.logItems = [];
@@ -27,8 +29,8 @@
 
             $scope.updateLogItems = function () {
 
-                console.log('HACK: reloadLogItems so it returns the latest - TODO: update head of existing data')
-
+                // HACK: reloadLogItems so it returns the latest
+                // TODO: update head of existing data
                 $scope.logItems = [];
                 $scope.getMoreLogItems();
             };
@@ -40,8 +42,6 @@
 
                 // only request, if there isn't already a request pending and there might be data to get
                 if (!$scope.finishedLoading && !$scope.currentlyLoading) {
-
-                    console.log('getMoreLogItems() - making ajax call');
 
                     $scope.currentlyLoading = true;
 
@@ -70,8 +70,6 @@
 
                         if (response.data.length > 0) {
                             $scope.logItems = $scope.logItems.concat(response.data); // add new data to array
-
-                            //
                         } else {
                             $scope.finishedLoading = true;
                         }

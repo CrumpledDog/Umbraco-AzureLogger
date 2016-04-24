@@ -6,8 +6,7 @@
         </div>
 
         <div class="actions">
-            <a class="btn" ng-show="!autoUpdate" ng-click="updateLogItems()">Update</a><!-- TODO: only show if there are new items to get -->
-            <label><input type="checkbox" ng-model="autoUpdate" />Auto Update</label>
+            <a class="btn" ng-click="updateLogItems()">Update</a><!-- TODO: only show if there are new items to get ng-show="newLogItems"-->
         </div>
 
         <div class="filters"><!-- filters -->
@@ -25,7 +24,7 @@
     <div class="umb-panel-body umb-scrollable">
         <div class="umb-pane" lazy-load="getMoreLogItems()">
 
-            <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems | filter:filter:strict">
+            <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems | filter:filter">
 
                 <div class="day-breaker" ng-if="differentDays(logItem, logItems[$index - 1])">
                     <h3>{{logItem.eventTimestamp| date : 'EEEE dd MMMM yyyy'}}</h3>
@@ -67,7 +66,10 @@
                         <dd>{{logItem.level}}</dd>
 
                         <dt>Logger Name</dt>
-                        <dd>{{logItem.loggerName}}</dd>
+                        <dd>
+                            <a ng-show="filter.loggerName != logItem.loggerName" ng-click="filter.loggerName = logItem.loggerName">{{logItem.loggerName}}</a>
+                            <span ng-show="filter.loggerName == logItem.loggerName">{{logItem.loggerName}}</span>
+                        </dd>
 
                         <dt>Message</dt>
                         <dd><pre>{{logItem.details.message}}</pre></dd>
@@ -88,7 +90,10 @@
                         <dd>{{logItem.details.appDomainId}}</dd>
 
                         <dt>Host Name</dt>
-                        <dd>{{logItem.hostName}}</dd>
+                        <dd>
+                            <a ng-show="filter.hostName != logItem.hostName" ng-click="filter.hostName = logItem.hostName">{{logItem.hostName}}</a>
+                            <span ng-show="filter.hostName == logItem.hostName">{{logItem.hostName}}</span>
+                        </dd>
 
                         <dt>Url</dt>
                         <dd>
