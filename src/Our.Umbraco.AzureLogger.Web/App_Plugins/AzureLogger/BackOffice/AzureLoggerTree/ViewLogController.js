@@ -4,7 +4,8 @@
         '$scope', '$http', '$routeParams', 'navigationService', '$q',
         function ($scope, $http, $routeParams, navigationService, $q) {
 
-            var appenderName = $routeParams.id;
+            var appenderName = $routeParams.id.split('|')[0];
+            $scope.headline = $routeParams.id.split('|')[1];
 
             // forces the tree to highlight the associated search item for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected

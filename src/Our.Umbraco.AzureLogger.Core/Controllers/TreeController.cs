@@ -43,7 +43,7 @@
                                                                 x.TreeName ?? x.Name, // use friendly name if available
                                                                 !string.IsNullOrWhiteSpace(x.IconName) ? x.IconName : "icon-list",
                                                                 false, // TODO: are there filters associated with this appender ?
-                                                                this.BuildRoute("ViewLog", x.Name)))); // key is appender name (can use it to get table name)
+                                                                this.BuildRoute("ViewLog", x.Name + "|" + x.TreeName ?? x.Name))));
 
                 // TODO: integrate the previous search item filtering to apply to each appender node
             }
