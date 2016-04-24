@@ -5,8 +5,10 @@
             <h1 class="headline">{{ headline }}</h1>
         </div>
 
-        <div><!-- filters -->
-
+        <div class="filters"><!-- filters -->
+            <label>Machine Name: <input type="text" ng-model="filter.hostName" /></label>
+            <label>Logger Name: <input type="text" ng-model="filter.loggerName" /></label>
+            <label>Message: <input type="text" ng-model="filter.messageIntro" /></label>
         </div>
 
         <!--<p>Start Date Time : <input type="text" /></p>-->
@@ -17,7 +19,7 @@
     <div class="umb-panel-body umb-scrollable">
         <div class="umb-pane" lazy-load="getMoreLogItems()">
 
-            <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems">
+            <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems | filter:filter:strict">
 
                 <div class="day-breaker" ng-if="differentDays(logItem, logItems[$index - 1])">
                     <h3>{{logItem.eventTimestamp| date : 'EEEE dd MMMM yyyy'}}</h3>
@@ -99,7 +101,7 @@
 
             <div class="info-banner" ng-show="currentlyLoading">Loading</div>
             <div class="info-banner" ng-show="finishedLoading && logItems.length == 0">No Log Items</div>
-            <div class="info-banner" ng-show="finishedLoading && logItems.Length > 0">Finished Loading</div>
+            <div class="info-banner" ng-show="finishedLoading && logItems.length > 0">Finished Loading</div>
 
         </div><!-- /umb-panel-body -->
     </div>

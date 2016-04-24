@@ -1,4 +1,13 @@
-﻿.day-breaker {
+﻿.filters {
+    margin: 10px 0 0 25px;
+}
+
+.filters label {
+    float:left;
+    padding-right:20px;
+}
+
+.day-breaker {
     border-bottom: 1px solid #f8f8f8;
 }
 

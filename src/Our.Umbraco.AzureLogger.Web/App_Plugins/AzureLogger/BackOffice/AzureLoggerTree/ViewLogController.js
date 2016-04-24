@@ -53,7 +53,7 @@
                             'appenderName' : appenderName,
                             'partitionKey' : partitionKey != null ? escape(partitionKey) : '',
                             'rowKey': rowKey != null ? escape(rowKey) : '',
-                            'take': 5
+                            'take': 50
                         }
                     })
                     .then(function (response) {
