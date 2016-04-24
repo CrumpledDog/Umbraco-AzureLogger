@@ -25,6 +25,14 @@
                 }
             });
 
+            $scope.updateLogItems = function () {
+
+                console.log('HACK: reloadLogItems so it returns the latest - TODO: update head of existing data')
+
+                $scope.logItems = [];
+                $scope.getMoreLogItems();
+            };
+
             // returns a promise with a bool result
             $scope.getMoreLogItems = function () {
 
@@ -32,6 +40,8 @@
 
                 // only request, if there isn't already a request pending and there might be data to get
                 if (!$scope.finishedLoading && !$scope.currentlyLoading) {
+
+                    console.log('getMoreLogItems() - making ajax call');
 
                     $scope.currentlyLoading = true;
 
@@ -60,6 +70,8 @@
 
                         if (response.data.length > 0) {
                             $scope.logItems = $scope.logItems.concat(response.data); // add new data to array
+
+                            //
                         } else {
                             $scope.finishedLoading = true;
                         }
