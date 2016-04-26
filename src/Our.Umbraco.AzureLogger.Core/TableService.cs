@@ -77,29 +77,66 @@
             }
         }
 
-        ///// <summary>
-        ///// wrapper method to handle any filtering (Azure table queries can't do wild card matching)
-        ///// </summary>
-        ///// <param name="appenderName"></param>
-        ///// <param name="partitionKey"></param>
-        ///// <param name="rowKey"></param>
-        ///// <param name="hostName"></param>
-        ///// <param name="loggerName"></param>
-        ///// <param name="messageIntro"></param>
-        ///// <returns></returns>
-        //internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, string messageIntro)
-        //{
-        //    // if there is some filtering
-        //    if (!string.IsNullOrWhiteSpace(hostName) || !string.IsNullOrWhiteSpace(loggerName) || !string.IsNullOrWhiteSpace(messageIntro))
-        //    {
-        //        return this.ReadLogTableEntities(appenderName, partitionKey, rowKey)
-        //                .Where(x =>  string.IsNullOrWhiteSpace(hostName) || x.log4net_HostName.IndexOf(hostName) > -1)
-        //                .Where(x => string.IsNullOrWhiteSpace(loggerName) || x.LoggerName.IndexOf(loggerName) > -1);
-        //                // TODO: message intro
-        //    }
+        /// <summary>
+        /// wrapper method to handle any filtering (Azure table queries can't do wild card matching)
+        /// </summary>
+        /// <param name="appenderName"></param>
+        /// <param name="partitionKey"></param>
+        /// <param name="rowKey"></param>
+        /// <param name="hostName"></param>
+        /// <param name="loggerName"></param>
+        /// <param name="messageIntro"></param>
+        /// <returns></returns>
+        internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, string messageIntro, int take)
+        {
+            // if filtering, then that has to be done here, as AzureTables don't support wildcard matching
+            if (!string.IsNullOrWhiteSpace(hostName) || !string.IsNullOrWhiteSpace(loggerName) || !string.IsNullOrWhiteSpace(messageIntro))
+            {
+                // list to fill
+                List<LogTableEntity> logTableEntities = new List<LogTableEntity>();
 
-        //    // no filtering
-        //    return this.ReadLogTableEntities(appenderName, partitionKey, rowKey);
+                int lastCount;
+                string lastPartitionKey = partitionKey;
+                string lastRowKey = rowKey;
+                bool finished = false;
+                do {
+                    lastCount = logTableEntities.Count;
+
+                    // take a large chunk to filter here
+                    IEnumerable<LogTableEntity> returnedLogTableEntities = this.ReadLogTableEntities(appenderName, lastPartitionKey, lastRowKey).Take(100);
+                    if (returnedLogTableEntities.Any())
+                    {
+                        logTableEntities.AddRange(returnedLogTableEntities);
+
+                        // set last known, before filtering out
+                        lastPartitionKey = logTableEntities.Last().PartitionKey;
+                        lastRowKey = logTableEntities.Last().RowKey;
+
+                        // performing filtering on local list, otherwise it seems to affect table query performance (as every row in table returned and cast)
+                        logTableEntities = logTableEntities
+                                        .Where(x => string.IsNullOrWhiteSpace(hostName) || (x.log4net_HostName != null && x.log4net_HostName.IndexOf(hostName) > -1))
+                                        .Where(x => string.IsNullOrWhiteSpace(loggerName) || (x.LoggerName != null && x.LoggerName.IndexOf(loggerName) > -1))
+                                        // TODO: message filtering
+                                        .ToList();
+                    }
+                    else
+                    {
+                        // no data returned from Azure query
+                        finished = true;
+                    }
+                }
+                while(logTableEntities.Count < take && !finished);
+
+                return logTableEntities.Take(take); // trim any excess
+            }
+
+            // no filtering
+            return this.ReadLogTableEntities(appenderName, partitionKey, rowKey).Take(take); // Take() seems to work with table queries !
+        }
+
+        //private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, out TableContinuationToken tableContinuationToken)
+        //{
+
         //}
 
         /// <summary>
@@ -108,7 +145,7 @@
         /// <param name="partitionKey">null or the last known partition key</param>
         /// <param name="rowKey">null or the last known row key</param>
         /// <returns>a collection of log items matchin the supplied filter criteria</returns>
-        internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey)
+        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey)
         {
             CloudTable cloudTable = this.GetCloudTable(appenderName);
 
@@ -126,11 +163,22 @@
                     tableQuery.AndWhere(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.GreaterThan, rowKey));
                 }
 
-                return cloudTable.ExecuteQuery(tableQuery);
+                return cloudTable.ExecuteQuery(tableQuery); //.ToList();
             }
 
             return Enumerable.Empty<LogTableEntity>(); // fallback
         }
+
+        //// replacement for method above
+        //private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, out TableContinuationToken tableContinuationToken)
+        //{
+        //   CloudTable cloudTable = this.GetCloudTable(appenderName);
+
+        //   if (cloudTable != null)
+        //   {
+
+        //   }
+        //}
 
         /// <summary>
         ///

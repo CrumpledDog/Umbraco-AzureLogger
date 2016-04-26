@@ -28,11 +28,11 @@
                     .ReadLogTableEntities(
                             appenderName,
                             partitionKey,
-                            rowKey)//,
-                            //(string)queryFilters.hostName,
-                            //(string)queryFilters.loggerName,
-                            //(string)queryFilters.messageIntro)
-                    .Take(take)
+                            rowKey,
+                            (string)queryFilters.hostName,
+                            (string)queryFilters.loggerName,
+                            (string)queryFilters.messageIntro,
+                            take) // need to supply take, as result may be a cloud table with items removed (in which case the take doesn't know where to re-start from)
                     .Select(x => (LogItemIntro)x)
                     .ToArray();
         }

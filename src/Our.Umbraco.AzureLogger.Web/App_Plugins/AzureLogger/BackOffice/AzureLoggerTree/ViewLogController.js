@@ -130,7 +130,7 @@
                             'appenderName' : appenderName,
                             'partitionKey' : partitionKey != null ? escape(partitionKey) : '',
                             'rowKey': rowKey != null ? escape(rowKey) : '',
-                            'take': 1
+                            'take': 5
                         },
                         data: queryFilters
                     })
