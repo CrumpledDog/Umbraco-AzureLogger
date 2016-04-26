@@ -7,11 +7,10 @@
         </div>
 
         <div class="filters"><!-- filters -->
-            <input type="text" ng-model="filter.hostName" placeholder="Machine Name" class="filter-machine" />
-            <input type="text" ng-model="filter.loggerName" placeholder="Logger Name" class="filter-logger" />
-            <input type="text" ng-model="filter.messageIntro" placeholder="Message" class="filter-message" />
+            <input type="text" ng-model="filters.hostName" ng-change="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
+            <input type="text" ng-model="filters.loggerName" ng-change="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
+            <input type="text" ng-model="filters.messageIntro" ng-change="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />
         </div>
-
         <!--<p>Start Date Time : <input type="text" /></p>-->
         <!--item-count: {{ logItems.length }}-->
         <!--detail-count: {{ detailCount }}-->
@@ -21,7 +20,7 @@
         <h1>{{ name }}</h1>
         <div class="umb-pane" lazy-load="getMoreLogItems()">
 
-            <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems | filter:filter">
+            <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems">
 
                 <div class="day-breaker" ng-if="differentDays(logItem, logItems[$index - 1])">
                     <h3>{{logItem.eventTimestamp| date : 'EEEE dd MMMM yyyy'}}</h3>

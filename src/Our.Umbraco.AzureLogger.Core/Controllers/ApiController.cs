@@ -18,16 +18,20 @@
         /// <param name="partitionKey">the last known partitionKey</param>
         /// <param name="rowKey">the last known rowKey</param>
         /// <param name="take">number of log items to get</param>
+        /// <param name="queryFilters">using dynamic to avoid making a strongly typed model</param>
         /// <returns></returns>
-        [HttpGet]
-        public LogItemIntro[] ReadLogItemIntros([FromUri]string appenderName, [FromUri] string partitionKey, [FromUri] string rowKey, [FromUri] int take)
+        [HttpPost]
+        public LogItemIntro[] ReadLogItemIntros([FromUri]string appenderName, [FromUri] string partitionKey, [FromUri] string rowKey, [FromUri] int take, [FromBody] dynamic queryFilters)
         {
             return TableService
                     .Instance
                     .ReadLogTableEntities(
                             appenderName,
                             partitionKey,
-                            rowKey)
+                            rowKey)//,
+                            //(string)queryFilters.hostName,
+                            //(string)queryFilters.loggerName,
+                            //(string)queryFilters.messageIntro)
                     .Take(take)
                     .Select(x => (LogItemIntro)x)
                     .ToArray();

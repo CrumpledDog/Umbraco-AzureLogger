@@ -77,15 +77,36 @@
             }
         }
 
+        ///// <summary>
+        ///// wrapper method to handle any filtering (Azure table queries can't do wild card matching)
+        ///// </summary>
+        ///// <param name="appenderName"></param>
+        ///// <param name="partitionKey"></param>
+        ///// <param name="rowKey"></param>
+        ///// <param name="hostName"></param>
+        ///// <param name="loggerName"></param>
+        ///// <param name="messageIntro"></param>
+        ///// <returns></returns>
+        //internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, string messageIntro)
+        //{
+        //    // if there is some filtering
+        //    if (!string.IsNullOrWhiteSpace(hostName) || !string.IsNullOrWhiteSpace(loggerName) || !string.IsNullOrWhiteSpace(messageIntro))
+        //    {
+        //        return this.ReadLogTableEntities(appenderName, partitionKey, rowKey)
+        //                .Where(x =>  string.IsNullOrWhiteSpace(hostName) || x.log4net_HostName.IndexOf(hostName) > -1)
+        //                .Where(x => string.IsNullOrWhiteSpace(loggerName) || x.LoggerName.IndexOf(loggerName) > -1);
+        //                // TODO: message intro
+        //    }
+
+        //    // no filtering
+        //    return this.ReadLogTableEntities(appenderName, partitionKey, rowKey);
+        //}
+
         /// <summary>
         /// https://azure.microsoft.com/en-gb/documentation/articles/storage-dotnet-how-to-use-tables/
         /// </summary>
         /// <param name="partitionKey">null or the last known partition key</param>
         /// <param name="rowKey">null or the last known row key</param>
-        /// <param name="minLevel">the min level of log items to return</param>
-        /// <param name="hostName">null or the hostname to filter on</param>
-        /// <param name="loggerNamesInclude">indicates whether the loggerNames should be included or excluded in the filter query</param>
-        /// <param name="loggerNames">array of logger names</param>
         /// <returns>a collection of log items matchin the supplied filter criteria</returns>
         internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey)
         {
