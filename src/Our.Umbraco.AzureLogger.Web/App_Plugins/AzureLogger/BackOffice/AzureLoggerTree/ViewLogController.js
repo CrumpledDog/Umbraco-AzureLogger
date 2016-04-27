@@ -1,8 +1,8 @@
 ﻿angular
     .module('umbraco')
     .controller('AzureLogger.ViewLogController', [
-        '$scope', '$http', '$routeParams', 'navigationService', '$q', '$timeout',
-        function ($scope, $http, $routeParams, navigationService, $q, $timeout) {
+        '$scope', '$http', '$routeParams', 'navigationService', '$q', '$timeout', 'AzureLogger.AzureLoggerResource',
+        function ($scope, $http, $routeParams, navigationService, $q, $timeout, azureLoggerResource) {
 
             var appenderName = $routeParams.id.split('|')[0];
             $scope.name = $routeParams.id.split('|')[1]; // the appender name, or tree name
@@ -17,6 +17,19 @@
             var queryFilters = { hostName: '', loggerName: '', messageIntro: '' }; // the filter state for the current query (may differ from the ui filters)
             $scope.filters = queryFilters;
             $scope.currentlyFiltering = false;
+
+            // forces the tree to highlight appender used for this view
+            // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
+            navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'appender|' + appenderName], forceReload: false });
+
+            // tell the resource (used to store shared state), that this is now the currently active view
+            azureLoggerResource.activeAppenderViewLog = appenderName;
+
+
+            //$scope.isActiveAppender = function () {
+            //    console.log('is active appender check ' + azureLoggerResource.activeAppenderViewLog + ', ' + appenderName);
+            //    return appenderName == azureLoggerResource.activeAppenderViewLog;
+            //};
 
             // clear all log items currently being viewed
             var clearLogItems = function () {
@@ -108,7 +121,7 @@
                 var deferred = $q.defer();
 
                 // only request, if there isn't already a request pending and there might be data to get
-                if (!$scope.finishedLoading && !$scope.currentlyLoading) {
+                if (!$scope.finishedLoading && !$scope.currentlyLoading && appenderName == azureLoggerResource.activeAppenderViewLog) {
 
                     $scope.currentlyLoading = true;
 
@@ -194,11 +207,5 @@
 
                 return date.toDateString() !== lastDate.toDateString();
             };
-
-            // start
-
-            // forces the tree to highlight appender used for this view
-            // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
-            navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'appender|' + appenderName], forceReload: false });
 
         }]);

@@ -59,6 +59,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerResource.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\WipeLogController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\WipeLog.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\LazyLoadDirective.js" />
