@@ -99,7 +99,16 @@
                 string lastPartitionKey = partitionKey;
                 string lastRowKey = rowKey;
                 bool finished = false;
+                int attempts = 0;
                 do {
+                    attempts++;
+
+                    if (attempts >= 3)
+                    {
+                        // prevent long execution cycle
+                        throw new TableQueryTimeoutException(lastPartitionKey, lastRowKey, logTableEntities.ToArray());
+                    }
+
                     lastCount = logTableEntities.Count;
 
                     // take a large chunk to filter here
@@ -124,6 +133,7 @@
                         // no data returned from Azure query
                         finished = true;
                     }
+
                 }
                 while(logTableEntities.Count < take && !finished);
 
@@ -133,11 +143,6 @@
             // no filtering
             return this.ReadLogTableEntities(appenderName, partitionKey, rowKey).Take(take); // Take() seems to work with table queries !
         }
-
-        //private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, out TableContinuationToken tableContinuationToken)
-        //{
-
-        //}
 
         /// <summary>
         /// https://azure.microsoft.com/en-gb/documentation/articles/storage-dotnet-how-to-use-tables/

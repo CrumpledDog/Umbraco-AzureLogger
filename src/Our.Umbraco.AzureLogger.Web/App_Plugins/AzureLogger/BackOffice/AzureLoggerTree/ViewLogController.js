@@ -51,6 +51,8 @@
                         && ($scope.filters.loggerName.toLowerCase().indexOf(queryFilters.loggerName.toLowerCase()) > -1)
                         && ($scope.filters.messageIntro.toLowerCase().indexOf(queryFilters.messageIntro.toLowerCase()) > -1);
 
+
+
                     if (reductive) {
                         // delete items that don't match, a new query may happen
                         console.log('reductive');
@@ -84,9 +86,7 @@
 
                     } else {
                         console.log('non-reductive');
-
-                        // delete all items as we may be missing some (a new query will happen)
-                        clearLogItems(); // TODO: add an additional delay ?
+                        clearLogItems(); // delete all items as we may be missing data (this will trigger a refresh)
                     }
 
                     queryFilters = angular.copy($scope.filters); // copy to prevent referencing
@@ -109,6 +109,9 @@
                 clearLogItems(); // HACK: reloadLogItems so it returns the latest
             };
 
+            var lastPartitionKey = null;
+            var lastRowKey = null;
+
             // returns a promise with a bool result
             $scope.getMoreLogItems = function () {
 
@@ -119,34 +122,42 @@
 
                     $scope.currentlyLoading = true;
 
-                    // get last known partitionKey and rowKey
-                    var partitionKey = null;
-                    var rowKey = null;
-                    if ($scope.logItems.length > 0) {
-
-                        var lastLogItem = $scope.logItems[$scope.logItems.length - 1];
-
-                        partitionKey = lastLogItem.partitionKey;
-                        rowKey = lastLogItem.rowKey;
-                    }
-
                     $http({
                         method: 'POST',
                         url: 'BackOffice/AzureLogger/Api/ReadLogItemIntros',
                         params: {
                             'appenderName' : appenderName,
-                            'partitionKey' : partitionKey != null ? escape(partitionKey) : '',
-                            'rowKey': rowKey != null ? escape(rowKey) : '',
+                            'partitionKey' : lastPartitionKey != null ? escape(lastPartitionKey) : '',
+                            'rowKey': lastRowKey != null ? escape(lastRowKey) : '',
                             'take': 5
                         },
                         data: queryFilters
                     })
                     .then(function (response) {
 
-                        if (response.data.length > 0) {
-                            $scope.logItems = $scope.logItems.concat(response.data); // add new data to array
-                        } else {
-                            $scope.finishedLoading = true;
+                        if (angular.isArray(response.data)) // success, response may have new log items
+                        {
+                            if (response.data.length > 0) {
+
+                                $scope.logItems = $scope.logItems.concat(response.data); // add new data to array
+
+                                var lastLogItem = $scope.logItems[$scope.logItems.length - 1];
+
+                                lastPartitionKey = lastLogItem.partitionKey;
+                                lastRowKey = lastLogItem.rowKey;
+
+                            } else {
+                                $scope.finishedLoading = true;
+                            }
+                        }
+                        else // timeout, response may have new log items, but it also has partion & row keys to indicate where next to start
+                        {
+                            if (response.data.data.length > 0) {
+                                $scope.logItems = $scope.logItems.concat(response.data.data); // add new data to array
+                            }
+
+                            lastPartitionKey = response.data.lastPartitionKey;
+                            lastRowKey = response.data.lastRowKey;
                         }
 
                         $scope.currentlyLoading = false;

@@ -21,20 +21,34 @@
         /// <param name="queryFilters">using dynamic to avoid making a strongly typed model</param>
         /// <returns></returns>
         [HttpPost]
-        public LogItemIntro[] ReadLogItemIntros([FromUri]string appenderName, [FromUri] string partitionKey, [FromUri] string rowKey, [FromUri] int take, [FromBody] dynamic queryFilters)
+        public object ReadLogItemIntros([FromUri]string appenderName, [FromUri] string partitionKey, [FromUri] string rowKey, [FromUri] int take, [FromBody] dynamic queryFilters)
         {
-            return TableService
-                    .Instance
-                    .ReadLogTableEntities(
-                            appenderName,
-                            partitionKey,
-                            rowKey,
-                            (string)queryFilters.hostName,
-                            (string)queryFilters.loggerName,
-                            (string)queryFilters.messageIntro,
-                            take) // need to supply take, as result may be a cloud table with items removed (in which case the take doesn't know where to re-start from)
-                    .Select(x => (LogItemIntro)x)
-                    .ToArray();
+            try
+            {
+                return TableService
+                        .Instance
+                        .ReadLogTableEntities(
+                                appenderName,
+                                partitionKey,
+                                rowKey,
+                                (string)queryFilters.hostName,
+                                (string)queryFilters.loggerName,
+                                (string)queryFilters.messageIntro,
+                                take) // need to supply take, as result may be a cloud table with items removed (in which case the take doesn't know where to re-start from)
+                        .Select(x => (LogItemIntro)x)
+                        .ToArray();
+            }
+            catch (TableQueryTimeoutException exception)
+            {
+                // instead of returning an array, return an object detailiing where to begin next search from and
+                // an array of any data that has been found
+                return new
+                {
+                    lastPartitionKey = exception.LastPartitionKey,
+                    lastRowKey =  exception.LastRowKey,
+                    data = exception.Data.Select(x => (LogItemIntro)x).ToArray()
+                };
+            }
         }
 
         /// <summary>
