@@ -14,7 +14,7 @@
         /// <summary>
         /// Gets the log items to render in the main list
         /// </summary>
-        /// <param name="appenderName"></param>
+        /// <param name="appenderName">name of the log4net appender</param>
         /// <param name="partitionKey">the last known partitionKey</param>
         /// <param name="rowKey">the last known rowKey</param>
         /// <param name="take">number of log items to get</param>
@@ -25,6 +25,7 @@
         {
             try
             {
+                // return an array of data found (if size less than the take, then it's the end of the log)
                 return TableService
                         .Instance
                         .ReadLogTableEntities(
@@ -40,13 +41,13 @@
             }
             catch (TableQueryTimeoutException exception)
             {
-                // instead of returning an array, return an object detailiing where to begin next search from and
-                // an array of any data that has been found
+                // return an object detailing where to start the next search (to avoid duplicate processing)
+                // may also contain an array of any data found before it timedout
                 return new
                 {
                     lastPartitionKey = exception.LastPartitionKey,
                     lastRowKey =  exception.LastRowKey,
-                    data = exception.Data.Select(x => (LogItemIntro)x).ToArray()
+                    data = exception.Data.Select(x => (LogItemIntro)((LogTableEntity)x)).ToArray()
                 };
             }
         }
@@ -54,7 +55,7 @@
         /// <summary>
         /// Get more detailed information on a log item
         /// </summary>
-        /// <param name="appenderName"></param>
+        /// <param name="appenderName">name of the log4net appender</param>
         /// <param name="partitionKey">the partition key for the log item</param>
         /// <param name="rowKey">the row key for the log item</param>
         /// <returns></returns>
@@ -71,6 +72,10 @@
             return null;
         }
 
+        /// <summary>
+        /// wipes all items from the log
+        /// </summary>
+        /// <param name="appenderName">name of the log4net appender</param>
         [HttpPost]
         public void WipeLog([FromUri]string appenderName)
         {

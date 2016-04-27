@@ -3,15 +3,15 @@
     <div class="umb-panel-header">
 
         <div class="actions">
-            <a class="btn" ng-click="updateLogItems()">Update</a><!-- TODO: only show if there are new items to get ng-show="newLogItems"-->
+            <!--<a class="btn" ng-click="updateLogItems()">Update</a>--><!-- TODO: only show if there are new items to get ng-show="newLogItems"-->
         </div>
 
         <div class="filters"><!-- filters -->
             <input type="text" ng-model="filters.hostName" enter-key="filtersChanged()" focus-out="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
-            <input type="text" ng-model="filters.loggerName" enter-key="filtersChanged()" focus-out="filtersChanged()" ng-disabled=" currentlyfiltering" placeholder="Logger Name" class="filter-logger" />
+            <input type="text" ng-model="filters.loggerName" enter-key="filtersChanged()" focus-out="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
             <!--<input type="text" ng-model="filters.messageIntro" ng-change="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />-->
         </div>
-        <p>{{debugQueryFilters | json}}</p>
+        <!--<p>{{debugQueryFilters | json}}</p>-->
 
         <!--<p>Start Date Time : <input type="text" /></p>-->
         <!--item-count: {{ logItems.length }}-->

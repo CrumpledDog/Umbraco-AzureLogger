@@ -51,8 +51,6 @@
                         && ($scope.filters.loggerName.toLowerCase().indexOf(queryFilters.loggerName.toLowerCase()) > -1)
                         && ($scope.filters.messageIntro.toLowerCase().indexOf(queryFilters.messageIntro.toLowerCase()) > -1);
 
-
-
                     if (reductive) {
                         // delete items that don't match, a new query may happen
                         console.log('reductive');
@@ -117,9 +115,16 @@
 
                 var deferred = $q.defer();
 
-                // only request, if there isn't already a request pending and there might be data to get
-                if (!$scope.finishedLoading && !$scope.currentlyLoading && appenderName == azureLoggerResource.activeAppenderViewLog) {
-
+                if (appenderName != azureLoggerResource.activeAppenderViewLog || $scope.currentlyLoading || $scope.finishedLoading)
+                {
+                    deferred.resolve(false); // return false to indicate caller shouldn't try again
+                }
+                else if ($scope.currentlyFiltering)
+                {
+                    deferred.resolve(true); // return true to indicate caller should try again
+                }
+                else
+                {
                     $scope.currentlyLoading = true;
 
                     $http({
@@ -129,33 +134,36 @@
                             'appenderName' : appenderName,
                             'partitionKey' : lastPartitionKey != null ? escape(lastPartitionKey) : '',
                             'rowKey': lastRowKey != null ? escape(lastRowKey) : '',
-                            'take': 5
+                            'take': 50
                         },
                         data: queryFilters
                     })
                     .then(function (response) {
 
-                        if (angular.isArray(response.data)) // success, response may have new log items
+                        if (angular.isArray(response.data)) // success
                         {
                             if (response.data.length > 0) {
 
-                                $scope.logItems = $scope.logItems.concat(response.data); // add new data to array
+                                $scope.logItems = $scope.logItems.concat(response.data);
 
-                                var lastLogItem = $scope.logItems[$scope.logItems.length - 1];
+                                var lastLogItem = response.data[response.data.length - 1];
 
+                                // last keys in response
                                 lastPartitionKey = lastLogItem.partitionKey;
                                 lastRowKey = lastLogItem.rowKey;
-
-                            } else {
+                            }
+                            else {
                                 $scope.finishedLoading = true;
                             }
                         }
-                        else // timeout, response may have new log items, but it also has partion & row keys to indicate where next to start
+                        else // timeout
                         {
+                            // thre may have been items found, before it timed out
                             if (response.data.data.length > 0) {
-                                $scope.logItems = $scope.logItems.concat(response.data.data); // add new data to array
+                                $scope.logItems = $scope.logItems.concat(response.data.data);
                             }
 
+                            // last keys checked before timeout occured
                             lastPartitionKey = response.data.lastPartitionKey;
                             lastRowKey = response.data.lastRowKey;
                         }
@@ -164,10 +172,6 @@
 
                         deferred.resolve(!$scope.finishedLoading); // when true indicates the caller could try again
                     });
-                }
-                else
-                {
-                    deferred.resolve(false); // return false to indicate caller shouldn't try again
                 }
 
                 return deferred.promise;
