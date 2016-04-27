@@ -114,8 +114,8 @@
 
                         // performing filtering on local list, otherwise it seems to affect table query performance (as every row in table returned and cast)
                         logTableEntities = logTableEntities
-                                        .Where(x => string.IsNullOrWhiteSpace(hostName) || (x.log4net_HostName != null && x.log4net_HostName.IndexOf(hostName) > -1))
-                                        .Where(x => string.IsNullOrWhiteSpace(loggerName) || (x.LoggerName != null && x.LoggerName.IndexOf(loggerName) > -1))
+                                        .Where(x => string.IsNullOrWhiteSpace(hostName) || (x.log4net_HostName != null && x.log4net_HostName.IndexOf(hostName, StringComparison.InvariantCultureIgnoreCase) > -1))
+                                        .Where(x => string.IsNullOrWhiteSpace(loggerName) || (x.LoggerName != null && x.LoggerName.IndexOf(loggerName, StringComparison.InvariantCultureIgnoreCase) > -1))
                                         // TODO: message filtering
                                         .ToList();
                     }
@@ -163,22 +163,11 @@
                     tableQuery.AndWhere(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.GreaterThan, rowKey));
                 }
 
-                return cloudTable.ExecuteQuery(tableQuery); //.ToList();
+                return cloudTable.ExecuteQuery(tableQuery);
             }
 
             return Enumerable.Empty<LogTableEntity>(); // fallback
         }
-
-        //// replacement for method above
-        //private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, out TableContinuationToken tableContinuationToken)
-        //{
-        //   CloudTable cloudTable = this.GetCloudTable(appenderName);
-
-        //   if (cloudTable != null)
-        //   {
-
-        //   }
-        //}
 
         /// <summary>
         ///

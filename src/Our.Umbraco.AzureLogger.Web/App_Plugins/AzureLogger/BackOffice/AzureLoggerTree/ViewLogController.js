@@ -33,25 +33,25 @@
                 if (filtersChangedTimer) { $timeout.cancel(filtersChangedTimer); } // cancel any previous timer
                 filtersChangedTimer = $timeout(function () { // set new timer
 
-//                    $scope.currentlyFiltering = true;
+                    $scope.currentlyFiltering = true;
 
                     $timeout(function () { // HACK: timeout ensures scope is ready // TODO: change timout to simple promise
 
                         // if new value, contains old value then true (filter searching is anywhere in string)
-                        var reductive = ($scope.filters.hostName.indexOf(queryFilters.hostName) > -1)
-                            && ($scope.filters.loggerName.indexOf(queryFilters.loggerName) > -1)
-                            && ($scope.filters.messageIntro.indexOf(queryFilters.messageIntro) > -1);
+                        var reductive = ($scope.filters.hostName.toLowerCase().indexOf(queryFilters.hostName.toLowerCase()) > -1)
+                            && ($scope.filters.loggerName.toLowerCase().indexOf(queryFilters.loggerName.toLowerCase()) > -1)
+                            && ($scope.filters.messageIntro.toLowerCase().indexOf(queryFilters.messageIntro.toLowerCase()) > -1);
 
                         if (reductive) {
                             // delete items that don't match, a new query may happen
-                            //console.log('reductive');
+                            console.log('reductive');
 
                             // has machine name changed ?
                             if ($scope.filters.hostName != queryFilters.hostName) {
                                 //console.log('hostname changed');
 
                                 $scope.logItems = $scope.logItems.filter(function (value) {
-                                    return value.hostName.indexOf($scope.filters.hostName) > -1;
+                                    return value.hostName.toLowerCase().indexOf($scope.filters.hostName.toLowerCase()) > -1;
                                 });
                             }
 
@@ -60,7 +60,7 @@
                                 //console.log('loggername changed');
 
                                 $scope.logItems = $scope.logItems.filter(function (value) {
-                                    return value.loggerName.indexOf($scope.filters.loggerName) > -1;
+                                    return value.loggerName.toLowerCase().indexOf($scope.filters.loggerName.toLowerCase()) > -1;
                                 });
                             }
 
@@ -69,12 +69,12 @@
                                 //console.log('messageintro changed');
 
                                 $scope.logItems = $scope.logItems.filter(function (value) {
-                                    return value.messageIntro.indexOf($scope.filters.messageIntro) > -1;
+                                    return value.messageIntro.toLowerCase().indexOf($scope.filters.messageIntro.toLowerCase()) > -1;
                                 });
                             }
 
                         } else {
-                            //console.log('non-reductive');
+                            console.log('non-reductive');
 
                             // delete all items as we may be missing some (a new query will happen)
                             clearLogItems(); // TODO: add an additional delay ?
