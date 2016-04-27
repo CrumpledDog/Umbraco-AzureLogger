@@ -7,10 +7,12 @@
         </div>
 
         <div class="filters"><!-- filters -->
-            <input type="text" ng-model="filters.hostName" ng-change="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
-            <input type="text" ng-model="filters.loggerName" ng-change="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
-            <input type="text" ng-model="filters.messageIntro" ng-change="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />
+            <input type="text" ng-model="filters.hostName" enter-key="filtersChanged()" focus-out="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
+            <input type="text" ng-model="filters.loggerName" enter-key="filtersChanged()" focus-out="filtersChanged()" ng-disabled=" currentlyfiltering" placeholder="Logger Name" class="filter-logger" />
+            <!--<input type="text" ng-model="filters.messageIntro" ng-change="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />-->
         </div>
+        <p>{{debugQueryFilters | json}}</p>
+
         <!--<p>Start Date Time : <input type="text" /></p>-->
         <!--item-count: {{ logItems.length }}-->
         <!--detail-count: {{ detailCount }}-->
