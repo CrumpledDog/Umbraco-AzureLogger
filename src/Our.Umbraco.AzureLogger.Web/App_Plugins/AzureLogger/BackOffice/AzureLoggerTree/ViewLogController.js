@@ -24,7 +24,7 @@
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
             navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'appender|' + appenderName], forceReload: false });
 
-            // tell the resource (used to store shared state), that this is now the currently active view
+            // tell the resource that this is now the currently active view
             azureLoggerResource.activeAppenderViewLog = appenderName;
 
 
@@ -38,74 +38,64 @@
                 $scope.finishedLoading = false;
             };
 
-            var filtersChangedTimer; // input delay timer
-
-
-
-
-            // handles all filter ui changes
+            // handles any filter ui changes
             $scope.filtersChanged = function () {
 
-                // introduce delay (new versions of Angular have a debounce option for the model)
-                if (filtersChangedTimer) { $timeout.cancel(filtersChangedTimer); } // cancel any previous timer
-                filtersChangedTimer = $timeout(function () { // set new timer
-                    console.log('filters changed');
-                    $scope.currentlyFiltering = true;
+                console.log('filters changed');
+                $scope.currentlyFiltering = true;
 
-                    $timeout(function () { // HACK: timeout ensures scope is ready // TODO: change timout to simple promise
+                $timeout(function () { // HACK: timeout ensures scope is ready // TODO: change timout to simple promise
 
-                        // if new value, contains old value then true (filter searching is anywhere in string)
-                        var reductive = ($scope.filters.hostName.toLowerCase().indexOf(queryFilters.hostName.toLowerCase()) > -1)
-                            && ($scope.filters.loggerName.toLowerCase().indexOf(queryFilters.loggerName.toLowerCase()) > -1)
-                            && ($scope.filters.messageIntro.toLowerCase().indexOf(queryFilters.messageIntro.toLowerCase()) > -1);
+                    // if new value, contains old value then true (filter searching is anywhere in string)
+                    var reductive = ($scope.filters.hostName.toLowerCase().indexOf(queryFilters.hostName.toLowerCase()) > -1)
+                        && ($scope.filters.loggerName.toLowerCase().indexOf(queryFilters.loggerName.toLowerCase()) > -1)
+                        && ($scope.filters.messageIntro.toLowerCase().indexOf(queryFilters.messageIntro.toLowerCase()) > -1);
 
-                        if (reductive) {
-                            // delete items that don't match, a new query may happen
-                            console.log('reductive');
+                    if (reductive) {
+                        // delete items that don't match, a new query may happen
+                        console.log('reductive');
 
-                            // has machine name changed ?
-                            if ($scope.filters.hostName != queryFilters.hostName) {
-                                console.log('hostname changed');
+                        // has machine name changed ?
+                        if ($scope.filters.hostName != queryFilters.hostName) {
+                            console.log('hostname changed');
 
-                                $scope.logItems = $scope.logItems.filter(function (value) {
-                                    return value.hostName.toLowerCase().indexOf($scope.filters.hostName.toLowerCase()) > -1;
-                                });
-                            }
-
-                            // has logger name changed ?
-                            if ($scope.filters.loggerName != queryFilters.loggerName) {
-                                console.log('loggername changed');
-
-                                $scope.logItems = $scope.logItems.filter(function (value) {
-                                    return value.loggerName.toLowerCase().indexOf($scope.filters.loggerName.toLowerCase()) > -1;
-                                });
-                            }
-
-                            // has message changed ?
-                            if ($scope.filters.messageIntro != queryFilters.messageIntro) {
-                                console.log('messageintro changed');
-
-                                $scope.logItems = $scope.logItems.filter(function (value) {
-                                    return value.messageIntro.toLowerCase().indexOf($scope.filters.messageIntro.toLowerCase()) > -1;
-                                });
-                            }
-
-                        } else {
-                            console.log('non-reductive');
-
-                            // delete all items as we may be missing some (a new query will happen)
-                            clearLogItems(); // TODO: add an additional delay ?
+                            $scope.logItems = $scope.logItems.filter(function (value) {
+                                return value.hostName.toLowerCase().indexOf($scope.filters.hostName.toLowerCase()) > -1;
+                            });
                         }
 
-                        queryFilters = angular.copy($scope.filters); // copy to prevent referencing
+                        // has logger name changed ?
+                        if ($scope.filters.loggerName != queryFilters.loggerName) {
+                            console.log('loggername changed');
 
-                    }) // no delay in timeout (TODO: change to promise)
-                    .then(function () {
-                        // TODO: re-focus on last filter input
-                        $scope.currentlyFiltering = false;
-                    });
+                            $scope.logItems = $scope.logItems.filter(function (value) {
+                                return value.loggerName.toLowerCase().indexOf($scope.filters.loggerName.toLowerCase()) > -1;
+                            });
+                        }
 
-                }, 500); // delay in ms
+                        // has message changed ?
+                        if ($scope.filters.messageIntro != queryFilters.messageIntro) {
+                            console.log('messageintro changed');
+
+                            $scope.logItems = $scope.logItems.filter(function (value) {
+                                return value.messageIntro.toLowerCase().indexOf($scope.filters.messageIntro.toLowerCase()) > -1;
+                            });
+                        }
+
+                    } else {
+                        console.log('non-reductive');
+
+                        // delete all items as we may be missing some (a new query will happen)
+                        clearLogItems(); // TODO: add an additional delay ?
+                    }
+
+                    queryFilters = angular.copy($scope.filters); // copy to prevent referencing
+
+                }) // no delay in timeout (TODO: change to promise)
+                .then(function () {
+                    $scope.currentlyFiltering = false;
+                });
+
             };
 
             // listen for any 'WipedLog' broadcasts

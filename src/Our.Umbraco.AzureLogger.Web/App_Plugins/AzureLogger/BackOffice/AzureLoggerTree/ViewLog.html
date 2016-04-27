@@ -65,7 +65,7 @@
 
                         <dt>Logger Name</dt>
                         <dd>
-                            <a ng-show="filters.loggerName != logItem.loggerName" ng-click="filters.loggerName = logItem.loggerName">{{logItem.loggerName}}</a>
+                            <a ng-show="filters.loggerName != logItem.loggerName" ng-click="filters.loggerName = logItem.loggerName; filtersChanged()">{{logItem.loggerName}}</a>
                             <span ng-show="filters.loggerName == logItem.loggerName">{{logItem.loggerName}}</span>
                         </dd>
 
@@ -89,7 +89,7 @@
 
                         <dt>Host Name</dt>
                         <dd>
-                            <a ng-show="filter.hostName != logItem.hostName" ng-click="filter.hostName = logItem.hostName">{{logItem.hostName}}</a>
+                            <a ng-show="filter.hostName != logItem.hostName" ng-click="filter.hostName = logItem.hostName; filtersChanged()">{{logItem.hostName}}</a>
                             <span ng-show="filter.hostName == logItem.hostName">{{logItem.hostName}}</span>
                         </dd>
 
