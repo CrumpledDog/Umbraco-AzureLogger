@@ -1,7 +1,6 @@
 ﻿{
     javascript:[
 		'/App_Plugins/AzureLogger/BackOffice/EnterKeyDirective.js',
-		'/App_Plugins/AzureLogger/BackOffice/FocusOutDirective.js',
 		'/App_Plugins/AzureLogger/BackOffice/LazyLoadDirective.js',
 		'/App_Plugins/AzureLogger/BackOffice/SelectPlaceholderDirective.js',
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerResource.js',

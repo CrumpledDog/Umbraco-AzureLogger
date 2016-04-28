@@ -7,14 +7,10 @@
         </div>
 
         <div class="filters">
-            <input type="text" ng-model="uiFilters.hostName" enter-key="handleFilters()" focus-out="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
-            <input type="text" ng-model="uiFilters.loggerName" enter-key="handleFilters()" focus-out="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
+            <input type="text" ng-model="uiFilters.hostName" enter-key="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
+            <input type="text" ng-model="uiFilters.loggerName" enter-key="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
 
-            <select ng-model="uiFilters.minLevel"
-                    ng-change="handleFilters()"
-                    ng-disabled="currentlyFiltering"
-                    placeholder="Min Level"
-                    class="filter-min-level">
+            <select ng-model="uiFilters.minLevel" ng-change="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Min Level" class="filter-min-level">
                 <option value="0">DEBUG</option>
                 <option value="1">INFO</option>
                 <option value="2">WARN</option>
@@ -22,7 +18,7 @@
                 <option value="4">FATAL</option>
             </select>
 
-            <input type="text" ng-model="uiFilters.message" enter-key="handleFilters()" focus-out="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />
+            <input type="text" ng-model="uiFilters.message" enter-key="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />
 
         </div>
     </div>
