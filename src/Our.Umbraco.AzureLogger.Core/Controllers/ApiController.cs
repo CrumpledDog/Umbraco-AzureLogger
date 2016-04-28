@@ -5,6 +5,7 @@
     using Our.Umbraco.AzureLogger.Core;
     using Our.Umbraco.AzureLogger.Core.Models;
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
+    using System;
     using System.Linq;
     using System.Web.Http;
 
@@ -36,7 +37,7 @@
                                 rowKey,
                                 (string)queryFilters.hostName,
                                 (string)queryFilters.loggerName,
-                                (Level)(int)queryFilters.minLevel,
+                                (Level)Math.Max((int)queryFilters.minLevel, 0),
                                 (string)queryFilters.message,
                                 take) // need to supply take, as result may be a cloud table with items removed (in which case the take doesn't know where to re-start from)
                         .Select(x => (LogItemIntro)x)

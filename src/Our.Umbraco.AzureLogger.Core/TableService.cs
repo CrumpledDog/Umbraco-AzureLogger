@@ -125,7 +125,7 @@
                         logTableEntities = logTableEntities
                                         .Where(x => string.IsNullOrWhiteSpace(hostName) || (x.log4net_HostName != null && x.log4net_HostName.IndexOf(hostName, StringComparison.InvariantCultureIgnoreCase) > -1))
                                         .Where(x => string.IsNullOrWhiteSpace(loggerName) || (x.LoggerName != null && x.LoggerName.IndexOf(loggerName, StringComparison.InvariantCultureIgnoreCase) > -1))
-                                        // TODO: message filtering
+                                        .Where(x => string.IsNullOrWhiteSpace(message) || (x.Message != null && x.Message.IndexOf(message, StringComparison.InvariantCultureIgnoreCase) > -1))
                                         .ToList();
                     }
                     else

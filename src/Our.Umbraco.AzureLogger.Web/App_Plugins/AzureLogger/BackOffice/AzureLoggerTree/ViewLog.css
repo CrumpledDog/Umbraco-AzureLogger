@@ -19,6 +19,18 @@
     width:auto;
 }
 
+/*.filter-min-level[value='-1'] {
+    color:#aaa;
+}*/
+
+/*.filter-min-level option:nth-child(1) {
+    color:#aaa;
+}*/
+
+.filter-min-level option {
+    color:black;
+}
+
 .filter-message {
     width:300px;
 }

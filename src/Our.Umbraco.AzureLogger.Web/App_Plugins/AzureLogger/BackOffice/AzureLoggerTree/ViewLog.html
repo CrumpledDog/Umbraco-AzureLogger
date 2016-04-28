@@ -6,14 +6,14 @@
             <!--<a class="btn" ng-click="updateLogItems()">Update</a>--><!-- TODO: only show if there are new items to get ng-show="newLogItems"-->
         </div>
 
-        <div class="filters"><!-- filters -->
+        <div class="filters">
             <input type="text" ng-model="uiFilters.hostName" enter-key="handleFilters()" focus-out="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
             <input type="text" ng-model="uiFilters.loggerName" enter-key="handleFilters()" focus-out="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
 
-            <!--http://jsfiddle.net/R4vK3/23/-->
             <select ng-model="uiFilters.minLevel"
                     ng-change="handleFilters()"
                     ng-disabled="currentlyFiltering"
+                    placeholder="Min Level"
                     class="filter-min-level">
                 <option value="0">DEBUG</option>
                 <option value="1">INFO</option>
@@ -22,12 +22,9 @@
                 <option value="4">FATAL</option>
             </select>
 
-            <!--<input type="text" ng-model="uiFilters.message" ng-change="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />-->
-        </div>
+            <input type="text" ng-model="uiFilters.message" enter-key="handleFilters()" focus-out="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />
 
-        <!--<p>Start Date Time : <input type="text" /></p>-->
-        <!--item-count: {{ logItems.length }}-->
-        <!--detail-count: {{ detailCount }}-->
+        </div>
     </div>
 
     <div class="umb-panel-body umb-scrollable">
