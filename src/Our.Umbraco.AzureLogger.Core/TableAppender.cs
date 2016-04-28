@@ -2,6 +2,7 @@
 {
     using log4net.Appender;
     using log4net.Core;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
 
@@ -36,6 +37,26 @@
         public TableAppender()
         {
             this.Lossy = false;
+        }
+
+        /// <summary>
+        /// Attempts to get the associated azure table, but gives up if it takes longer than 1/2 second
+        /// </summary>
+        /// <returns></returns>
+        internal bool CanConnect()
+        {
+            bool canConnect = false;
+
+            Thread thread = new Thread(() => {
+                canConnect = TableService.Instance.GetCloudTable(this.Name) != null;
+            });
+
+            thread.Start();
+
+            bool finished = thread.Join(500);
+            if (!finished) { thread.Abort(); }
+
+            return canConnect;
         }
 
         /// <summary>

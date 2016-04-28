@@ -40,12 +40,10 @@
                                                                 "appender|" + x.Name, // use the distinct appender name
                                                                 "-1",
                                                                 queryStrings,
-                                                                x.TreeName ?? x.Name, // use friendly name if available
+                                                                x.CanConnect() ? (x.TreeName ?? x.Name) : (x.TreeName ?? x.Name) + " (no connection)",
                                                                 !string.IsNullOrWhiteSpace(x.IconName) ? x.IconName : "icon-list",
                                                                 false, // TODO: are there filters associated with this appender ?
                                                                 this.BuildRoute("ViewLog", x.Name + "|" + x.TreeName ?? x.Name))));
-
-                // TODO: integrate the previous search item filtering to apply to each appender node
             }
             //else if (id.StartsWith("appender"))
             //{

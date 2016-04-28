@@ -238,7 +238,7 @@
         /// </summary>
         /// <param name="appenderName">unique name to identify a log4net Azure TableAppender</param>
         /// <returns></returns>
-        private CloudTable GetCloudTable(string appenderName)
+        internal CloudTable GetCloudTable(string appenderName)
         {
             if (!this.appenderCloudTables.ContainsKey(appenderName))
             {
@@ -285,6 +285,7 @@
                         }
                         catch (StorageException exception)
                         {
+
                             //if (exception.RequestInformation.HttpStatusCode == 409 &&
                             //    exception.RequestInformation.ExtendedErrorInformation.ErrorCode.Equals(TableErrorCodeStrings.TableBeingDeleted))
                             //{
