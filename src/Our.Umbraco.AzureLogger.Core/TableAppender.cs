@@ -2,6 +2,7 @@
 {
     using log4net.Appender;
     using log4net.Core;
+    using Microsoft.WindowsAzure.Storage.Table;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
@@ -48,13 +49,13 @@
             bool canConnect = false;
 
             Thread thread = new Thread(() => {
-                canConnect = TableService.Instance.GetCloudTable(this.Name) != null;
+                CloudTable cloudTable = TableService.Instance.GetCloudTable(this.Name);
+                canConnect = cloudTable != null && cloudTable.Exists();//( new TableRequestOptions() { ServerTimeout = new System.TimeSpan(500) });
             });
 
             thread.Start();
 
-            bool finished = thread.Join(500);
-            if (!finished) { thread.Abort(); }
+            if (!thread.Join(500)) { thread.Abort();}
 
             return canConnect;
         }
