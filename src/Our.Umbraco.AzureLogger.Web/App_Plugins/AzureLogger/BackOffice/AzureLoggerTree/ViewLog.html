@@ -7,11 +7,23 @@
         </div>
 
         <div class="filters"><!-- filters -->
-            <input type="text" ng-model="filters.hostName" enter-key="filtersChanged()" focus-out="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
-            <input type="text" ng-model="filters.loggerName" enter-key="filtersChanged()" focus-out="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
+            <input type="text" ng-model="uiFilters.hostName" enter-key="handleFilters()" focus-out="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
+            <input type="text" ng-model="uiFilters.loggerName" enter-key="handleFilters()" focus-out="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
+
+            <select ng-model="uiFilters.minLevel"
+                    ng-change="filtersChanged()"
+                    class="filter-min-level">
+                <!--<option value="" selected="selected" disabled="disabled" hidden="hidden">Min Level</option>-->
+                <option value=""></option>
+                <option value="DEBUG">DEBUG</option>
+                <option value="INFO">INFO</option>
+                <option value="WARN">WARN</option>
+                <option value="ERROR">ERROR</option>
+                <option value="FATAL">FATAL</option>
+            </select>
+
             <!--<input type="text" ng-model="filters.messageIntro" ng-change="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />-->
         </div>
-        <!--<p>{{debugQueryFilters | json}}</p>-->
 
         <!--<p>Start Date Time : <input type="text" /></p>-->
         <!--item-count: {{ logItems.length }}-->
@@ -65,8 +77,8 @@
 
                         <dt>Logger Name</dt>
                         <dd>
-                            <a ng-show="filters.loggerName != logItem.loggerName" ng-click="filters.loggerName = logItem.loggerName; filtersChanged()">{{logItem.loggerName}}</a>
-                            <span ng-show="filters.loggerName == logItem.loggerName">{{logItem.loggerName}}</span>
+                            <a ng-show="uiFilters.loggerName != logItem.loggerName" ng-click="uiFilters.loggerName = logItem.loggerName; handleFilters()">{{logItem.loggerName}}</a>
+                            <span ng-show="uiFilters.loggerName == logItem.loggerName">{{logItem.loggerName}}</span>
                         </dd>
 
                         <dt>Message</dt>
@@ -89,8 +101,8 @@
 
                         <dt>Host Name</dt>
                         <dd>
-                            <a ng-show="filter.hostName != logItem.hostName" ng-click="filter.hostName = logItem.hostName; filtersChanged()">{{logItem.hostName}}</a>
-                            <span ng-show="filter.hostName == logItem.hostName">{{logItem.hostName}}</span>
+                            <a ng-show="uiFilters.hostName != logItem.hostName" ng-click="uiFilters.hostName = logItem.hostName; handleFilters()">{{logItem.hostName}}</a>
+                            <span ng-show="uiFilters.hostName == logItem.hostName">{{logItem.hostName}}</span>
                         </dd>
 
                         <dt>Url</dt>
