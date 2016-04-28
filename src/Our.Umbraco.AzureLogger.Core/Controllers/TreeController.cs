@@ -74,7 +74,7 @@
             }
             else if (id.StartsWith("appender"))
             {
-                menuItemCollection.Items.Add(new MenuItem("WipeLog", "Wipe Log") { Icon = "delete" });
+                menuItemCollection.Items.Add(new MenuItem("WipeLog", "Wipe Log") { Icon = "alert" });
                 //menuItemCollection.Items.Add(new MenuItem("AboutAppender", "About Appender") { Icon = "help-alt", SeperatorBefore = true });
             }
 
