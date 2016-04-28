@@ -14,7 +14,7 @@
             // TODO: $scope.logItemLimit = 1000; // size of logItems array before it is reset (and a new start date time in the filter)
 
             var queryFilters = { hostName: '', loggerName: '', minLevel: '', message: '' }; // the filter state for the current query (may differ from the ui filters)
-            $scope.uiFilters = queryFilters;
+            $scope.uiFilters = angular.copy(queryFilters);
             $scope.currentlyFiltering = false;
 
             // forces the tree to highlight appender used for this view
