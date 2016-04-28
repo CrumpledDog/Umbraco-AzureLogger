@@ -5,13 +5,13 @@
     using log4net.Core;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
-    using Microsoft.WindowsAzure.Storage.Table.Protocol;
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
+    using Level = Our.Umbraco.AzureLogger.Core.Models.Level;
 
     internal sealed class TableService
     {
@@ -87,10 +87,10 @@
         /// <param name="loggerName"></param>
         /// <param name="messageIntro"></param>
         /// <returns></returns>
-        internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, string messageIntro, int take)
+        internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, Level minLevel, string message, int take)
         {
-            // if filtering, then that has to be done here, as AzureTables don't support wildcard matching
-            if (!string.IsNullOrWhiteSpace(hostName) || !string.IsNullOrWhiteSpace(loggerName) || !string.IsNullOrWhiteSpace(messageIntro))
+            // if there's filtering that needs to be done here (AzureTables don't support wildcard matching)
+            if (!string.IsNullOrWhiteSpace(hostName) || !string.IsNullOrWhiteSpace(loggerName) || !string.IsNullOrWhiteSpace(message))
             {
                 // list to fill
                 List<LogTableEntity> logTableEntities = new List<LogTableEntity>();
@@ -112,7 +112,7 @@
                     lastCount = logTableEntities.Count;
 
                     // take a large chunk to filter here
-                    IEnumerable<LogTableEntity> returnedLogTableEntities = this.ReadLogTableEntities(appenderName, lastPartitionKey, lastRowKey).Take(100);
+                    IEnumerable<LogTableEntity> returnedLogTableEntities = this.ReadLogTableEntities(appenderName, lastPartitionKey, lastRowKey, minLevel).Take(100);
                     if (returnedLogTableEntities.Any())
                     {
                         logTableEntities.AddRange(returnedLogTableEntities);
@@ -141,7 +141,7 @@
             }
 
             // no filtering
-            return this.ReadLogTableEntities(appenderName, partitionKey, rowKey).Take(take); // Take() seems to work with table queries !
+            return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel).Take(take); // Take() seems to work with table queries !
         }
 
         /// <summary>
@@ -150,7 +150,7 @@
         /// <param name="partitionKey">null or the last known partition key</param>
         /// <param name="rowKey">null or the last known row key</param>
         /// <returns>a collection of log items matchin the supplied filter criteria</returns>
-        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey)
+        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, Level minLevel)
         {
             CloudTable cloudTable = this.GetCloudTable(appenderName);
 
@@ -166,6 +166,34 @@
                 if (!string.IsNullOrWhiteSpace(rowKey))
                 {
                     tableQuery.AndWhere(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.GreaterThan, rowKey));
+                }
+
+                if (minLevel != Level.DEBUG)
+                {
+                    switch (minLevel)
+                    {
+                        case Level.INFO: // show all except debug
+                            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("Level", QueryComparisons.NotEqual, Level.DEBUG.ToString()));
+                            break;
+
+                        case Level.WARN: // show all except debug and info
+                            tableQuery.AndWhere(TableQuery.CombineFilters(
+                                                    TableQuery.GenerateFilterCondition("Level", QueryComparisons.NotEqual, Level.DEBUG.ToString()),
+                                                    TableOperators.And,
+                                                    TableQuery.GenerateFilterCondition("Level", QueryComparisons.NotEqual, Level.INFO.ToString())));
+                            break;
+
+                        case Level.ERROR: // show if error or fatal
+                            tableQuery.AndWhere(TableQuery.CombineFilters(
+                                                    TableQuery.GenerateFilterCondition("Level", QueryComparisons.Equal, Level.ERROR.ToString()),
+                                                    TableOperators.Or,
+                                                    TableQuery.GenerateFilterCondition("Level", QueryComparisons.Equal, Level.FATAL.ToString())));
+                            break;
+
+                        case Level.FATAL: // show fatal only
+                            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("Level", QueryComparisons.Equal, Level.FATAL.ToString()));
+                            break;
+                    }
                 }
 
                 return cloudTable.ExecuteQuery(tableQuery);

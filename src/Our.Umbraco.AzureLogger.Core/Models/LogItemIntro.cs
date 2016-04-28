@@ -20,6 +20,10 @@
         [JsonProperty("level")]
         public Level Level { get; set; }
 
+        // numeric value serialized (in addition to the name) as quicker to calculate when inline filtering
+        [JsonProperty("levelValue")]
+        public Level LevelValue { get { return this.Level; } }
+
         [JsonProperty("loggerName")]
         public string LoggerName { get; set; }
 

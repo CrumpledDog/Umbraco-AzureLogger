@@ -6,12 +6,12 @@
     public class TableQueryTimeoutException : Exception
     {
         /// <summary>
-        /// the partition key of the last item queried
+        /// the partition key of the last row checked
         /// </summary>
         public string LastPartitionKey { get; private set; }
 
         /// <summary>
-        /// the row key of the last item queried
+        /// the row key of the last row checked
         /// </summary>
         public string LastRowKey { get; private set; }
 
