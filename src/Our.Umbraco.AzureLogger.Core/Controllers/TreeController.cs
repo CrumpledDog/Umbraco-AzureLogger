@@ -27,23 +27,43 @@
 
             if (this.IsRoot(id))
             {
-                // get list of appenders
-                LogManager
-                    .GetLogger(typeof(TableAppender))
-                    .Logger
-                    .Repository
-                    .GetAppenders()
-                    .Where(x => x is TableAppender)
-                    .Cast<TableAppender>()
-                    .OrderBy(x => x.Name)
-                    .ForEach(x => treeNodeCollection.Add(this.CreateTreeNode(
-                                                                "appender|" + x.Name, // use the distinct appender name
-                                                                "-1",
-                                                                queryStrings,
-                                                                x.IsConnected() ? (x.TreeName ?? x.Name) : (x.TreeName ?? x.Name) + " (no connection)",
-                                                                !string.IsNullOrWhiteSpace(x.IconName) ? x.IconName : "icon-list",
-                                                                false, // TODO: are there filters associated with this appender ?
-                                                                this.BuildRoute("ViewLog", x.Name + "|" + x.TreeName ?? x.Name))));
+                // get all table appenders
+                foreach(TableAppender tableAppender in  LogManager
+                                                            .GetLogger(typeof(TableAppender))
+                                                            .Logger
+                                                            .Repository
+                                                            .GetAppenders()
+                                                            .Where(x => x is TableAppender)
+                                                            .Cast<TableAppender>()
+                                                            .OrderBy(x => x.Name))
+                {
+                    string name = tableAppender.TreeName ?? tableAppender.Name; // get the best friendly name
+
+                    if (tableAppender.IsConnected())
+                    {
+                        treeNodeCollection.Add(this.CreateTreeNode(
+                                                        "appender|" + tableAppender.Name, // id - appender name should be distinct
+                                                        "-1", // parentId
+                                                        queryStrings,
+                                                        name,
+                                                        !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName : "icon-list",
+                                                        false, // has children
+                                                        this.BuildRoute("ViewLog", tableAppender.Name + "|" + name)));
+                    }
+                    else
+                    {
+                        // no connection
+                        treeNodeCollection.Add(this.CreateTreeNode(
+                                                        "noConnection|" + tableAppender.Name,
+                                                        "-1",
+                                                        queryStrings,
+                                                        name,
+                                                        "icon-alert-alt",
+                                                        false,
+                                                        this.BuildRoute("NoConnection", tableAppender.Name + "|" + name)));
+
+                    }
+                }
             }
             //else if (id.StartsWith("appender"))
             //{
@@ -74,6 +94,11 @@
             {
                 menuItemCollection.Items.Add(new MenuItem("WipeLog", "Wipe Log") { Icon = "alert" });
                 //menuItemCollection.Items.Add(new MenuItem("AboutAppender", "About Appender") { Icon = "help-alt", SeperatorBefore = true });
+            }
+            else if (id.StartsWith("noConnection"))
+            {
+                //below refreshes child nodes only !
+                //menuItemCollection.Items.Add<ActionRefresh>(localizedTextService.Localize(ActionRefresh.Instance.Alias), true);
             }
 
             return menuItemCollection;

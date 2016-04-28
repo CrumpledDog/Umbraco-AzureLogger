@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerResource.js" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\NoConnection.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\FocusOutDirective.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\WipeLogController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\WipeLog.html" />
