@@ -60,8 +60,7 @@
                                                         name,
                                                         "icon-alert-alt",
                                                         false,
-                                                        this.BuildRoute("NoConnection", tableAppender.Name + "|" + name)));
-
+                                                        "/developer/"));
                     }
                 }
             }
