@@ -44,20 +44,20 @@
         /// Attempts to get the associated azure table, but gives up if it takes longer than 1/2 second
         /// </summary>
         /// <returns></returns>
-        internal bool CanConnect()
+        internal bool IsConnected()
         {
-            bool canConnect = false;
+            bool isConnected = false;
 
             Thread thread = new Thread(() => {
                 CloudTable cloudTable = TableService.Instance.GetCloudTable(this.Name);
-                canConnect = cloudTable != null && cloudTable.Exists();//( new TableRequestOptions() { ServerTimeout = new System.TimeSpan(500) });
+                isConnected = cloudTable != null && cloudTable.Exists();//( new TableRequestOptions() { ServerTimeout = new System.TimeSpan(500) });
             });
 
             thread.Start();
 
             if (!thread.Join(500)) { thread.Abort();}
 
-            return canConnect;
+            return isConnected;
         }
 
         /// <summary>

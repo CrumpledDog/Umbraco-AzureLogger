@@ -40,7 +40,7 @@
                                                                 "appender|" + x.Name, // use the distinct appender name
                                                                 "-1",
                                                                 queryStrings,
-                                                                x.CanConnect() ? (x.TreeName ?? x.Name) : (x.TreeName ?? x.Name) + " (no connection)",
+                                                                x.IsConnected() ? (x.TreeName ?? x.Name) : (x.TreeName ?? x.Name) + " (no connection)",
                                                                 !string.IsNullOrWhiteSpace(x.IconName) ? x.IconName : "icon-list",
                                                                 false, // TODO: are there filters associated with this appender ?
                                                                 this.BuildRoute("ViewLog", x.Name + "|" + x.TreeName ?? x.Name))));
