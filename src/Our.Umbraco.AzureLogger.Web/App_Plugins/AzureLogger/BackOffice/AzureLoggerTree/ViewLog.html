@@ -10,19 +10,19 @@
             <input type="text" ng-model="uiFilters.hostName" enter-key="handleFilters()" focus-out="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
             <input type="text" ng-model="uiFilters.loggerName" enter-key="handleFilters()" focus-out="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
 
+            <!--http://jsfiddle.net/R4vK3/23/-->
             <select ng-model="uiFilters.minLevel"
-                    ng-change="filtersChanged()"
+                    ng-change="handleFilters()"
+                    ng-disabled="currentlyFiltering"
                     class="filter-min-level">
-                <!--<option value="" selected="selected" disabled="disabled" hidden="hidden">Min Level</option>-->
-                <option value=""></option>
-                <option value="DEBUG">DEBUG</option>
-                <option value="INFO">INFO</option>
-                <option value="WARN">WARN</option>
-                <option value="ERROR">ERROR</option>
-                <option value="FATAL">FATAL</option>
+                <option value="0">DEBUG</option>
+                <option value="1">INFO</option>
+                <option value="2">WARN</option>
+                <option value="3">ERROR</option>
+                <option value="4">FATAL</option>
             </select>
 
-            <!--<input type="text" ng-model="filters.messageIntro" ng-change="filtersChanged()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />-->
+            <!--<input type="text" ng-model="uiFilters.message" ng-change="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />-->
         </div>
 
         <!--<p>Start Date Time : <input type="text" /></p>-->
