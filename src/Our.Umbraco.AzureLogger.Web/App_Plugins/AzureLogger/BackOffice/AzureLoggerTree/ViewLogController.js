@@ -13,7 +13,7 @@
             // TODO: $scope.threadIdentity; // built from AppDomainId + ProcessId + ThreadName (set by clicking in details view)
             // TODO: $scope.logItemLimit = 1000; // size of logItems array before it is reset (and a new start date time in the filter)
 
-            var queryFilters = { hostName: '', loggerName: '', minLevel: -1, message: '' }; // the filter state to use for the ajax queries
+            var queryFilters = { hostName: '', loggerName: '', minLevel: -1, message: '' }; // the filter state to use for the ajax queries (-1 to ensure the dropdown placeholder is selected)
             $scope.uiFilters = angular.copy(queryFilters); // set the ui filter state to match
             $scope.currentlyFiltering = false;
 
@@ -23,7 +23,6 @@
 
             // tell the resource that this is now the currently active view
             azureLoggerResource.activeAppenderViewLog = appenderName;
-
 
             //$scope.isActiveAppender = function () {
             //    return appenderName == azureLoggerResource.activeAppenderViewLog;
@@ -35,9 +34,20 @@
                 $scope.finishedLoading = false;
             };
 
-            // do the ui query filters match ?
-            $scope.filtersMatch = function () {
-                return angular.equals($scope.uiFilters, queryFilters);
+            // checks to see if the ui filters and the query filters represent the same state
+            $scope.filtersMatch = function ()
+            {
+                // can't do a simple object compare - angular.equals($scope.uiFilters, queryFilters)
+                // as level drop down can be -1 (placeholder) or 0 (debug) - both mean the same thing (can't have lower level than debug)
+
+                return $scope.uiFilters.hostName == queryFilters.hostName &&
+                       $scope.uiFilters.loggerName == queryFilters.loggerName &&
+                       (
+                            $scope.uiFilters.minLevel == queryFilters.minLevel ||
+                            ($scope.uiFilters.minLevel == -1 && queryFilters.minLevel == 0) ||
+                            ($scope.uiFilters.minLevel == 0 && queryFilters.minLevel == -1)
+                       ) &&
+                       $scope.uiFilters.message == queryFilters.message;
             };
 
             // handles any filter ui changes
