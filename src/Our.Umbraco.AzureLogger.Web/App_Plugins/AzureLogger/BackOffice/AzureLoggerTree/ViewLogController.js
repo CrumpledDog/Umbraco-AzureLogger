@@ -13,7 +13,7 @@
             // TODO: $scope.threadIdentity; // built from AppDomainId + ProcessId + ThreadName (set by clicking in details view)
             // TODO: $scope.logItemLimit = 1000; // size of logItems array before it is reset (and a new start date time in the filter)
 
-            var queryFilters = { hostName: '', loggerName: '', minLevel: 0, message: '' }; // the filter state to use for the ajax queries
+            var queryFilters = { hostName: '', loggerName: '', minLevel: -1, message: '' }; // the filter state to use for the ajax queries
             $scope.uiFilters = angular.copy(queryFilters); // set the ui filter state to match
             $scope.currentlyFiltering = false;
 
