@@ -32,8 +32,11 @@
                 <a href="" ng-if="uiFilters.message != ''" ng-click="uiFilters.message = ''" tabindex="-1" class="icon icon-delete"></a>
             </span>
 
-            <a href="" class="btn" ng-class="{ 'btn-primary': !currentlyFiltering && !filtersMatch() }" ng-disabled="currentlyFiltering || filtersMatch()" ng-click="handleFilters()">Update</a>
-            <!--<a href="" class="btn" ng-disabled="currentlyFiltering || !filtersMatch() || logItems.length == 0" ng-click="clearLogItems()">Refresh (only show if server has new data)</a>-->
+            <a href=""
+               class="btn"
+               ng-class="{ 'btn-primary': !currentlyFiltering && !filtersMatch() }"
+               ng-disabled="currentlyFiltering || filtersMatch()"
+               ng-click="currentlyFiltering || filtersMatch() || handleFilters()">Update</a>
 
         </div>
     </div>
