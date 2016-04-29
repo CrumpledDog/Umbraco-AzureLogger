@@ -10,7 +10,7 @@
             <input type="text" ng-model="uiFilters.hostName" enter-key="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
             <input type="text" ng-model="uiFilters.loggerName" enter-key="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
 
-            <select ng-model="uiFilters.minLevel" ng-change="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Min Level" class="filter-min-level">
+            <select ng-model="uiFilters.minLevel" ng-disabled="currentlyFiltering" placeholder="Min Level" class="filter-min-level">
                 <option value="0">DEBUG</option>
                 <option value="1">INFO</option>
                 <option value="2">WARN</option>
@@ -20,8 +20,8 @@
 
             <input type="text" ng-model="uiFilters.message" enter-key="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />
 
-            <a href="" class="btn" ng-disabled="filtersMatch()" ng-click="handleFilters()">Filter</a>
-            <a href="" class="btn" ng-disabled="!filtersMatch() || logItems.length == 0" ng-click="clearLogItems()">Refresh</a>
+            <a href="" class="btn" ng-disabled="currentlyFiltering || filtersMatch()" ng-click="handleFilters()">Update</a>
+            <!--<a href="" class="btn" ng-disabled="currentlyFiltering || !filtersMatch() || logItems.length == 0" ng-click="clearLogItems()">Refresh (only show if server has new data)</a>-->
 
         </div>
     </div>
