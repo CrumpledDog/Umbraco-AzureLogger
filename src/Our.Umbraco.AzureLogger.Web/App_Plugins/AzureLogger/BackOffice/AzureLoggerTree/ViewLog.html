@@ -3,12 +3,20 @@
     <div class="umb-panel-header">
 
         <div class="actions">
-            <!--<a class="btn" ng-click="updateLogItems()">Update</a>--><!-- TODO: only show if there are new items to get ng-show="newLogItems"-->
+            <span ng-if="currentlyLoading">Loading...</span>
         </div>
 
         <div class="filters">
-            <input type="text" ng-model="uiFilters.hostName" enter-key="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
-            <input type="text" ng-model="uiFilters.loggerName" enter-key="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
+
+            <span>
+                <input type="text" ng-model="uiFilters.hostName" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
+                <a href="" ng-if="uiFilters.hostName != ''" ng-click="uiFilters.hostName = ''" class="icon icon-delete"></a>
+            </span>
+
+            <span>
+                <input type="text" ng-model="uiFilters.loggerName" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
+                <a href="" ng-if="uiFilters.loggerName != ''" ng-click="uiFilters.loggerName = ''" class="icon icon-delete"></a>
+            </span>
 
             <select ng-model="uiFilters.minLevel" ng-disabled="currentlyFiltering" placeholder="Min Level" class="filter-min-level">
                 <option value="0">DEBUG</option>
@@ -18,7 +26,10 @@
                 <option value="4">FATAL</option>
             </select>
 
-            <input type="text" ng-model="uiFilters.message" enter-key="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />
+            <span>
+                <input type="text" ng-model="uiFilters.message" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />
+                <a href="" ng-if="uiFilters.message != ''" ng-click="uiFilters.message = ''" class="icon icon-delete"></a>
+            </span>
 
             <a href="" class="btn" ng-disabled="currentlyFiltering || filtersMatch()" ng-click="handleFilters()">Update</a>
             <!--<a href="" class="btn" ng-disabled="currentlyFiltering || !filtersMatch() || logItems.length == 0" ng-click="clearLogItems()">Refresh (only show if server has new data)</a>-->

@@ -7,6 +7,17 @@
     margin: 15px 0 0 25px;
 }
 
+/* fix for delete icon positioning */
+.filters span {
+     position: relative;
+}
+
+.filters span a { /* delete icon over input */
+    position: absolute;
+    right: 10px;
+    bottom: 2px;
+}
+
 .filter-machine {
     width:150px;
 }
