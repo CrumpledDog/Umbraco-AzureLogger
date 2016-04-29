@@ -58,7 +58,7 @@
                                                         "-1",
                                                         queryStrings,
                                                         name,
-                                                        "icon-alert-alt",
+                                                        "icon-alert-alt red",
                                                         false,
                                                         "/developer/"));
                     }
@@ -87,12 +87,11 @@
 
             if (this.IsRoot(id))
             {
-                menuItemCollection.Items.Add<ActionRefresh>(localizedTextService.Localize(ActionRefresh.Instance.Alias), true);
+                menuItemCollection.Items.Add<ActionRefresh>(localizedTextService.Localize(ActionRefresh.Instance.Alias), false);
             }
             else if (id.StartsWith("appender"))
             {
-                menuItemCollection.Items.Add(new MenuItem("WipeLog", "Wipe Log") { Icon = "alert" });
-                //menuItemCollection.Items.Add(new MenuItem("AboutAppender", "About Appender") { Icon = "help-alt", SeperatorBefore = true });
+                menuItemCollection.Items.Add(new MenuItem("WipeLog", "Wipe Log") { Icon = "alert" }); // red class doesn't work here
             }
             else if (id.StartsWith("noConnection"))
             {

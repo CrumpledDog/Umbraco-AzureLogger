@@ -142,6 +142,8 @@
 
             // no filtering
             return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel).Take(take); // Take() seems to work with table queries !
+
+            // TODO: parse all retrieved log entries and find any new: machine names or logger names (to be used for auto suggest data)
         }
 
         /// <summary>

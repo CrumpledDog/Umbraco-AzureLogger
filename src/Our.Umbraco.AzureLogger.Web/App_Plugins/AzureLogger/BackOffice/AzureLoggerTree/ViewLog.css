@@ -1,7 +1,9 @@
-﻿.actions {
+﻿.info {
     float:right;
     margin:10px 25px 0 0;
 }
+
+/* filters */
 
 .filters {
     margin: 15px 0 0 25px;
@@ -9,7 +11,8 @@
 
 /* fix for delete icon positioning */
 .filters span {
-     position: relative;
+    position:relative;
+    margin-bottom:10px;
 }
 
 .filters span a { /* delete icon over input */
@@ -27,24 +30,28 @@
 }
 
 .filter-min-level {
-    width:auto;
+    width:100px;
 }
 
-/*.filter-min-level[value='-1'] {
-    color:#aaa;
-}*/
-
-/*.filter-min-level option:nth-child(1) {
-    color:#aaa;
-}*/
-
-.filter-min-level option {
+.filter-min-level option { /* TODO: move into SelectPlaceholderDirective */
     color:black;
 }
 
 .filter-message {
     width:300px;
 }
+
+.filters .btn {
+    margin-bottom:10px;
+}
+
+/* fix for disabled buttons - prevent change on hover / focus */
+.btn.disabled:hover, .btn.disabled:focus, .btn[disabled]:hover, .btn[disabled]:focus {
+    background: #f2f2f2;
+    color: #000;
+}
+
+/* main view */
 
 .view-log h1 {
     margin: 30px 20px;
@@ -108,7 +115,6 @@
 .log-item-details dl {
     margin:0;
 }
-
 
 
 /* level key line */
