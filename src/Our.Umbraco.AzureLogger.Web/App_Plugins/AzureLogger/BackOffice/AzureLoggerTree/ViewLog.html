@@ -10,16 +10,38 @@
         <div class="filters">
 
             <span>
-                <input type="text" ng-model="uiFilters.hostName" ng-disabled="currentlyFiltering" enter-key="handleFilters()" placeholder="Machine Name" class="filter-machine" />
-                <a href="" ng-if="!currentlyFiltering && uiFilters.hostName != ''" ng-click="uiFilters.hostName = ''" tabindex="-1" class="icon icon-delete"></a>
+                <input type="text"
+                       ng-model="uiFilters.hostName"
+                       ng-disabled="currentlyFiltering"
+                       enter-key="handleFilters()"
+                       placeholder="Machine Name"
+                       class="filter-machine" />
+                <a href=""
+                   ng-if="!currentlyFiltering && uiFilters.hostName != ''"
+                   ng-click="uiFilters.hostName = ''"
+                   tabindex="-1"
+                   class="icon icon-delete"></a>
             </span>
 
             <span>
-                <input type="text" ng-model="uiFilters.loggerName" ng-disabled="currentlyFiltering" enter-key="handleFilters()" placeholder="Logger Name" class="filter-logger" />
-                <a href="" ng-if="!currentlyFiltering && uiFilters.loggerName != ''" ng-click="uiFilters.loggerName = ''" tabindex="-1" class="icon icon-delete"></a>
+                <input type="text"
+                       ng-model="uiFilters.loggerName"
+                       ng-disabled="currentlyFiltering"
+                       enter-key="handleFilters()"
+                       placeholder="Logger Name"
+                       class="filter-logger" />
+                <a href=""
+                   ng-if="!currentlyFiltering && uiFilters.loggerName != ''"
+                   ng-click="uiFilters.loggerName = ''"
+                   tabindex="-1"
+                   class="icon icon-delete"></a>
             </span>
 
-            <select ng-model="uiFilters.minLevel" ng-disabled="currentlyFiltering" placeholder="Min Level" class="filter-min-level">
+            <select ng-model="uiFilters.minLevel"
+                    ng-disabled="currentlyFiltering"
+                    enter-key="handleFilters()"
+                    placeholder="Min Level"
+                    class="filter-min-level">
                 <option value="0">DEBUG</option>
                 <option value="1">INFO</option>
                 <option value="2">WARN</option>
@@ -28,8 +50,17 @@
             </select>
 
             <span>
-                <input type="text" ng-model="uiFilters.message" ng-disabled="currentlyFiltering" enter-key="handleFilters()" placeholder="Message" class="filter-message" />
-                <a href="" ng-if="!currentlyFiltering && uiFilters.message != ''" ng-click="uiFilters.message = ''" tabindex="-1" class="icon icon-delete"></a>
+                <input type="text"
+                       ng-model="uiFilters.message"
+                       ng-disabled="currentlyFiltering"
+                       enter-key="handleFilters()"
+                       placeholder="Message"
+                       class="filter-message" />
+                <a href=""
+                   ng-if="!currentlyFiltering && uiFilters.message != ''"
+                   ng-click="uiFilters.message = ''"
+                   tabindex="-1"
+                   class="icon icon-delete"></a>
             </span>
 
             <a href=""

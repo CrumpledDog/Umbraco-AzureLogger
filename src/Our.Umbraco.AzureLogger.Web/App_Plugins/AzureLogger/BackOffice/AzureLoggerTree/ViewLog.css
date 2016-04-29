@@ -15,6 +15,12 @@
     margin-bottom:10px;
 }
 
+/* http://stackoverflow.com/questions/14007655/remove-ie10s-clear-field-x-button-on-certain-inputs */
+.filters span input::-ms-clear {
+    width : 0;
+    height: 0;
+}
+
 .filters span a { /* delete icon over input */
     position: absolute;
     right: 10px;
