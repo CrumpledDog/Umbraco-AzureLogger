@@ -20,6 +20,9 @@
 
             <input type="text" ng-model="uiFilters.message" enter-key="handleFilters()" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />
 
+            <a href="" class="btn" ng-disabled="filtersMatch()" ng-click="handleFilters()">Filter</a>
+            <a href="" class="btn" ng-disabled="!filtersMatch() || logItems.length == 0" ng-click="clearLogItems()">Refresh</a>
+
         </div>
     </div>
 

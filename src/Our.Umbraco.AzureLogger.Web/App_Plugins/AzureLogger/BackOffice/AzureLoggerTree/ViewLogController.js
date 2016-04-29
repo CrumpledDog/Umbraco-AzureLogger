@@ -30,9 +30,14 @@
             //};
 
             // clear all log items currently being viewed
-            var clearLogItems = function () {
+            $scope.clearLogItems = function () {
                 $scope.logItems = [];
                 $scope.finishedLoading = false;
+            };
+
+            // do the ui query filters match ?
+            $scope.filtersMatch = function () {
+                return angular.equals($scope.uiFilters, queryFilters);
             };
 
             // handles any filter ui changes
@@ -88,7 +93,7 @@
                         // if message changed, then it can't be reductive, as not enough data locally
 
                     } else {
-                        clearLogItems(); // delete all items as we may be missing data (this will trigger a refresh)
+                        $scope.clearLogItems(); // delete all items as we may be missing data (this will trigger a refresh)
                     }
 
                 }) // no delay in timeout
@@ -101,12 +106,12 @@
             // listen for any 'WipedLog' broadcasts
             $scope.$on('WipedLog', function (event, arg) {
                 if (arg == appenderName) { // safety check: if destined for this appender
-                    clearLogItems();
+                    $scope.clearLogItems();
                 }
             });
 
             $scope.updateLogItems = function () { // TODO: update head of existing data
-                clearLogItems(); // HACK: reloadLogItems so it returns the latest
+                $scope.clearLogItems(); // HACK: reloadLogItems so it returns the latest
             };
 
             var lastPartitionKey = null;
