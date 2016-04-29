@@ -10,13 +10,13 @@
         <div class="filters">
 
             <span>
-                <input type="text" ng-model="uiFilters.hostName" ng-disabled="currentlyFiltering" placeholder="Machine Name" class="filter-machine" />
-                <a href="" ng-if="uiFilters.hostName != ''" ng-click="uiFilters.hostName = ''" tabindex="-1" class="icon icon-delete"></a>
+                <input type="text" ng-model="uiFilters.hostName" ng-disabled="currentlyFiltering" enter-key="handleFilters()" placeholder="Machine Name" class="filter-machine" />
+                <a href="" ng-if="!currentlyFiltering && uiFilters.hostName != ''" ng-click="uiFilters.hostName = ''; filtersMatch() || handleFilters()" tabindex="-1" class="icon icon-delete"></a>
             </span>
 
             <span>
-                <input type="text" ng-model="uiFilters.loggerName" ng-disabled="currentlyFiltering" placeholder="Logger Name" class="filter-logger" />
-                <a href="" ng-if="uiFilters.loggerName != ''" ng-click="uiFilters.loggerName = ''" tabindex="-1"  class="icon icon-delete"></a>
+                <input type="text" ng-model="uiFilters.loggerName" ng-disabled="currentlyFiltering" enter-key="handleFilters()" placeholder="Logger Name" class="filter-logger" />
+                <a href="" ng-if="!currentlyFiltering && uiFilters.loggerName != ''" ng-click="uiFilters.loggerName = ''; filtersMatch() || handleFilters()" tabindex="-1" class="icon icon-delete"></a>
             </span>
 
             <select ng-model="uiFilters.minLevel" ng-disabled="currentlyFiltering" placeholder="Min Level" class="filter-min-level">
@@ -28,8 +28,8 @@
             </select>
 
             <span>
-                <input type="text" ng-model="uiFilters.message" ng-disabled="currentlyFiltering" placeholder="Message" class="filter-message" />
-                <a href="" ng-if="uiFilters.message != ''" ng-click="uiFilters.message = ''" tabindex="-1" class="icon icon-delete"></a>
+                <input type="text" ng-model="uiFilters.message" ng-disabled="currentlyFiltering" enter-key="handleFilters()" placeholder="Message" class="filter-message" />
+                <a href="" ng-if="!currentlyFiltering && uiFilters.message != ''" ng-click="uiFilters.message = ''; filtersMatch() || handleFilters()" tabindex="-1" class="icon icon-delete"></a>
             </span>
 
             <a href=""
