@@ -119,7 +119,7 @@
 
                         <dt>Logger Name</dt>
                         <dd>
-                            <a ng-show="uiFilters.loggerName != logItem.loggerName" ng-click="uiFilters.loggerName = logItem.loggerName; handleFilters()">{{logItem.loggerName}}</a>
+                            <a ng-show="uiFilters.loggerName != logItem.loggerName" ng-click="uiFilters.loggerName = logItem.loggerName">{{logItem.loggerName}}</a>
                             <span ng-show="uiFilters.loggerName == logItem.loggerName">{{logItem.loggerName}}</span>
                         </dd>
 
@@ -143,7 +143,7 @@
 
                         <dt>Host Name</dt>
                         <dd>
-                            <a ng-show="uiFilters.hostName != logItem.hostName" ng-click="uiFilters.hostName = logItem.hostName; handleFilters()">{{logItem.hostName}}</a>
+                            <a ng-show="uiFilters.hostName != logItem.hostName" ng-click="uiFilters.hostName = logItem.hostName">{{logItem.hostName}}</a>
                             <span ng-show="uiFilters.hostName == logItem.hostName">{{logItem.hostName}}</span>
                         </dd>
 

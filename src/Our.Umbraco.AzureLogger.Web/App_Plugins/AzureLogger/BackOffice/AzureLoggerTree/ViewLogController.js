@@ -4,6 +4,8 @@
         '$scope', '$http', '$routeParams', 'navigationService', '$q', '$timeout', 'AzureLogger.AzureLoggerResource',
         function ($scope, $http, $routeParams, navigationService, $q, $timeout, azureLoggerResource) {
 
+            /* vars */
+
             var appenderName = $routeParams.id.split('|')[0];
             $scope.name = $routeParams.id.split('|')[1]; // the appender name, or tree name
             $scope.logItems = [];
@@ -17,6 +19,13 @@
             $scope.uiFilters = angular.copy(queryFilters); // set the ui filter state to match
             $scope.currentlyFiltering = false;
 
+            // partition key and row key of last item checked in last query (where to start next query)
+            var lastPartitionKey = null;
+            var lastRowKey = null;
+
+
+            /* startup */
+
             // forces the tree to highlight appender used for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
             navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'appender|' + appenderName], forceReload: false });
@@ -28,9 +37,17 @@
             //    return appenderName == azureLoggerResource.activeAppenderViewLog;
             //};
 
-            // clear all log items currently being viewed
-            $scope.clearLogItems = function () {
+
+
+
+            /* methods */
+
+            var clearLogItems = function () {
+                console.log('clear');
+
                 $scope.logItems = [];
+                lastPartitionKey = null;
+                lastRowKey = null;
                 $scope.finishedLoading = false;
             };
 
@@ -38,7 +55,7 @@
             $scope.filtersMatch = function ()
             {
                 // can't do a simple object compare - angular.equals($scope.uiFilters, queryFilters)
-                // as level drop down can be -1 (placeholder) or 0 (debug) - both mean the same thing (can't have lower level than debug)
+                // as level drop down can be -1 (placeholder) or 0 (debug) - both values mean the same thing
 
                 return $scope.uiFilters.hostName == queryFilters.hostName &&
                        $scope.uiFilters.loggerName == queryFilters.loggerName &&
@@ -103,12 +120,14 @@
                         // if message changed, then it can't be reductive, as not enough data locally
 
                     } else {
-                        $scope.clearLogItems(); // delete all items as we may be missing data (this will trigger a refresh)
+                        clearLogItems(); // delete all items as we may be missing data (this will trigger a refresh)
                     }
 
                 }) // no delay in timeout
                 .then(function () {
                     $scope.currentlyFiltering = false;
+
+                    // return focus to last filter input that was in focus
                 });
 
             };
@@ -116,18 +135,12 @@
             // listen for any 'WipedLog' broadcasts
             $scope.$on('WipedLog', function (event, arg) {
                 if (arg == appenderName) { // safety check: if destined for this appender
-                    $scope.clearLogItems();
+                    clearLogItems();
                 }
             });
 
-            $scope.updateLogItems = function () { // TODO: update head of existing data
-                $scope.clearLogItems(); // HACK: reloadLogItems so it returns the latest
-            };
 
-            var lastPartitionKey = null;
-            var lastRowKey = null;
-
-            // returns a promise with a bool result
+            // returns a promise with a bool result - the bool indicates whether the caller should try again
             $scope.getMoreLogItems = function () {
 
                 var deferred = $q.defer();

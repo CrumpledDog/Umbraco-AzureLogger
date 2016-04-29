@@ -92,27 +92,38 @@
             // if there's filtering that needs to be done here (AzureTables don't support wildcard matching)
             if (!string.IsNullOrWhiteSpace(hostName) || !string.IsNullOrWhiteSpace(loggerName) || !string.IsNullOrWhiteSpace(message))
             {
-                // list to fill
-                List<LogTableEntity> logTableEntities = new List<LogTableEntity>();
+                List<LogTableEntity> logTableEntities = new List<LogTableEntity>(); // collection to return
+
+                // calculate excess amount to request from a cloud query, which will filter down to the required take
+                // machine name: low
+                // logger name: low
+                // level-debug: low
+                // level-info: medium
+                // level-warn: high
+                // level-error: high
+                // level-fatal: high
+                // message: medium
 
                 int lastCount;
                 string lastPartitionKey = partitionKey;
                 string lastRowKey = rowKey;
-                bool finished = false;
                 int attempts = 0;
+                bool finished = false;
+
                 do {
                     attempts++;
 
                     if (attempts >= 3)
                     {
-                        // prevent long execution cycle
                         throw new TableQueryTimeoutException(lastPartitionKey, lastRowKey, logTableEntities.ToArray());
                     }
 
                     lastCount = logTableEntities.Count;
 
-                    // take a large chunk to filter here
-                    IEnumerable<LogTableEntity> returnedLogTableEntities = this.ReadLogTableEntities(appenderName, lastPartitionKey, lastRowKey, minLevel).Take(100);
+                    // take a large chunk to filter here - take size should be relative to the filter granularity
+                    IEnumerable<LogTableEntity> returnedLogTableEntities = this.ReadLogTableEntities(appenderName, lastPartitionKey, lastRowKey, minLevel)
+                                                                                .Take(100);
+
                     if (returnedLogTableEntities.Any())
                     {
                         logTableEntities.AddRange(returnedLogTableEntities);
@@ -141,24 +152,33 @@
             }
 
             // no filtering
-            return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel).Take(take); // Take() seems to work with table queries !
+            return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel).Take(take);
 
             // TODO: parse all retrieved log entries and find any new: machine names or logger names (to be used for auto suggest data)
         }
 
         /// <summary>
         /// https://azure.microsoft.com/en-gb/documentation/articles/storage-dotnet-how-to-use-tables/
+        /// Gets a collection of LogTableEntity objs suitable for casting to LogItemInto
         /// </summary>
         /// <param name="partitionKey">null or the last known partition key</param>
         /// <param name="rowKey">null or the last known row key</param>
-        /// <returns>a collection of log items matchin the supplied filter criteria</returns>
+        /// <returns>a collection of log items matching the supplied filter criteria</returns>
         private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, Level minLevel)
         {
             CloudTable cloudTable = this.GetCloudTable(appenderName);
 
             if (cloudTable != null)
             {
-                TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>();
+                TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>()
+                                                                .Select(new string[] {
+                                                                    //"PartitionKey", // always returned
+                                                                    //"RowKey",
+                                                                    "Level",
+                                                                    "LoggerName",
+                                                                    "Message",
+                                                                    "EventTimeStamp",
+                                                                    "log4net_HostName" });
 
                 if (!string.IsNullOrWhiteSpace(partitionKey))
                 {
@@ -172,6 +192,7 @@
 
                 if (minLevel != Level.DEBUG)
                 {
+                    // a number comparrison would be better, but log4net level and enum level don't match
                     switch (minLevel)
                     {
                         case Level.INFO: // show all except debug
@@ -205,7 +226,7 @@
         }
 
         /// <summary>
-        ///
+        /// Returns a specific log entry, with all data required to inflate a <see cref="LogItemDetail"/>
         /// </summary>
         /// <param name="partitionKey"></param>
         /// <param name="rowKey"></param>
@@ -224,6 +245,10 @@
             return null; // fallback
         }
 
+        /// <summary>
+        /// Attempts to delete the cloud table
+        /// </summary>
+        /// <param name="appenderName"></param>
         internal void WipeLog(string appenderName)
         {
             CloudTable cloudTable;
@@ -277,24 +302,25 @@
 
                     bool cloudTableReady = false;
 
+                    //bool retry;
                     //do
                     //{
+                    //    retry = false;
                         try
                         {
                             cloudTable.CreateIfNotExists();
 
                             cloudTableReady = true;
                         }
-                        catch (StorageException exception)
+                        catch //(StorageException exception)
                         {
-
                             //if (exception.RequestInformation.HttpStatusCode == 409 &&
                             //    exception.RequestInformation.ExtendedErrorInformation.ErrorCode.Equals(TableErrorCodeStrings.TableBeingDeleted))
                             //{
-                            //    // TODO: pause and try again ?
+                            //    retry = true;
                             //}
                         }
-                    //} while (!cloudTableReady);
+                    //} while (retry);
 
                     if (cloudTableReady)
                     {
