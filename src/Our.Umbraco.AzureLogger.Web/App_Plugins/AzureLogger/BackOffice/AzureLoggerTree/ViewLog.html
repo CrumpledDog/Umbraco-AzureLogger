@@ -9,6 +9,18 @@
 
         <div class="filters">
 
+            <select ng-model="uiFilters.minLevel"
+                    ng-disabled="currentlyFiltering"
+                    enter-key="handleFilters()"
+                    placeholder="Min Level"
+                    class="filter-min-level">
+                <option value="0">DEBUG</option>
+                <option value="1">INFO</option>
+                <option value="2">WARN</option>
+                <option value="3">ERROR</option>
+                <option value="4">FATAL</option>
+            </select>
+
             <span>
                 <input type="text"
                        ng-model="uiFilters.hostName"
@@ -37,18 +49,6 @@
                    class="icon icon-delete"></a>
             </span>
 
-            <select ng-model="uiFilters.minLevel"
-                    ng-disabled="currentlyFiltering"
-                    enter-key="handleFilters()"
-                    placeholder="Min Level"
-                    class="filter-min-level">
-                <option value="0">DEBUG</option>
-                <option value="1">INFO</option>
-                <option value="2">WARN</option>
-                <option value="3">ERROR</option>
-                <option value="4">FATAL</option>
-            </select>
-
             <span>
                 <input type="text"
                        ng-model="uiFilters.message"
@@ -73,10 +73,10 @@
     </div>
 
     <div class="umb-panel-body umb-scrollable">
-        <h1>{{ name }}</h1>
+
         <div class="umb-pane" lazy-load="getMoreLogItems()">
 
-            <div class="level-{{logItem.level.toLowerCase()}}" ng-repeat="logItem in logItems">
+            <div ng-hide="currentlyFiltering" ng-repeat="logItem in logItems" class="level-{{logItem.level.toLowerCase()}}">
 
                 <div class="day-breaker" ng-if="differentDays(logItem, logItems[$index - 1])">
                     <h3>{{logItem.eventTimestamp| date : 'EEEE dd MMMM yyyy'}}</h3>
@@ -157,12 +157,12 @@
 
             </div><!-- /ng-repeat -->
             <!-- should never see this link, as the auto scrolling will push it further down the page out of sight -->
-            <a class="info-banner" ng-show="!currentlyLoading && !finishedLoading" ng-click="getMoreLogItems()">Get More Log Items</a>
+            <!--<a class="info-banner" ng-show="!currentlyLoading && !finishedLoading" ng-click="getMoreLogItems()">Get More Log Items</a>-->
 
             <!-- angular can't handle 10,000s of this data, so reset start time filter (not saveable) -->
             <!--<a ng-show="logItems.length >= logItemLimit">Reset from this log entry event time</a>-->
 
-            <div class="info-banner" ng-show="currentlyLoading">Loading</div>
+            <div class="info-banner" ng-show="currentlyFiltering || currentlyLoading">Searching</div>
             <div class="info-banner" ng-show="finishedLoading && logItems.length == 0">No Log Items</div>
             <div class="info-banner" ng-show="finishedLoading && logItems.length > 0">Finished Loading</div>
 

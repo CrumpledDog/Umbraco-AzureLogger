@@ -9,18 +9,25 @@
     margin: 15px 0 0 25px;
 }
 
-/* fix for delete icon positioning */
-.filters span {
+.filter-min-level { /* drop down */
+    width:100px;
+}
+
+.filter-min-level option { /* TODO: move into SelectPlaceholderDirective */
+    color:black;
+}
+
+.filters span { /* fix for delete icon positioning */
     position:relative;
     margin-bottom:10px;
 }
 
-.filters span input {
-    padding-right:25px; /* make space for the icon */
+.filters span input { /* make space for the icon */
+    padding-right:25px;
+    color:black;
 }
 
-/* http://stackoverflow.com/questions/14007655/remove-ie10s-clear-field-x-button-on-certain-inputs */
-.filters span input::-ms-clear {
+.filters span input::-ms-clear { /* http://stackoverflow.com/questions/14007655/remove-ie10s-clear-field-x-button-on-certain-inputs */
     width : 0;
     height: 0;
 }
@@ -29,26 +36,19 @@
     position: absolute;
     right: 10px;
     bottom: 2px;
+    /*color:#D9D9D9;*/
 }
 
 .filter-machine {
-    width:150px;
-}
-
-.filter-logger {
-    width:250px;
-}
-
-.filter-min-level {
     width:100px;
 }
 
-.filter-min-level option { /* TODO: move into SelectPlaceholderDirective */
-    color:black;
+.filter-logger {
+    width:300px;
 }
 
 .filter-message {
-    width:300px;
+    width:460px;
 }
 
 .filters .btn {

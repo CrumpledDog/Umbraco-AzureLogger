@@ -7,7 +7,7 @@
             /* vars */
 
             var appenderName = $routeParams.id.split('|')[0];
-            $scope.name = $routeParams.id.split('|')[1]; // the appender name, or tree name
+            //$scope.name = $routeParams.id.split('|')[1]; // the appender name, or tree name
             $scope.logItems = [];
             $scope.currentlyLoading = false; // true when getting data awaiting a response to set
             $scope.finishedLoading = false; // true once server indicates that there is no more data
@@ -43,15 +43,13 @@
             /* methods */
 
             var clearLogItems = function () {
-                console.log('clear');
-
                 $scope.logItems = [];
                 lastPartitionKey = null;
                 lastRowKey = null;
                 $scope.finishedLoading = false;
             };
 
-            // checks to see if the ui filters and the query filters represent the same state
+            // checks to see if the ui filters and the query filters represent the same state - returns bool
             $scope.filtersMatch = function ()
             {
                 // can't do a simple object compare - angular.equals($scope.uiFilters, queryFilters)
@@ -67,8 +65,10 @@
                        $scope.uiFilters.message == queryFilters.message;
             };
 
-            // handles any filter ui changes
+            // handles any filter ui changes - returns a promise
             $scope.handleFilters = function () {
+
+                var deferred = $q.defer();
 
                 $scope.currentlyFiltering = true;
 
@@ -127,9 +127,12 @@
                 .then(function () {
                     $scope.currentlyFiltering = false;
 
-                    // return focus to last filter input that was in focus
+                    // promise so caller can do somthing else this has completed
+                    deferred.resolve();
+
                 });
 
+                return deferred.promise;
             };
 
             // listen for any 'WipedLog' broadcasts
