@@ -70,67 +70,73 @@
 
                 var deferred = $q.defer();
 
-                $scope.currentlyFiltering = true;
-
-                $timeout(function () { // timeout ensures scope is ready
-
-                    var uiFilterHostName = $scope.uiFilters.hostName.toLowerCase();
-                    var uiFilterLoggerName = $scope.uiFilters.loggerName.toLowerCase();
-                    var uiFilterMinLevel = $scope.uiFilters.minLevel;
-                    var uiFilterMessage = $scope.uiFilters.message.toLowerCase();
-
-                    var queryFilterHostName = queryFilters.hostName.toLowerCase();
-                    var queryFilterLoggerName = queryFilters.loggerName.toLowerCase();
-                    var queryFilterMinLevel = queryFilters.minLevel;
-                    var queryFilterMessage = queryFilters.message.toLowerCase();
-
-                    queryFilters = angular.copy($scope.uiFilters); // update queryFilters as early as possible
-
-                    // when true, indicates that the current result set will be reduced
-                    var reductive = uiFilterHostName.indexOf(queryFilterHostName) > -1
-                                    && uiFilterLoggerName.indexOf(queryFilterLoggerName) > -1
-                                    && (uiFilterMinLevel >= queryFilterMinLevel || queryFilterMinLevel == 0)
-                                    && uiFilterMessage == queryFilterMessage; // any change in message will be reductive - as not all data client side
-
-                    // if reductive, then remove items that don't match (a new query may be triggered by the lazy load directive)
-                    if (reductive) {
-
-                        // machine name changed
-                        if (uiFilterHostName != queryFilterHostName) {
-                            $scope.logItems = $scope.logItems.filter(function (value) {
-                                return value.hostName.toLowerCase().indexOf(uiFilterHostName) > -1;
-                            });
-                        }
-
-                        // logger name changed
-                        if (uiFilterLoggerName != queryFilterLoggerName) {
-                            $scope.logItems = $scope.logItems.filter(function (value) {
-                                return value.loggerName.toLowerCase().indexOf(uiFilterLoggerName) > -1;
-                            });
-                        }
-
-                        // level changed
-                        if (uiFilterMinLevel != queryFilterMinLevel)
-                        {
-                            $scope.logItems = $scope.logItems.filter(function (value) {
-                                return value.levelValue >= uiFilterMinLevel;
-                            });
-                        }
-
-                        // if message changed, then it can't be reductive, as not enough data locally
-
-                    } else {
-                        clearLogItems(); // delete all items as we may be missing data (this will trigger a refresh)
-                    }
-
-                }) // no delay in timeout
-                .then(function () {
-                    $scope.currentlyFiltering = false;
-
-                    // promise so caller can do somthing else this has completed
+                // if already filtering, or there's no update of the query filters required
+                if ($scope.currentlyFiltering || $scope.filtersMatch()) {
                     deferred.resolve();
+                }
+                else {
 
-                });
+                    $scope.currentlyFiltering = true;
+
+                    $timeout(function () { // timeout ensures scope is ready
+
+                        var uiFilterHostName = $scope.uiFilters.hostName.toLowerCase();
+                        var uiFilterLoggerName = $scope.uiFilters.loggerName.toLowerCase();
+                        var uiFilterMinLevel = $scope.uiFilters.minLevel;
+                        var uiFilterMessage = $scope.uiFilters.message.toLowerCase();
+
+                        var queryFilterHostName = queryFilters.hostName.toLowerCase();
+                        var queryFilterLoggerName = queryFilters.loggerName.toLowerCase();
+                        var queryFilterMinLevel = queryFilters.minLevel;
+                        var queryFilterMessage = queryFilters.message.toLowerCase();
+
+                        queryFilters = angular.copy($scope.uiFilters); // update queryFilters as early as possible
+
+                        // when true, indicates that the current result set will be reduced
+                        var reductive = uiFilterHostName.indexOf(queryFilterHostName) > -1
+                                        && uiFilterLoggerName.indexOf(queryFilterLoggerName) > -1
+                                        && (uiFilterMinLevel >= queryFilterMinLevel || queryFilterMinLevel == 0)
+                                        && uiFilterMessage == queryFilterMessage; // any change in message will be reductive - as not all data client side
+
+                        // if reductive, then remove items that don't match (a new query may be triggered by the lazy load directive)
+                        if (reductive) {
+
+                            // machine name changed
+                            if (uiFilterHostName != queryFilterHostName) {
+                                $scope.logItems = $scope.logItems.filter(function (value) {
+                                    return value.hostName.toLowerCase().indexOf(uiFilterHostName) > -1;
+                                });
+                            }
+
+                            // logger name changed
+                            if (uiFilterLoggerName != queryFilterLoggerName) {
+                                $scope.logItems = $scope.logItems.filter(function (value) {
+                                    return value.loggerName.toLowerCase().indexOf(uiFilterLoggerName) > -1;
+                                });
+                            }
+
+                            // level changed
+                            if (uiFilterMinLevel != queryFilterMinLevel) {
+                                $scope.logItems = $scope.logItems.filter(function (value) {
+                                    return value.levelValue >= uiFilterMinLevel;
+                                });
+                            }
+
+                            // if message changed, then it can't be reductive, as not enough data locally
+
+                        } else {
+                            clearLogItems(); // delete all items as we may be missing data (this will trigger a refresh)
+                        }
+
+                    }) // no delay in timeout
+                    .then(function () {
+                        $scope.currentlyFiltering = false;
+
+                        // promise so caller can do somthing else this has completed
+                        deferred.resolve();
+
+                    });
+                }
 
                 return deferred.promise;
             };
