@@ -33,13 +33,6 @@
             // tell the resource that this is now the currently active view
             azureLoggerResource.activeAppenderViewLog = appenderName;
 
-            //$scope.isActiveAppender = function () {
-            //    return appenderName == azureLoggerResource.activeAppenderViewLog;
-            //};
-
-
-
-
             /* methods */
 
             var clearLogItems = function () {
@@ -47,6 +40,12 @@
                 lastPartitionKey = null;
                 lastRowKey = null;
                 $scope.finishedLoading = false;
+                triggerLazyLoad(); // local helper
+            };
+
+            // tell lazy-load directive to fill screen
+            var triggerLazyLoad = function () {
+                $scope.lazyLoad(); // WARNING: directive added this method to scope (directive not intended to be reuseable)
             };
 
             // checks to see if the ui filters and the query filters represent the same state - returns bool
@@ -54,7 +53,6 @@
             {
                 // can't do a simple object compare - angular.equals($scope.uiFilters, queryFilters)
                 // as level drop down can be -1 (placeholder) or 0 (debug) - both values mean the same thing
-
                 return $scope.uiFilters.hostName == queryFilters.hostName &&
                        $scope.uiFilters.loggerName == queryFilters.loggerName &&
                        (
@@ -122,7 +120,8 @@
                                 });
                             }
 
-                            // if message changed, then it can't be reductive, as not enough data locally
+                            // tell lazy-load directive to fill screen, as number of items may have been reduced
+                            triggerLazyLoad(); // local helper
 
                         } else {
                             clearLogItems(); // delete all items as we may be missing data (this will trigger a refresh)
@@ -131,10 +130,7 @@
                     }) // no delay in timeout
                     .then(function () {
                         $scope.currentlyFiltering = false;
-
-                        // promise so caller can do somthing else this has completed
-                        deferred.resolve();
-
+                        deferred.resolve(); // promise so caller can do somthing else when this has completed
                     });
                 }
 

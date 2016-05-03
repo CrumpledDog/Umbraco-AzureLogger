@@ -1,28 +1,25 @@
 ﻿/*
     <element lazy-load="method to call"></element>
-
-    watches element and scroll activity to check it's filling the screen,
-    if not then calls the 'method to call' until its promise returns false
 */
 angular
     .module('umbraco')
     .directive('lazyLoad', [
-        '$timeout',
-        function ($timeout) {
+        '$timeout', 'AzureLogger.AzureLoggerResource',
+        function ($timeout, azureLoggerResource) {
 
             return {
                 restrict: 'A',
                 link: function (scope, element, attrs) {
 
-                    // 'locker' to prevent watcher calculating height if it's likely to change
+                    // 'locker'
                     var expanding = false;
 
                     // returns true if the element doesn't stretch below the bottom of the view
                     var elementCanExpand = function () {
-                        return (element.offset().top + element.height() < $(window).height() + 500); // 500 = number of pixels below view
+                        return (element.offset().top + element.height() < $(window).height() + 1000); // 1000 = number of pixels below view
                     };
 
-                    // handles the 'method to call'
+                    // handles the 'method to call', and attempts to fill the screen
                     var lazyLoad = function () {
                         expanding = true;
 
@@ -41,31 +38,31 @@ angular
                         });
                     };
 
-
-                    var delayTimer; // timer to delay event until scrolling stopped
+                    var previousScrollTop = 0;
 
                     // jQuery find div with class 'umb-scrollable', as it's this outer element that is scrolled
                     $(element).closest('.umb-scrollable').bind('scroll', function () {
 
-                        if (delayTimer) { $timeout.cancel(delayTimer); } // cancel any previous timer
-
-                        delayTimer = $timeout(function () { // set new timer
-                            if (!expanding) { // avoid applying the scope if possible
-                                scope.$apply(); // apply scope to trigger watch
+                        // calculate direction of scroll
+                        var currentScrollTop = $(this).scrollTop();
+                        if (currentScrollTop <= previousScrollTop) { // up
+                            // TODO: cancel any load
+                        } else { // down
+                            if (!expanding && elementCanExpand()) {
+                                lazyLoad();
                             }
-                        }, 250);
-
+                        }
+                        previousScrollTop = currentScrollTop;
                     });
 
-                    // set watch on element (so it will trigger if data set is reduced)
-                    scope.$watch(function () {
-                        return (!expanding && elementCanExpand());
-                    }, function (newValue) {
-                        if (newValue) {
+                    // HACK: add method to the scope so can be called from controller (we know this is the only instance of the directive being used)
+                    scope.lazyLoad = function () {
+                        if (!expanding && elementCanExpand()) { // safety check;
                             lazyLoad();
                         }
-                    });
+                    };
 
+                    lazyLoad(); // startup
                 }
             }
         }]);
