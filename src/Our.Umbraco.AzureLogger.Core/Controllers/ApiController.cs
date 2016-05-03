@@ -6,12 +6,27 @@
     using Our.Umbraco.AzureLogger.Core.Models;
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
     using System;
+    using System.IO;
     using System.Linq;
     using System.Web.Http;
+    using System.Web.Hosting;
 
     [PluginController("AzureLogger")]
     public class ApiController : UmbracoAuthorizedApiController
     {
+        [HttpGet]
+        public string ReadLog4NetConfigFile()
+        {
+            return File.ReadAllText(HostingEnvironment.MapPath("~/config/log4net.config"));
+        }
+
+        [HttpPost]
+        public void WriteLog4NetConfigFile(string log4NetConfigFile)
+        {
+
+        }
+
+
         /// <summary>
         /// Gets the log items to render in the main list
         /// </summary>
