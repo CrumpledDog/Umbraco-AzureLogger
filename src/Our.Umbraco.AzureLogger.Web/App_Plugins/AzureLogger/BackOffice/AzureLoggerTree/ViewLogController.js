@@ -6,8 +6,7 @@
 
             /* vars */
 
-            var appenderName = $routeParams.id.split('|')[0];
-            //$scope.name = $routeParams.id.split('|')[1]; // the appender name, or tree name
+            var appenderName = $routeParams.id;
             $scope.logItems = [];
             $scope.currentlyLoading = false; // true when getting data awaiting a response to set
             $scope.finishedLoading = false; // true once server indicates that there is no more data

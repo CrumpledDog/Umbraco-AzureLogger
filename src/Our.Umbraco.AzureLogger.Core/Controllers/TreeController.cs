@@ -37,18 +37,16 @@
                                                             .Cast<TableAppender>()
                                                             .OrderBy(x => x.Name))
                 {
-                    string name = tableAppender.TreeName ?? tableAppender.Name; // get the best friendly name
-
                     if (tableAppender.IsConnected())
                     {
                         treeNodeCollection.Add(this.CreateTreeNode(
                                                         "appender|" + tableAppender.Name, // id - appender name should be distinct
                                                         "-1", // parentId
                                                         queryStrings,
-                                                        name,
+                                                        tableAppender.TreeName ?? tableAppender.Name,  // get the best friendly name
                                                         !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName : "icon-list",
                                                         false, // has children
-                                                        this.BuildRoute("ViewLog", tableAppender.Name + "|" + name)));
+                                                        this.BuildRoute("ViewLog", tableAppender.Name)));
                     }
                     else
                     {
@@ -57,7 +55,7 @@
                                                         "noConnection|" + tableAppender.Name,
                                                         "-1",
                                                         queryStrings,
-                                                        name,
+                                                        tableAppender.TreeName ?? tableAppender.Name,  // get the best friendly name
                                                         "icon-alert-alt red",
                                                         false,
                                                         "/developer/"));
