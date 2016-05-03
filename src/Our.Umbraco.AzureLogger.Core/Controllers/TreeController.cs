@@ -85,7 +85,11 @@
 
             if (this.IsRoot(id))
             {
-                menuItemCollection.Items.Add<ActionRefresh>(localizedTextService.Localize(ActionRefresh.Instance.Alias), false);
+                MenuItem editConfigFileMenuItem = (new MenuItem("EditConfigFile", "Edit log4net config") { Icon = "edit" });
+                editConfigFileMenuItem.NavigateToRoute(this.BuildRoute("EditConfigFile", string.Empty));
+                menuItemCollection.Items.Add(editConfigFileMenuItem);
+
+                menuItemCollection.Items.Add<ActionRefresh>(localizedTextService.Localize(ActionRefresh.Instance.Alias), true);
             }
             else if (id.StartsWith("appender"))
             {
