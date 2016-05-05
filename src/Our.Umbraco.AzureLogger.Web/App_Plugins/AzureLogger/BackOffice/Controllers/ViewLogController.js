@@ -5,9 +5,9 @@
         .module('umbraco')
         .controller('AzureLogger.ViewLogController', ViewLogController);
 
-    ViewLogController.$inject = ['$scope', '$http', '$routeParams', 'navigationService', '$q', '$timeout', 'AzureLogger.AzureLoggerResource']
+    ViewLogController.$inject = ['$scope', '$routeParams', 'navigationService', '$q', '$timeout', 'AzureLogger.AzureLoggerResource']
 
-    function ViewLogController($scope, $http, $routeParams, navigationService, $q, $timeout, azureLoggerResource) {
+    function ViewLogController($scope, $routeParams, navigationService, $q, $timeout, azureLoggerResource) {
 
         /* vars */
 
@@ -162,17 +162,7 @@
             else {
                 $scope.currentlyLoading = true;
 
-                $http({
-                    method: 'POST',
-                    url: 'BackOffice/AzureLogger/Api/ReadLogItemIntros',
-                    params: {
-                        'appenderName': appenderName,
-                        'partitionKey': lastPartitionKey != null ? escape(lastPartitionKey) : '',
-                        'rowKey': lastRowKey != null ? escape(lastRowKey) : '',
-                        'take': 50
-                    },
-                    data: queryFilters
-                })
+                azureLoggerResource.readLogItemIntros(appenderName, lastPartitionKey, lastRowKey, queryFilters)
                 .then(function (response) {
 
                     if (angular.isArray(response.data)) // success
@@ -225,16 +215,7 @@
             if (logItemDetailsRow.is(':visible') && logItem.details === undefined) {
 
                 // TODO: prevent multiple requests for the same data
-
-                $http({
-                    method: 'GET',
-                    url: 'BackOffice/AzureLogger/Api/ReadLogItemDetail',
-                    params: {
-                        appenderName: appenderName,
-                        partitionKey: logItem.partitionKey,
-                        rowKey: logItem.rowKey
-                    }
-                })
+                azureLoggerResource.readLogItemDetail(appenderName, logItem.partitionKey, logItem.rowKey)
                .then(function (response) {
                    logItem.details = response.data;
                });

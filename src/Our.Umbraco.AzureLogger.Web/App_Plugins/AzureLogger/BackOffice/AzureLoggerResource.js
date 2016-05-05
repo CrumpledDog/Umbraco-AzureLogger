@@ -10,7 +10,9 @@
     function AzzureLoggerResource($rootScope, $http) {
 
         var resource = {
-            activeAppenderViewLog: null, // used to identify the appender currently being viewed
+            activeAppenderViewLog: null, // identify the appender currently being viewed
+            readLogItemIntros: readLogItemIntros,
+            readLogItemDetail: readLogItemDetail,
             wipeLog: wipeLog
         };
 
@@ -18,8 +20,33 @@
 
         // --------------------------------------------------------------------------------
 
-        function wipeLog(appenderName) {
+        function readLogItemIntros(appenderName, partitionKey, rowKey, queryFilters) {
+            return $http({
+                method: 'POST',
+                url: 'BackOffice/AzureLogger/Api/ReadLogItemIntros',
+                params: {
+                    'appenderName': appenderName,
+                    'partitionKey': partitionKey != null ? escape(partitionKey) : '',
+                    'rowKey': rowKey != null ? escape(rowKey) : '',
+                    'take': 50
+                },
+                data: queryFilters
+            });
+        }
 
+        function readLogItemDetail(appenderName, partitionKey, rowKey) {
+            return $http({
+                method: 'GET',
+                url: 'BackOffice/AzureLogger/Api/ReadLogItemDetail',
+                params: {
+                    appenderName: appenderName,
+                    partitionKey: partitionKey,
+                    rowKey: rowKey
+                }
+            });
+        }
+
+        function wipeLog(appenderName) {
             return $http({
                 method: 'POST',
                 url: 'BackOffice/AzureLogger/Api/WipeLog',
