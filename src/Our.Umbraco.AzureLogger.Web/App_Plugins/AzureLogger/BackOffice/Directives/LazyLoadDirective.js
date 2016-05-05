@@ -6,7 +6,9 @@
     */
     angular
         .module('umbraco')
-        .directive('lazyLoad', ['$timeout', 'AzureLogger.AzureLoggerResource', LazyLoadDirective]);
+        .directive('lazyLoad', LazyLoadDirective);
+
+    LazyLoadDirective.$inject = ['$timeout', 'AzureLogger.AzureLoggerResource'];
 
     function LazyLoadDirective($timeout, azureLoggerResource) {
 

@@ -3,7 +3,7 @@
 
     angular
         .module('umbraco')
-        .factory('AzureLogger.AzureLoggerResource', [AzzureLoggerResource]);
+        .factory('AzureLogger.AzureLoggerResource', AzzureLoggerResource);
 
     function AzzureLoggerResource() {
 

@@ -3,8 +3,9 @@
 
     angular
         .module('umbraco')
-        .controller('AzureLogger.WipeLogController', ['$rootScope', '$scope', '$http', 'navigationService', WipeLogController]);
+        .controller('AzureLogger.WipeLogController', WipeLogController);
 
+    WipeLogController.$inject = ['$rootScope', '$scope', '$http', 'navigationService'];
 
     function WipeLogController($rootScope, $scope, $http, navigationService) {
 

@@ -3,7 +3,7 @@
 
     angular
         .module('umbraco')
-        .directive('enterKey', [EnterKeyDirective]);
+        .directive('enterKey', EnterKeyDirective);
 
     function EnterKeyDirective() {
 
