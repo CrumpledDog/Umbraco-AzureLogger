@@ -98,7 +98,7 @@
                     // when true, indicates that the current result set will be reduced
                     var reductive = uiFilterHostName.indexOf(queryFilterHostName) > -1
                                     && uiFilterLoggerName.indexOf(queryFilterLoggerName) > -1
-                                    && (uiFilterMinLevel >= queryFilterMinLevel || queryFilterMinLevel == 0)
+                                    && uiFilterMinLevel >= queryFilterMinLevel
                                     && uiFilterMessage == queryFilterMessage; // any change in message will be reductive - as not all data client side
 
                     // if reductive, then remove items that don't match (a new query may be triggered by the lazy load directive)
