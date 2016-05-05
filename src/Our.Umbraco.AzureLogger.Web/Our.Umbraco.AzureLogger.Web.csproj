@@ -60,13 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerResource.js" />
-    <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\WipeLogController.js" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\Controllers\WipeLogController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\WipeLog.html" />
-    <Content Include="App_Plugins\AzureLogger\BackOffice\EnterKeyDirective.js" />
-    <Content Include="App_Plugins\AzureLogger\BackOffice\LazyLoadDirective.js" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\Directives\EnterKeyDirective.js" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\Directives\LazyLoadDirective.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ViewLog.html" />
-    <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ViewLogController.js" />
-    <Content Include="App_Plugins\AzureLogger\BackOffice\SelectPlaceholderDirective.js" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\Controllers\ViewLogController.js" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\Directives\SelectPlaceholderDirective.js" />
     <Content Include="App_Plugins\AzureLogger\package.manifest" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
