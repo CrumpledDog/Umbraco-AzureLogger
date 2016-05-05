@@ -72,10 +72,9 @@
         </div>
     </div>
 
-    <div class="umb-panel-body umb-scrollable">
+    <div class="umb-panel-body umb-scrollable" monitor-width="logItemsViewWidth" ng-class="{ 'narrow': logItemsViewWidth < 1020 }">
 
         <div class="umb-pane" lazy-load="getMoreLogItems()">
-
             <div ng-hide="currentlyFiltering" ng-repeat="logItem in logItems" class="level-{{logItem.level.toLowerCase()}}">
 
                 <div class="day-breaker" ng-if="differentDays(logItem, logItems[$index - 1])">

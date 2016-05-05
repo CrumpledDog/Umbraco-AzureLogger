@@ -73,6 +73,10 @@
 
 
 /* intro row */
+.narrow .log-item-intro {
+    background-color:yellow;
+}
+
 
 .log-item-intro {
     margin-top:5px;

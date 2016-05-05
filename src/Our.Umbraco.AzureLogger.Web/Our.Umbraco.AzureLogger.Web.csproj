@@ -66,6 +66,7 @@
     <Content Include="App_Plugins\AzureLogger\BackOffice\Directives\LazyLoadDirective.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ViewLog.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\Controllers\ViewLogController.js" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\Directives\MonitorWidthDirective.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\Directives\SelectPlaceholderDirective.js" />
     <Content Include="App_Plugins\AzureLogger\package.manifest" />
     <None Include="Web.Debug.config">

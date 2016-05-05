@@ -4,6 +4,7 @@
 		'/App_Plugins/AzureLogger/BackOffice/Controllers/ViewLogController.js',
 		'/App_Plugins/AzureLogger/BackOffice/Directives/LazyLoadDirective.js',
 		'/App_Plugins/AzureLogger/BackOffice/Directives/EnterKeyDirective.js',
+		'/App_Plugins/AzureLogger/BackOffice/Directives/MonitorWidthDirective.js',
 		'/App_Plugins/AzureLogger/BackOffice/Directives/SelectPlaceholderDirective.js',
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerResource.js'
 	],

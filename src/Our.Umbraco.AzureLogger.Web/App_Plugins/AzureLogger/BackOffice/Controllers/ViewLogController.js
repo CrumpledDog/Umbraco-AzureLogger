@@ -36,9 +36,8 @@
         // --------------------------------------------------------------------------------
 
         function wipedLog(event, arg) {
-            if (arg == appenderName) { // if the broadcast was intended for this appender
-                clearLogItems();
-            }
+            // if the broadcast was intended for this appender
+            if (arg == appenderName) {  clearLogItems(); }
         }
 
         function init() {
@@ -76,9 +75,7 @@
             // if already filtering, or there's no update of the query filters required
             if ($scope.currentlyFiltering || $scope.filtersMatch()) {
                 deferred.resolve();
-            }
-            else {
-
+            } else {
                 $scope.currentlyFiltering = true;
 
                 $timeout(function () { // timeout ensures scope is ready
