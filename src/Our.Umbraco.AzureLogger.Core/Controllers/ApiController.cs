@@ -20,16 +20,18 @@
         /// <param name="rowKey">the last known rowKey</param>
         /// <param name="take">number of log items to get</param>
         /// <param name="queryFilters">using dynamic to avoid making a strongly typed model</param>
-        /// <returns>either an array, or an object - an array indicates a successful response and contains all log items found,
-        /// whilst an object indicates that a timeout occured during the query, this will return how far the processing got, and any
-        /// log items already found before the timeout</returns>
+        /// <returns></returns>
         [HttpPost]
         public object ReadLogItemIntros([FromUri]string appenderName, [FromUri] string partitionKey, [FromUri] string rowKey, [FromUri] int take, [FromBody] dynamic queryFilters)
         {
+            LogItemIntro[] logItemIntros;
+            string lastPartitionKey = null;
+            string lastRowKey= null;
+            bool finishedLoading = false;
+
             try
             {
-                // return an array of data found (if size less than the take, then it's the end of the log)
-                return TableService
+                logItemIntros = TableService
                         .Instance
                         .ReadLogTableEntities(
                                 appenderName,
@@ -42,18 +44,31 @@
                                 take) // need to supply take, as result may be a cloud table with items removed (in which case the take doesn't know where to re-start from)
                         .Select(x => (LogItemIntro)x)
                         .ToArray();
+
+                if (logItemIntros.Any())
+                {
+                    lastPartitionKey = logItemIntros.Last().PartitionKey;
+                    lastRowKey = logItemIntros.Last().RowKey;
+                }
+                else
+                {
+                    finishedLoading = true;
+                }
             }
             catch (TableQueryTimeoutException exception)
             {
-                // return an object detailing where to start the next search (to avoid duplicate processing)
-                // may also contain an array of any data found before it timedout
-                return new
-                {
-                    lastPartitionKey = exception.LastPartitionKey,
-                    lastRowKey =  exception.LastRowKey,
-                    data = exception.Data.Select(x => (LogItemIntro)((LogTableEntity)x)).ToArray()
-                };
+                logItemIntros = exception.Data.Select(x => (LogItemIntro)((LogTableEntity)x)).ToArray();
+                lastPartitionKey = exception.LastPartitionKey;
+                lastRowKey =  exception.LastRowKey;
             }
+
+            return new
+            {
+                logItemIntros = logItemIntros,
+                lastPartitionKey = lastPartitionKey,
+                lastRowKey = lastRowKey,
+                finishedLoading = finishedLoading
+            };
         }
 
         /// <summary>

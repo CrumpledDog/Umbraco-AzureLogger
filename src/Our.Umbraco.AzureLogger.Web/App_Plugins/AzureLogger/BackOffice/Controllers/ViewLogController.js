@@ -159,34 +159,10 @@
                 azureLoggerResource.readLogItemIntros(appenderName, lastPartitionKey, lastRowKey, queryFilters)
                 .then(function (response) {
 
-                    if (angular.isArray(response.data)) // success
-                    {
-                        if (response.data.length > 0) {
-
-                            $scope.logItems = $scope.logItems.concat(response.data);
-
-                            var lastLogItem = response.data[response.data.length - 1];
-
-                            // last keys in response
-                            lastPartitionKey = lastLogItem.partitionKey;
-                            lastRowKey = lastLogItem.rowKey;
-                        }
-                        else {
-                            $scope.finishedLoading = true;
-                        }
-                    }
-                    else // timeout
-                    {
-                        // thre may have been items found, before it timed out
-                        if (response.data.data.length > 0) {
-                            $scope.logItems = $scope.logItems.concat(response.data.data);
-                        }
-
-                        // last keys checked before timeout occured
-                        lastPartitionKey = response.data.lastPartitionKey;
-                        lastRowKey = response.data.lastRowKey;
-                    }
-
+                    $scope.logItems = $scope.logItems.concat(response.data.logItemIntros);
+                    lastPartitionKey = response.data.lastPartitionKey;
+                    lastRowKey = response.data.lastRowKey;
+                    $scope.finishedLoading = response.data.finishedLoading;
                     $scope.currentlyLoading = false;
 
                     deferred.resolve(!$scope.finishedLoading); // when true indicates the caller could try again
