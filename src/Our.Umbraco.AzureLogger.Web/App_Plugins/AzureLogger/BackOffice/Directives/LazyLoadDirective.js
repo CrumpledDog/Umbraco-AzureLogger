@@ -1,68 +1,73 @@
-﻿/*
-    <element lazy-load="method to call"></element>
-*/
-angular
-    .module('umbraco')
-    .directive('lazyLoad', [
-        '$timeout', 'AzureLogger.AzureLoggerResource',
-        function ($timeout, azureLoggerResource) {
+﻿(function() {
+    'use strict';
 
-            return {
-                restrict: 'A',
-                link: function (scope, element, attrs) {
+    /*
+        <element lazy-load="method to call"></element>
+    */
+    angular
+        .module('umbraco')
+        .directive('lazyLoad', [
+            '$timeout', 'AzureLogger.AzureLoggerResource',
+            function ($timeout, azureLoggerResource) {
 
-                    // 'locker'
-                    var expanding = false;
+                return {
+                    restrict: 'A',
+                    link: function (scope, element, attrs) {
 
-                    // returns true if the element doesn't stretch below the bottom of the view
-                    var elementCanExpand = function () {
-                        return (element.offset().top + element.height() < $(window).height() + 1000); // 1000 = number of pixels below view
-                    };
+                        // 'locker'
+                        var expanding = false;
 
-                    // handles the 'method to call', and attempts to fill the screen
-                    var lazyLoad = function () {
-                        expanding = true;
+                        // returns true if the element doesn't stretch below the bottom of the view
+                        var elementCanExpand = function () {
+                            return (element.offset().top + element.height() < $(window).height() + 1000); // 1000 = number of pixels below view
+                        };
 
-                        $timeout(function () { //timeout to ensure scope is ready
+                        // handles the 'method to call', and attempts to fill the screen
+                        var lazyLoad = function () {
+                            expanding = true;
 
-                            // TODO: to make more generic, check to see if a promise is actually returned
-                            scope.$apply(attrs.lazyLoad) // execute angular expression string (the 'method to call')
-                            .then(function (canLoadMore) { // return value of the promise
+                            $timeout(function () { //timeout to ensure scope is ready
 
-                                if (canLoadMore && elementCanExpand()) { // check to see if screen filled
-                                    lazyLoad(); // try again
-                                }
+                                // TODO: to make more generic, check to see if a promise is actually returned
+                                scope.$apply(attrs.lazyLoad) // execute angular expression string (the 'method to call')
+                                .then(function (canLoadMore) { // return value of the promise
 
-                                expanding = false;
+                                    if (canLoadMore && elementCanExpand()) { // check to see if screen filled
+                                        lazyLoad(); // try again
+                                    }
+
+                                    expanding = false;
+                                });
                             });
+                        };
+
+                        var previousScrollTop = 0;
+
+                        // jQuery find div with class 'umb-scrollable', as it's this outer element that is scrolled
+                        $(element).closest('.umb-scrollable').bind('scroll', function () {
+
+                            // calculate direction of scroll
+                            var currentScrollTop = $(this).scrollTop();
+                            if (currentScrollTop <= previousScrollTop) { // up
+                                // TODO: cancel any load
+                            } else { // down
+                                if (!expanding && elementCanExpand()) {
+                                    lazyLoad();
+                                }
+                            }
+                            previousScrollTop = currentScrollTop;
                         });
-                    };
 
-                    var previousScrollTop = 0;
-
-                    // jQuery find div with class 'umb-scrollable', as it's this outer element that is scrolled
-                    $(element).closest('.umb-scrollable').bind('scroll', function () {
-
-                        // calculate direction of scroll
-                        var currentScrollTop = $(this).scrollTop();
-                        if (currentScrollTop <= previousScrollTop) { // up
-                            // TODO: cancel any load
-                        } else { // down
-                            if (!expanding && elementCanExpand()) {
+                        // HACK: add method to the scope so can be called from controller (we know this is the only instance of the directive being used)
+                        scope.lazyLoad = function () {
+                            if (!expanding && elementCanExpand()) { // safety check;
                                 lazyLoad();
                             }
-                        }
-                        previousScrollTop = currentScrollTop;
-                    });
+                        };
 
-                    // HACK: add method to the scope so can be called from controller (we know this is the only instance of the directive being used)
-                    scope.lazyLoad = function () {
-                        if (!expanding && elementCanExpand()) { // safety check;
-                            lazyLoad();
-                        }
-                    };
-
-                    lazyLoad(); // startup
+                        lazyLoad(); // startup
+                    }
                 }
-            }
-        }]);
+            }]);
+
+})();

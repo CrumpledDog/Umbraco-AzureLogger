@@ -1,43 +1,47 @@
-﻿angular
-    .module('umbraco')
-    .directive('placeholder', [
-        function () {
+﻿(function() {
+    'use strict';
 
-            return {
-                require: 'ngModel',
-                restrict: 'A',
-                link: function (scope, element, attrs, ngModel) {
+    angular
+        .module('umbraco')
+        .directive('placeholder', [
+            function () {
 
-                    // ensure only attached to select element
-                    if (element[0].tagName.toLowerCase() !== 'select') {
-                        return;
-                    }
+                return {
+                    require: 'ngModel',
+                    restrict: 'A',
+                    link: function (scope, element, attrs, ngModel) {
 
-                    if (attrs.placeholder) {
+                        // ensure only attached to select element
+                        if (element[0].tagName.toLowerCase() !== 'select') {
+                            return;
+                        }
 
-                        // TODO: move styling from CSS to here
-                        //for (var i = 0; i < element.children.length; i++) {
-                        //    angular.element(element.children[i]).css('color', 'black');
-                        //}
+                        if (attrs.placeholder) {
 
-                        //element.prepend('<option value="-1" selected="selected" style="color:#D9D9D9">' + attrs.placeholder + '</option>');
-                        element.prepend('<option value="-1" selected="selected" disabled="disabled" style="color:#D9D9D9">' + attrs.placeholder + '</option>');
+                            // TODO: move styling from CSS to here
+                            //for (var i = 0; i < element.children.length; i++) {
+                            //    angular.element(element.children[i]).css('color', 'black');
+                            //}
 
-                        // default to the placeholder option
-                        ngModel.$setViewValue(-1);
+                            //element.prepend('<option value="-1" selected="selected" style="color:#D9D9D9">' + attrs.placeholder + '</option>');
+                            element.prepend('<option value="-1" selected="selected" disabled="disabled" style="color:#D9D9D9">' + attrs.placeholder + '</option>');
 
-                        // set colour to match placeholder option
-                        element.css('color', '#D9D9D9');
+                            // default to the placeholder option
+                            ngModel.$setViewValue(-1);
 
-                        // update colour on any change
-                        element.on('change', function (event) {
-                            if (event.target.value == -1) {
-                                angular.element(this).css('color', '#D9D9D9');
-                            } else {
-                                angular.element(this).css('color', 'black');
-                            }
-                        });
+                            // set colour to match placeholder option
+                            element.css('color', '#D9D9D9');
+
+                            // update colour on any change
+                            element.on('change', function (event) {
+                                if (event.target.value == -1) {
+                                    angular.element(this).css('color', '#D9D9D9');
+                                } else {
+                                    angular.element(this).css('color', 'black');
+                                }
+                            });
+                        }
                     }
                 }
-            }
-        }]);
+            }]);
+})();
