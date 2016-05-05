@@ -3,16 +3,15 @@
 
     angular
         .module('umbraco')
-        .factory('AzureLogger.AzureLoggerResource', [
-            function () {
+        .factory('AzureLogger.AzureLoggerResource', [AzzureLoggerResource]);
 
-                return {
+    function AzzureLoggerResource() {
 
-                    activeAppenderViewLog: null // used to identify the appender currently being viewed
+        return {
 
-                };
+            activeAppenderViewLog: null // used to identify the appender currently being viewed
 
-            }
-        ]);
+        };
+    }
 
 })();
