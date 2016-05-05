@@ -9,51 +9,62 @@
 
     function ViewLogController($scope, $routeParams, navigationService, $q, $timeout, azureLoggerResource) {
 
-        /* vars */
-
         var appenderName = $routeParams.id;
+        var queryFilters = { hostName: '', loggerName: '', minLevel: -1, message: '' }; // the filter state to use for the ajax queries (-1 to ensure the dropdown placeholder is selected)
+        var lastPartitionKey = null; // partition key of last item checked in last query (where to start next query)
+        var lastRowKey = null; // row key of last item checked in last query (where to start next query)
+
         $scope.logItems = [];
         $scope.currentlyLoading = false; // true when getting data awaiting a response to set
         $scope.finishedLoading = false; // true once server indicates that there is no more data
         // TODO: $scope.startEventTimestamp; // set with date picker
         // TODO: $scope.threadIdentity; // built from AppDomainId + ProcessId + ThreadName (set by clicking in details view)
         // TODO: $scope.logItemLimit = 1000; // size of logItems array before it is reset (and a new start date time in the filter)
-
-        var queryFilters = { hostName: '', loggerName: '', minLevel: -1, message: '' }; // the filter state to use for the ajax queries (-1 to ensure the dropdown placeholder is selected)
         $scope.uiFilters = angular.copy(queryFilters); // set the ui filter state to match
         $scope.currentlyFiltering = false;
 
-        // partition key and row key of last item checked in last query (where to start next query)
-        var lastPartitionKey = null;
-        var lastRowKey = null;
+        $scope.filtersMatch = filtersMatch;
+        $scope.handleFilters = handleFilters;
+        $scope.getMoreLogItems = getMoreLogItems;
+        $scope.toggleLogItemDetails = toggleLogItemDetails;
+        $scope.differentDays = differentDays;
 
+        $scope.$on('WipedLog', wipedLog);
 
-        /* startup */
+        init();
 
-        // forces the tree to highlight appender used for this view
-        // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
-        navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'appender|' + appenderName], forceReload: false });
+        // --------------------------------------------------------------------------------
 
-        // tell the resource that this is now the currently active view
-        azureLoggerResource.activeAppenderViewLog = appenderName;
+        function wipedLog(event, arg) {
+            if (arg == appenderName) { // safety check: if destined for this appender
+                clearLogItems();
+            }
+        }
 
-        /* methods */
+        function init() {
+            // forces the tree to highlight appender used for this view
+            // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
+            navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'appender|' + appenderName], forceReload: false });
 
-        var clearLogItems = function () {
+            // tell the resource that this is now the currently active view
+            azureLoggerResource.activeAppenderViewLog = appenderName;
+        }
+
+        function clearLogItems() {
             $scope.logItems = [];
             lastPartitionKey = null;
             lastRowKey = null;
             $scope.finishedLoading = false;
-            triggerLazyLoad(); // local helper
-        };
+            triggerLazyLoad();
+        }
 
         // tell lazy-load directive to fill screen
-        var triggerLazyLoad = function () {
+        function triggerLazyLoad() {
             $scope.lazyLoad(); // WARNING: directive added this method to scope (directive not intended to be reuseable)
-        };
+        }
 
         // checks to see if the ui filters and the query filters represent the same state - returns bool
-        $scope.filtersMatch = function () {
+        function filtersMatch() {
             // can't do a simple object compare - angular.equals($scope.uiFilters, queryFilters)
             // as level drop down can be -1 (placeholder) or 0 (debug) - both values mean the same thing
             return $scope.uiFilters.hostName == queryFilters.hostName &&
@@ -64,10 +75,10 @@
                         ($scope.uiFilters.minLevel == 0 && queryFilters.minLevel == -1)
                    ) &&
                    $scope.uiFilters.message == queryFilters.message;
-        };
+        }
 
         // handles any filter ui changes - returns a promise
-        $scope.handleFilters = function () {
+        function handleFilters() {
 
             var deferred = $q.defer();
 
@@ -138,18 +149,10 @@
             }
 
             return deferred.promise;
-        };
-
-        // listen for any 'WipedLog' broadcasts
-        $scope.$on('WipedLog', function (event, arg) {
-            if (arg == appenderName) { // safety check: if destined for this appender
-                clearLogItems();
-            }
-        });
-
+        }
 
         // returns a promise with a bool result - the bool indicates whether the caller should try again
-        $scope.getMoreLogItems = function () {
+        function getMoreLogItems() {
 
             var deferred = $q.defer();
 
@@ -200,9 +203,9 @@
             }
 
             return deferred.promise;
-        };
+        }
 
-        $scope.toggleLogItemDetails = function ($event, logItem) {
+        function toggleLogItemDetails($event, logItem) {
 
             var logItemRow = $($event.currentTarget);
             var logItemDetailsRow = logItemRow.next();
@@ -220,10 +223,9 @@
                    logItem.details = response.data;
                });
             }
+        }
 
-        };
-
-        $scope.differentDays = function (logItem, lastLogItem) {
+        function differentDays(logItem, lastLogItem) {
 
             if (lastLogItem === undefined) { return true; } // if there wasn't a last one
 
@@ -231,7 +233,8 @@
             var lastDate = new Date(lastLogItem.eventTimestamp);
 
             return date.toDateString() !== lastDate.toDateString();
-        };
+        }
+
     }
 
 })();

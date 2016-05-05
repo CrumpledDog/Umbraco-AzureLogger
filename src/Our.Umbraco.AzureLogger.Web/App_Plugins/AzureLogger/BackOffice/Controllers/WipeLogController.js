@@ -11,26 +11,30 @@
 
         var appenderName;
 
+        $scope.init = init;
+        $scope.canel = cancel;
+        $scope.wipeLog = wipeLog;
+
+        // --------------------------------------------------------------------------------
+
         // init function used to get the tree node id from the view ! (as can't find a suitable resource to inject so as to get at this value)
         // the current node represents the tree node associated with the current menu option
-        $scope.init = function (currentNode) {
+        function init(currentNode) {
             appenderName = currentNode.id.split('|')[1]; // strip the 'appender|' prefix
         };
 
-        $scope.cancel = function () {
+        function cancel() {
             navigationService.hideNavigation();
         };
 
-        $scope.wipeLog = function () {
-
+        function wipeLog() {
             // TODO: update ui to indicate operation taking place...
-
             azureLoggerResource.wipeLog(appenderName)
             .then(function () {
                 navigationService.hideNavigation();
             });
-
         };
+
     }
 
 })();
