@@ -10,7 +10,7 @@
     function ViewLogController($scope, $routeParams, navigationService, $q, $timeout, azureLoggerResource) {
 
         var appenderName = $routeParams.id;
-        var queryFilters = { hostName: '', loggerName: '', minLevel: -1, message: '' }; // the filter state to use for the ajax queries (-1 to ensure the dropdown placeholder is selected)
+        var queryFilters = { hostName: '', loggerName: '', minLevel: '0', message: '' };
         var lastPartitionKey = null; // partition key of last item checked in last query (where to start next query)
         var lastRowKey = null; // row key of last item checked in last query (where to start next query)
 
@@ -36,7 +36,7 @@
         // --------------------------------------------------------------------------------
 
         function wipedLog(event, arg) {
-            if (arg == appenderName) { // safety check: if destined for this appender
+            if (arg == appenderName) { // if the broadcast was intended for this appender
                 clearLogItems();
             }
         }
@@ -65,16 +65,7 @@
 
         // checks to see if the ui filters and the query filters represent the same state - returns bool
         function filtersMatch() {
-            // can't do a simple object compare - angular.equals($scope.uiFilters, queryFilters)
-            // as level drop down can be -1 (placeholder) or 0 (debug) - both values mean the same thing
-            return $scope.uiFilters.hostName == queryFilters.hostName &&
-                   $scope.uiFilters.loggerName == queryFilters.loggerName &&
-                   (
-                        $scope.uiFilters.minLevel == queryFilters.minLevel ||
-                        ($scope.uiFilters.minLevel == -1 && queryFilters.minLevel == 0) ||
-                        ($scope.uiFilters.minLevel == 0 && queryFilters.minLevel == -1)
-                   ) &&
-                   $scope.uiFilters.message == queryFilters.message;
+            return angular.equals($scope.uiFilters, queryFilters);
         }
 
         // handles any filter ui changes - returns a promise
@@ -135,7 +126,7 @@
                         }
 
                         // tell lazy-load directive to fill screen, as number of items may have been reduced
-                        triggerLazyLoad(); // local helper
+                        triggerLazyLoad();
 
                     } else {
                         clearLogItems(); // delete all items as we may be missing data (this will trigger a refresh)
@@ -216,8 +207,6 @@
 
             // get data if missing
             if (logItemDetailsRow.is(':visible') && logItem.details === undefined) {
-
-                // TODO: prevent multiple requests for the same data
                 azureLoggerResource.readLogItemDetail(appenderName, logItem.partitionKey, logItem.rowKey)
                .then(function (response) {
                    logItem.details = response.data;

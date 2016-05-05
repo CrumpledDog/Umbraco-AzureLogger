@@ -13,7 +13,7 @@
     width:100px;
 }
 
-.filter-min-level option { /* TODO: move into SelectPlaceholderDirective */
+.filter-min-level option {
     color:black;
 }
 
