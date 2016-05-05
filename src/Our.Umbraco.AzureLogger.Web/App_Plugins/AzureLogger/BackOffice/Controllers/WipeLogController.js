@@ -5,9 +5,9 @@
         .module('umbraco')
         .controller('AzureLogger.WipeLogController', WipeLogController);
 
-    WipeLogController.$inject = ['$rootScope', '$scope', '$http', 'navigationService'];
+    WipeLogController.$inject = ['$scope', 'navigationService', 'AzureLogger.AzureLoggerResource'];
 
-    function WipeLogController($rootScope, $scope, $http, navigationService) {
+    function WipeLogController($scope, navigationService, azureLoggerResource) {
 
         var appenderName;
 
@@ -25,17 +25,11 @@
 
             // TODO: update ui to indicate operation taking place...
 
-            $http({
-                method: 'POST',
-                url: 'BackOffice/AzureLogger/Api/WipeLog',
-                params: { 'appenderName': appenderName }
-            })
+            azureLoggerResource.wipeLog(appenderName)
             .then(function () {
-
-                $rootScope.$broadcast('WipedLog', appenderName);
-
                 navigationService.hideNavigation();
             });
+
         };
     }
 
