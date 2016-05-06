@@ -73,50 +73,65 @@
 
 
 /* intro row */
-.narrow .log-item-intro {
-    background-color:yellow;
-}
-
 
 .log-item-intro {
     margin-top:5px;
-    height:3em;
-    padding:5px;
+    padding:2px;
+    white-space:nowrap;
     cursor:pointer;
 }
 
-.log-item-intro.open, .log-item-intro:hover {
-    background-color:#f8f8f8;
+.log-item-intro div {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 2px;
+}
+
+    .narrow .log-item-intro .ms,
+    .narrow .log-item-intro .message {
+       display: block;
+    }
+
+.log-item-intro.open,
+.log-item-intro:hover {
+  background-color:#f8f8f8 ;
+
 }
 
 .log-item-intro .eventTimestamp {
-    width:6em;
-    padding-right:10px;
-    float:left;
-    text-align:right;
+  width: 7em;
+  text-align: right;
 }
 
 .log-item-intro .hms {
-    font-size:larger;
+  font-size: larger;
 }
 .log-item-intro .ms {
-    font-size:xx-small;
+  font-size:xx-small;
 }
 
-.log-item-intro .host-name, .log-item-intro .logger-name {
-    font-size:larger;
+.host-name:after { content: " -"; }
+
+.log-item-intro .host-name,
+.log-item-intro .logger-name {
+  font-size:larger;
+}
+
+.log-item-intro .logger-name {
+    padding-right:15px;
 }
 
 .log-item-intro .message {
-    white-space:nowrap;
-    font-weight:bold;
+  font-weight:bold;
 }
+
+
 
 /* details row */
 
 .log-item-details {
     display:none;
-    padding-left:calc(6em + 15px);
+    padding-left:calc(7em + 15px);
     padding-top:10px;
 }
 

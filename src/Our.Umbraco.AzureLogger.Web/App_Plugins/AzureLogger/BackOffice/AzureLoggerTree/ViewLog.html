@@ -72,6 +72,19 @@
         </div>
     </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     <div class="umb-panel-body umb-scrollable" monitor-width="logItemsViewWidth" ng-class="{ 'narrow': logItemsViewWidth < 1020 }">
 
         <div class="umb-pane" lazy-load="getMoreLogItems()">
@@ -84,15 +97,16 @@
                 <div class="log-item-intro level-key" ng-click="toggleLogItemDetails($event, logItem)">
 
                     <div class="eventTimestamp">
-                        <div class="hms">{{logItem.eventTimestamp| date : 'HH:mm:ss'}}</div>
-                        <div class="ms">{{logItem.eventTimestamp| date : '.sss'}}</div>
+                        <span class="hms">{{logItem.eventTimestamp| date : 'HH:mm:ss'}}</span>
+                        <span class="ms">{{logItem.eventTimestamp| date : '.sss'}}</span>
                     </div>
 
                     <div>
-                        <span class="host-name">{{logItem.hostName}}</span> -
+                        <span class="host-name">{{logItem.hostName}}</span>
                         <span class="logger-name">{{logItem.loggerName}}</span>
+                        <span class="message">{{logItem.messageIntro}}</span>
                     </div>
-                    <p class="message">{{logItem.messageIntro}}</p>
+
                 </div>
 
                 <div class="log-item-details level-key">
