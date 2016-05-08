@@ -226,10 +226,6 @@
                     }
                 }
 
-                // TODO: parse all retrieved log entries and find any new: machine names or logger names (to be used for auto suggest data)
-                // pass to an object that's responsible for indexing
-
-
                 return cloudTable.ExecuteQuery(tableQuery);
             }
 
@@ -271,17 +267,32 @@
             }
         }
 
+        internal void CreateIndexTableEntities(string appenderName, string partitionKey, string[] rowKeys)
+        {
 
-        ///// <summary>
-        /////
-        ///// </summary>
-        ///// <param name="appenderName"></param>
-        ///// <param name="partitionKey">index name, eg. host_name</param>
-        ///// <returns></returns>
-        //internal IndexTableEntity ReadIndexTableEntities(string appenderName, string partitionKey)
-        //{
+        }
 
-        //}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="appenderName"></param>
+        /// <param name="partitionKey">index name, eg. host_name</param>
+        /// <returns></returns>
+        internal IEnumerable<IndexTableEntity> ReadIndexTableEntities(string appenderName, string partitionKey)
+        {
+            CloudTable cloudTable = this.GetCloudTable(appenderName);
+
+            if (cloudTable != null)
+            {
+                TableQuery<IndexTableEntity> tableQuery = new TableQuery<IndexTableEntity>();
+
+                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey));
+
+                return cloudTable.ExecuteQuery(tableQuery);
+            }
+
+            return Enumerable.Empty<IndexTableEntity>(); // fallback
+        }
 
         ///// <summary>
         /////

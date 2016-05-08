@@ -1,11 +1,17 @@
 ﻿namespace Our.Umbraco.AzureLogger.Core
 {
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
 
     internal sealed partial class IndexService
     {
         private static readonly IndexService indexService = new IndexService();
+
+        private ConcurrentDictionary<string, string[]> appenderMachineNames = new ConcurrentDictionary<string,string[]>();
+
+        private ConcurrentDictionary<string, string[]> appenderLoggerNames = new ConcurrentDictionary<string,string[]>();
 
         static IndexService()
         {
@@ -33,7 +39,31 @@
         /// <param name="logTableEntities"></param>
         internal void Process(string appenderName, IEnumerable<LogTableEntity> logTableEntities)
         {
+            IEnumerable<string> machineNames = logTableEntities
+                                                .Select(x => x.log4net_HostName)
+                                                .Where(x => !this.GetMachineNames(appenderName).Any(y => y == x));
 
+            if (machineNames.Any())
+            {
+                // TODO: locking
+
+                TableService.Instance.CreateIndexTableEntities(appenderName, "machineNames", machineNames.ToArray());
+
+                // TODO: update local collection
+            }
+
+            IEnumerable<string> loggerNames = logTableEntities
+                                                .Select(x => x.LoggerName)
+                                                .Where(x => !this.GetLoggerNames(appenderName).Any(y => y == x));
+
+            if (loggerNames.Any())
+            {
+                // TODO: locking
+
+                TableService.Instance.CreateIndexTableEntities(appenderName, "loggerNames", loggerNames.ToArray());
+
+                // TODO: update local collection
+            }
         }
 
         /// <summary>
@@ -43,7 +73,14 @@
         /// <returns></returns>
         internal string[] GetMachineNames(string appenderName)
         {
-            return new string[] { };
+            if (!this.appenderMachineNames.ContainsKey(appenderName))
+            {
+                this.appenderMachineNames[appenderName] = TableService.Instance.ReadIndexTableEntities(appenderName, "machineNames")
+                                                                        .Select(x => x.RowKey)
+                                                                        .ToArray();
+            }
+
+            return this.appenderMachineNames[appenderName];
         }
 
         /// <summary>
@@ -53,7 +90,14 @@
         /// <returns></returns>
         internal string[] GetLoggerNames(string appenderName)
         {
-            return new string[] { };
+            if (!this.appenderLoggerNames.ContainsKey(appenderName))
+            {
+                this.appenderLoggerNames[appenderName] = TableService.Instance.ReadIndexTableEntities(appenderName, "loggerNames")
+                                                                        .Select(x => x.RowKey)
+                                                                        .ToArray();
+            }
+
+            return this.appenderLoggerNames[appenderName];
         }
 
     }

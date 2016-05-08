@@ -302,6 +302,7 @@
     <Compile Include="Models\Level.cs" />
     <Compile Include="Models\LogItemIntro.cs" />
     <Compile Include="Models\LogItemDetail.cs" />
+    <Compile Include="Models\TableEntities\IndexTableEntity.cs" />
     <Compile Include="TableAppender.cs" />
     <Compile Include="TableQueryTimeoutException.cs" />
     <Compile Include="TableService.cs" />
