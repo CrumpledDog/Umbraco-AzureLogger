@@ -298,6 +298,7 @@
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\TableQueryExtensions.cs" />
+    <Compile Include="IndexService.cs" />
     <Compile Include="Models\Level.cs" />
     <Compile Include="Models\LogItemIntro.cs" />
     <Compile Include="Models\LogItemDetail.cs" />

@@ -52,6 +52,9 @@
 
             if (cloudTable != null)
             {
+                // all loggingEvents converted to LogTableEntity objects
+                List<LogTableEntity> logTableEntities = new List<LogTableEntity>();
+
                 // group by logging event date & hour - each group equates to an Azure table partition key
                 // (all items in the same Azure table batch operation must use the same partition key)
                 foreach (IGrouping<DateTime, LoggingEvent> groupedLoggingEvents in loggingEvents.GroupBy(x => x.TimeStamp.Date.AddHours(x.TimeStamp.Hour)))
@@ -68,12 +71,18 @@
 
                         foreach (LoggingEvent loggingEvent in batchLoggingEvents)
                         {
-                            tableBatchOperation.Insert(new LogTableEntity(partitionKey, loggingEvent));
+                            LogTableEntity logTableEntity = new LogTableEntity(partitionKey, loggingEvent);
+
+                            logTableEntities.Add(logTableEntity);
+
+                            tableBatchOperation.Insert(logTableEntity);
                         }
 
                         cloudTable.ExecuteBatch(tableBatchOperation);
                     }
                 }
+
+                IndexService.Instance.Process(appenderName, logTableEntities);
             }
         }
 
@@ -153,8 +162,6 @@
 
             // no filtering
             return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel).Take(take);
-
-            // TODO: parse all retrieved log entries and find any new: machine names or logger names (to be used for auto suggest data)
         }
 
         /// <summary>
@@ -171,7 +178,7 @@
             if (cloudTable != null)
             {
                 TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>()
-                                                                .Select(new string[] {
+                                                                .Select(new string[] {  // reduce data fields returned from Azure
                                                                     //"PartitionKey", // always returned
                                                                     //"RowKey",
                                                                     "Level",
@@ -219,6 +226,10 @@
                     }
                 }
 
+                // TODO: parse all retrieved log entries and find any new: machine names or logger names (to be used for auto suggest data)
+                // pass to an object that's responsible for indexing
+
+
                 return cloudTable.ExecuteQuery(tableQuery);
             }
 
@@ -259,6 +270,30 @@
                 cloudTable.Delete();
             }
         }
+
+
+        ///// <summary>
+        /////
+        ///// </summary>
+        ///// <param name="appenderName"></param>
+        ///// <param name="partitionKey">index name, eg. host_name</param>
+        ///// <returns></returns>
+        //internal IndexTableEntity ReadIndexTableEntities(string appenderName, string partitionKey)
+        //{
+
+        //}
+
+        ///// <summary>
+        /////
+        ///// </summary>
+        ///// <param name="appenderName"></param>
+        ///// <param name="partitionKey">index name</param>
+        ///// <param name="rowKey">item</param>
+        ///// <returns></returns>
+        //internal IndexTableEntity ReadIndexTableEntity(string appenderName, string partitionKey, string rowKey)
+        //{
+
+        //}
 
         /// <summary>
         /// Helper to get the cloud table associated with the supplied appender name

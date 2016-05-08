@@ -13,6 +13,21 @@
     public class ApiController : UmbracoAuthorizedApiController
     {
         /// <summary>
+        /// Gets all known machine names and logger names (for the auto-suggest)
+        /// </summary>
+        /// <param name="appenderName"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public object GetIndexes([FromUri]string appenderName)
+        {
+            return new
+            {
+                machineNames = IndexService.Instance.GetMachineNames(appenderName),
+                loggerNames = IndexService.Instance.GetLoggerNames(appenderName)
+            };
+        }
+
+        /// <summary>
         /// Gets the log items to render in the main list
         /// </summary>
         /// <param name="appenderName">name of the log4net appender</param>
