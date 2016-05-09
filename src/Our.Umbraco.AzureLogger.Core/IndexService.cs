@@ -9,9 +9,9 @@
     {
         private static readonly IndexService indexService = new IndexService();
 
-        private ConcurrentDictionary<string, string[]> appenderMachineNames = new ConcurrentDictionary<string,string[]>();
+        private ConcurrentDictionary<string, List<string>> appenderMachineNames = new ConcurrentDictionary<string, List<string>>();
 
-        private ConcurrentDictionary<string, string[]> appenderLoggerNames = new ConcurrentDictionary<string,string[]>();
+        private ConcurrentDictionary<string, List<string>> appenderLoggerNames = new ConcurrentDictionary<string, List<string>>();
 
         static IndexService()
         {
@@ -41,7 +41,8 @@
         {
             IEnumerable<string> machineNames = logTableEntities
                                                 .Select(x => x.log4net_HostName)
-                                                .Where(x => !this.GetMachineNames(appenderName).Any(y => y == x));
+                                                .Where(x => !this.GetMachineNames(appenderName).Any(y => y == x))
+                                                .Distinct();
 
             if (machineNames.Any())
             {
@@ -49,12 +50,16 @@
 
                 TableService.Instance.CreateIndexTableEntities(appenderName, "machineNames", machineNames.ToArray());
 
-                // TODO: update local collection
+                // update local collection
+                this.appenderMachineNames[appenderName].AddRange(machineNames);
+
+                // TODO: release locking
             }
 
             IEnumerable<string> loggerNames = logTableEntities
                                                 .Select(x => x.LoggerName)
-                                                .Where(x => !this.GetLoggerNames(appenderName).Any(y => y == x));
+                                                .Where(x => !this.GetLoggerNames(appenderName).Any(y => y == x))
+                                                .Distinct();
 
             if (loggerNames.Any())
             {
@@ -62,7 +67,10 @@
 
                 TableService.Instance.CreateIndexTableEntities(appenderName, "loggerNames", loggerNames.ToArray());
 
-                // TODO: update local collection
+                // update local collection
+                this.appenderLoggerNames[appenderName].AddRange(loggerNames);
+
+                // TODO: release locking
             }
         }
 
@@ -71,13 +79,13 @@
         /// </summary>
         /// <param name="appenderName"></param>
         /// <returns></returns>
-        internal string[] GetMachineNames(string appenderName)
+        internal List<string> GetMachineNames(string appenderName)
         {
             if (!this.appenderMachineNames.ContainsKey(appenderName))
             {
                 this.appenderMachineNames[appenderName] = TableService.Instance.ReadIndexTableEntities(appenderName, "machineNames")
                                                                         .Select(x => x.RowKey)
-                                                                        .ToArray();
+                                                                        .ToList();
             }
 
             return this.appenderMachineNames[appenderName];
@@ -88,17 +96,16 @@
         /// </summary>
         /// <param name="appenderName"></param>
         /// <returns></returns>
-        internal string[] GetLoggerNames(string appenderName)
+        internal List<string> GetLoggerNames(string appenderName)
         {
             if (!this.appenderLoggerNames.ContainsKey(appenderName))
             {
                 this.appenderLoggerNames[appenderName] = TableService.Instance.ReadIndexTableEntities(appenderName, "loggerNames")
                                                                         .Select(x => x.RowKey)
-                                                                        .ToArray();
+                                                                        .ToList();
             }
 
             return this.appenderLoggerNames[appenderName];
         }
-
     }
 }

@@ -269,7 +269,22 @@
 
         internal void CreateIndexTableEntities(string appenderName, string partitionKey, string[] rowKeys)
         {
+            CloudTable cloudTable = this.GetCloudTable(appenderName);
 
+            if (cloudTable != null)
+            {
+                foreach(IEnumerable<string> batchRowKeys in rowKeys.Batch(100))
+                {
+                    TableBatchOperation tableBatchOperation = new TableBatchOperation();
+
+                    foreach(string rowKey in batchRowKeys)
+                    {
+                        tableBatchOperation.Insert(new IndexTableEntity(partitionKey, rowKey));
+                    }
+
+                    cloudTable.ExecuteBatch(tableBatchOperation);
+                }
+            }
         }
 
         /// <summary>

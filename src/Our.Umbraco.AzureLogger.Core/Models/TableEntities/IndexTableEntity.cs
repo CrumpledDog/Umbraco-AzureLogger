@@ -14,9 +14,10 @@
         {
         }
 
-        //internal IndexTableEntity(string partitionKey)
-        //{
-        //    this.PartitionKey = partitionKey;
-        //}
+        internal IndexTableEntity(string partitionKey, string rowKey)
+        {
+            this.PartitionKey = partitionKey;
+            this.RowKey = rowKey;
+        }
     }
 }
