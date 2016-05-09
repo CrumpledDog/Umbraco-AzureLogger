@@ -22,8 +22,8 @@
         {
             return new
             {
-                machineNames = IndexService.Instance.GetMachineNames(appenderName),
-                loggerNames = IndexService.Instance.GetLoggerNames(appenderName)
+                machineNames = IndexService.Instance.GetMachineNames(appenderName), //.ToArray()
+                loggerNames = IndexService.Instance.GetLoggerNames(appenderName) //.ToArray()
             };
         }
 

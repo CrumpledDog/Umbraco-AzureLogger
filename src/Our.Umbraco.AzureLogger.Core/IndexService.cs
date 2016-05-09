@@ -46,14 +46,13 @@
 
             if (machineNames.Any())
             {
-                // TODO: locking
+                lock (this.appenderMachineNames[appenderName])
+                {
+                    TableService.Instance.CreateIndexTableEntities(appenderName, "machineNames", machineNames.ToArray());
 
-                TableService.Instance.CreateIndexTableEntities(appenderName, "machineNames", machineNames.ToArray());
-
-                // update local collection
-                this.appenderMachineNames[appenderName].AddRange(machineNames);
-
-                // TODO: release locking
+                    // update local collection
+                    this.appenderMachineNames[appenderName].AddRange(machineNames);
+                }
             }
 
             IEnumerable<string> loggerNames = logTableEntities
@@ -63,14 +62,13 @@
 
             if (loggerNames.Any())
             {
-                // TODO: locking
+                lock (this.appenderLoggerNames[appenderName])
+                {
+                    TableService.Instance.CreateIndexTableEntities(appenderName, "loggerNames", loggerNames.ToArray());
 
-                TableService.Instance.CreateIndexTableEntities(appenderName, "loggerNames", loggerNames.ToArray());
-
-                // update local collection
-                this.appenderLoggerNames[appenderName].AddRange(loggerNames);
-
-                // TODO: release locking
+                    // update local collection
+                    this.appenderLoggerNames[appenderName].AddRange(loggerNames);
+                }
             }
         }
 

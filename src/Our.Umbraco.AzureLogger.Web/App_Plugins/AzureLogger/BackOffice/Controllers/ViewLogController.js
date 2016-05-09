@@ -15,6 +15,8 @@
         var lastRowKey = null; // row key of last item checked in last query (where to start next query)
 
         $scope.logItems = [];
+        $scope.machineNames = [];
+        $scope.loggerNames = [];
         $scope.currentlyLoading = false; // true when getting data awaiting a response to set
         $scope.finishedLoading = false; // true once server indicates that there is no more data
         // TODO: $scope.startEventTimestamp; // set with date picker
@@ -47,6 +49,12 @@
 
             // tell the resource that this is now the currently active view
             azureLoggerResource.activeAppenderViewLog = appenderName;
+
+            azureLoggerResource.getIndexes(appenderName)
+            .then(function (response) {
+                $scope.machineNames = response.data.machineNames;
+                $scope.loggerNames = response.data.loggerNames;
+            });
         }
 
         function clearLogItems() {
