@@ -5,6 +5,9 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// Singleton used to update and supply collections of distincy machine names / logger names that exist in a given log
+    /// </summary>
     internal sealed partial class IndexService
     {
         private static readonly IndexService indexService = new IndexService();
@@ -48,10 +51,16 @@
             {
                 lock (this.appenderMachineNames[appenderName])
                 {
-                    TableService.Instance.CreateIndexTableEntities(appenderName, "machineNames", machineNames.ToArray());
+                    // re-check
+                    machineNames = machineNames.Where(x => !this.GetMachineNames(appenderName).Any(y => y == x));
 
-                    // update local collection
-                    this.appenderMachineNames[appenderName].AddRange(machineNames);
+                    if (machineNames.Any())
+                    {
+                        TableService.Instance.CreateIndexTableEntities(appenderName, "machineNames", machineNames.ToArray());
+
+                        // update local collection
+                        this.appenderMachineNames[appenderName].AddRange(machineNames);
+                    }
                 }
             }
 
@@ -64,10 +73,16 @@
             {
                 lock (this.appenderLoggerNames[appenderName])
                 {
-                    TableService.Instance.CreateIndexTableEntities(appenderName, "loggerNames", loggerNames.ToArray());
+                    // re-check
+                    loggerNames = loggerNames.Where(x => !this.GetLoggerNames(appenderName).Any(y => y == x));
 
-                    // update local collection
-                    this.appenderLoggerNames[appenderName].AddRange(loggerNames);
+                    if (loggerNames.Any())
+                    {
+                        TableService.Instance.CreateIndexTableEntities(appenderName, "loggerNames", loggerNames.ToArray());
+
+                        // update local collection
+                        this.appenderLoggerNames[appenderName].AddRange(loggerNames);
+                    }
                 }
             }
         }

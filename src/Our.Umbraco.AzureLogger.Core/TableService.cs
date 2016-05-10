@@ -42,7 +42,7 @@
         }
 
         /// <summary>
-        ///
+        /// Persists log4net logging events into Azure table storage
         /// </summary>
         /// <param name="appenderName"></param>
         /// <param name="loggingEvents">collection of log4net logging events to persist into Azure table storage</param>
@@ -87,7 +87,7 @@
         }
 
         /// <summary>
-        /// wrapper method to handle any filtering (Azure table queries can't do wild card matching)
+        /// Wrapper method to handle any filtering (Azure table queries can't do wild card matching)
         /// </summary>
         /// <param name="appenderName"></param>
         /// <param name="partitionKey"></param>
@@ -267,13 +267,20 @@
             }
         }
 
+        /// <summary>
+        /// Creates IndexTableEntity objects to be persisted in Azure table storage
+        /// </summary>
+        /// <param name="appenderName"></param>
+        /// <param name="partitionKey">the index name</param>
+        /// <param name="rowKeys">an index value</param>
         internal void CreateIndexTableEntities(string appenderName, string partitionKey, string[] rowKeys)
         {
             CloudTable cloudTable = this.GetCloudTable(appenderName);
 
             if (cloudTable != null)
             {
-                foreach(IEnumerable<string> batchRowKeys in rowKeys.Batch(100))
+                // ensure 100 or less items are inserted per Azure table batch insert operation
+                foreach (IEnumerable<string> batchRowKeys in rowKeys.Batch(100))
                 {
                     TableBatchOperation tableBatchOperation = new TableBatchOperation();
 
@@ -308,18 +315,6 @@
 
             return Enumerable.Empty<IndexTableEntity>(); // fallback
         }
-
-        ///// <summary>
-        /////
-        ///// </summary>
-        ///// <param name="appenderName"></param>
-        ///// <param name="partitionKey">index name</param>
-        ///// <param name="rowKey">item</param>
-        ///// <returns></returns>
-        //internal IndexTableEntity ReadIndexTableEntity(string appenderName, string partitionKey, string rowKey)
-        //{
-
-        //}
 
         /// <summary>
         /// Helper to get the cloud table associated with the supplied appender name
