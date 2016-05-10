@@ -2,6 +2,7 @@
     javascript:[
 		'/App_Plugins/AzureLogger/BackOffice/Controllers/WipeLogController.js',
 		'/App_Plugins/AzureLogger/BackOffice/Controllers/ViewLogController.js',
+		'/App_Plugins/AzureLogger/BackOffice/Directives/AutoCompleteDirective.js',
 		'/App_Plugins/AzureLogger/BackOffice/Directives/LazyLoadDirective.js',
 		'/App_Plugins/AzureLogger/BackOffice/Directives/EnterKeyDirective.js',
 		'/App_Plugins/AzureLogger/BackOffice/Directives/MonitorWidthDirective.js',

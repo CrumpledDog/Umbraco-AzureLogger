@@ -26,6 +26,7 @@
                        ng-model="uiFilters.hostName"
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
+                       auto-complete="machineNames"
                        placeholder="Machine Name"
                        class="filter-machine" />
                 <a href=""
@@ -40,6 +41,7 @@
                        ng-model="uiFilters.loggerName"
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
+                       auto-complete="loggerNames"
                        placeholder="Logger Name"
                        class="filter-logger" />
                 <a href=""
