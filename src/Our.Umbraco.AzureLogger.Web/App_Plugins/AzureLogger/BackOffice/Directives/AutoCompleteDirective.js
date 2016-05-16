@@ -25,8 +25,8 @@
 
                 // build list markup
                 var optionsList = angular.element(
-                    '<ul class="auto-complete-directive" ng-show="show" style="position:absolute; left:0; top:' + $(element[0]).height() + 'px; z-index:1; background-color:white; list-style:none; margin:0; border:solid 1px #ccc;">' +
-                    '<li style="margin:5px" ng-repeat="option in options | filter:value ">{{option}}<li>' +
+                    '<ul class="auto-complete-directive" ng-show="show" style="top:' + $(element[0]).height() + 'px">' +
+                    '<li ng-repeat="option in options | filter:value ">{{option}}<li>' +
                     '</ul>');
 
                 // compile list markup with scope

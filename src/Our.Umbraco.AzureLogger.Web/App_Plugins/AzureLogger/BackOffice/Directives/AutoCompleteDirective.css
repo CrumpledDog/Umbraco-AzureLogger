@@ -1,9 +1,15 @@
 ﻿.auto-complete-directive { /* ul */
-
+    position:absolute;
+    left:0;
+    z-index:1;
+    background-color:white;
+    list-style:none;
+    margin:0;
+    border:solid 1px #ccc;
 }
 
 .auto-complete-directive li {
-
+    margin:5px;
 }
 
 .auto-complete-directive li:hover {
