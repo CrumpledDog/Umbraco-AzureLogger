@@ -23,7 +23,7 @@
 
                 // build list markup
                 var optionsList = angular.element(
-                    '<ul ng-show="show" style="position:absolute; left:0; top:' + $(element[0]).height() + 'px; z-index:1; background-color:white; list-style:none; margin:0; border:solid 1px #ccc;">' +
+                    '<ul class="auto-complete-directive" ng-show="show" style="position:absolute; left:0; top:' + $(element[0]).height() + 'px; z-index:1; background-color:white; list-style:none; margin:0; border:solid 1px #ccc;">' +
                     '<li style="margin:5px" ng-repeat="option in getData()">{{option}}<li>' +
                     '</ul>');
 

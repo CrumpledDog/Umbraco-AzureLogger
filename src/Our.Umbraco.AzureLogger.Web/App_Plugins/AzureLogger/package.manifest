@@ -10,6 +10,7 @@
 		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerResource.js'
 	],
     css:[
-        '/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ViewLog.css'
+        '/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ViewLog.css',
+		'/App_Plugins/AzureLogger/BackOffice/Directives/AutoCompleteDirective.css'
     ]
 }
