@@ -7,5 +7,5 @@
 }
 
 .auto-complete-directive li:hover {
-
+    cursor:pointer;
 }
