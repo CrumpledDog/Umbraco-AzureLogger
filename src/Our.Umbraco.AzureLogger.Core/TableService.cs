@@ -98,23 +98,13 @@
         /// <returns></returns>
         internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, Level minLevel, string message, int take)
         {
-            //// check to see if any filtering needs to be done here (as opposed to just Azure table query)
-            //if (!string.IsNullOrWhiteSpace(message) || // always filter message here as, no index
-            //    (!string.IsNullOrWhiteSpace(hostName) && !IndexService.Instance.GetMachineNames(appenderName).Any(x => x == hostName))  || // filter here if not in index
-            //    (!string.IsNullOrWhiteSpace(loggerName) && !IndexService.Instance.GetLoggerNames(appenderName).Any(x => x == loggerName))) // (Azure table querys don't support wildcards)
-            //{
-            //    // additional filtering here- may require additional azure table queries
-            //}
-            //else
-            //{
-            //    // filter at azure table query level only
-            //}
-
-
-
-            // if there's filtering that needs to be done here (AzureTables don't support wildcard matching)
-            if (!string.IsNullOrWhiteSpace(hostName) || !string.IsNullOrWhiteSpace(loggerName) || !string.IsNullOrWhiteSpace(message))
+            // check to see if any filtering needs to be done here (as opposed to just Azure table query)
+            if (!string.IsNullOrWhiteSpace(message) || // always filter message here as, no index
+                (!string.IsNullOrWhiteSpace(hostName) && !IndexService.Instance.GetMachineNames(appenderName).Any(x => x == hostName)) || // filter here if not in index
+                (!string.IsNullOrWhiteSpace(loggerName) && !IndexService.Instance.GetLoggerNames(appenderName).Any(x => x == loggerName))) // (Azure table querys don't support wildcards)
             {
+                // additional filtering here- may require additional azure table queries
+
                 List<LogTableEntity> logTableEntities = new List<LogTableEntity>(); // collection to return
 
                 // calculate excess amount to request from a cloud query, which will filter down to the required take
@@ -133,7 +123,8 @@
                 int attempts = 0;
                 bool finished = false;
 
-                do {
+                do
+                {
                     attempts++;
 
                     if (attempts >= 3)
@@ -169,13 +160,15 @@
                     }
 
                 }
-                while(logTableEntities.Count < take && !finished);
+                while (logTableEntities.Count < take && !finished);
 
                 return logTableEntities.Take(take); // trim any excess
             }
-
-            // no filtering
-            return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel).Take(take);
+            else
+            {
+                // filter at azure table query level only
+                return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel, loggerName, hostName).Take(take);
+            }
         }
 
         /// <summary>
