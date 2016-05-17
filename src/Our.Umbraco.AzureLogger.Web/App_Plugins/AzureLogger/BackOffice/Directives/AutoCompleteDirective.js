@@ -10,11 +10,11 @@
     function AutoCompleteDirective($compile) {
 
         return {
-            //require: 'ngModel',
+            require: 'ngModel',
             restrict: 'A',
             scope: '=',
             //template: '<ul><li>example autocomplete option</li></ul>',
-            link: function (scope, element, attrs) {  //, ngModel) {
+            link: function (scope, element, attrs, ngModel) {
 
                 // ensure only attached to input element of type text
                 if (element[0].tagName.toLowerCase() !== 'input' || element[0].type !== 'text') { return; }
@@ -26,7 +26,7 @@
                 // build list markup
                 var optionsList = angular.element(
                     '<ul class="auto-complete-directive" ng-show="show" style="top:' + $(element[0]).height() + 'px">' +
-                    '<li ng-repeat="option in options | filter:value ">{{option}}<li>' +
+                    '<li ng-repeat="option in options | filter:value" ng-click="selectOption(option)">{{option}}<li>' +
                     '</ul>');
 
                 // compile list markup with scope
@@ -44,7 +44,7 @@
                 // hide list
                 element.bind('blur', function (event) {
                     scope.show = false;
-                    scope.$apply();
+                    //scope.$apply(); // when applied, removes the list before it can be clicked
                 });
 
 
@@ -56,8 +56,14 @@
 
                 // wait until autocomplete data is set (currently set in parent after an ajax call)
                 scope.$watch(attrs.autoComplete, function (value) {
+                    console.log(value);
                     scope.options = value;
                 });
+
+                scope.selectOption = function (option) {
+                    ngModel.$setViewValue(option);
+                    ngModel.$render();
+                };
             }
         }
     }

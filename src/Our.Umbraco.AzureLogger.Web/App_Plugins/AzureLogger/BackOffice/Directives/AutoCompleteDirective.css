@@ -9,9 +9,11 @@
 }
 
 .auto-complete-directive li {
-    margin:5px;
+    padding:5px;
 }
 
 .auto-complete-directive li:hover {
     cursor:pointer;
+    background-color: #2e8aea;
+    color:white;
 }
