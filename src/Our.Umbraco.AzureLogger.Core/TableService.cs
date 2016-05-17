@@ -98,6 +98,20 @@
         /// <returns></returns>
         internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, Level minLevel, string message, int take)
         {
+            //// check to see if any filtering needs to be done here (as opposed to just Azure table query)
+            //if (!string.IsNullOrWhiteSpace(message) || // always filter message here as, no index
+            //    (!string.IsNullOrWhiteSpace(hostName) && !IndexService.Instance.GetMachineNames(appenderName).Any(x => x == hostName))  || // filter here if not in index
+            //    (!string.IsNullOrWhiteSpace(loggerName) && !IndexService.Instance.GetLoggerNames(appenderName).Any(x => x == loggerName))) // (Azure table querys don't support wildcards)
+            //{
+            //    // additional filtering here- may require additional azure table queries
+            //}
+            //else
+            //{
+            //    // filter at azure table query level only
+            //}
+
+
+
             // if there's filtering that needs to be done here (AzureTables don't support wildcard matching)
             if (!string.IsNullOrWhiteSpace(hostName) || !string.IsNullOrWhiteSpace(loggerName) || !string.IsNullOrWhiteSpace(message))
             {
@@ -165,13 +179,18 @@
         }
 
         /// <summary>
+        /// Attempts to perform an Azure table query
         /// https://azure.microsoft.com/en-gb/documentation/articles/storage-dotnet-how-to-use-tables/
         /// Gets a collection of LogTableEntity objs suitable for casting to LogItemInto
         /// </summary>
+        /// <param name="appenderName"></param>
         /// <param name="partitionKey">null or the last known partition key</param>
         /// <param name="rowKey">null or the last known row key</param>
+        /// <param name="minLevel"></param>
+        /// <param name="loggerName">(optional) if set, looks for an exact match</param>
+        /// <param name="hostName">(optional) if set, looks for an exact match</param>
         /// <returns>a collection of log items matching the supplied filter criteria</returns>
-        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, Level minLevel)
+        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, Level minLevel, string loggerName = null, string hostName = null)
         {
             CloudTable cloudTable = this.GetCloudTable(appenderName);
 
@@ -224,6 +243,16 @@
                             tableQuery.AndWhere(TableQuery.GenerateFilterCondition("Level", QueryComparisons.Equal, Level.FATAL.ToString()));
                             break;
                     }
+                }
+
+                if (!string.IsNullOrWhiteSpace(loggerName))
+                {
+                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", QueryComparisons.Equal, loggerName));
+                }
+
+                if (!string.IsNullOrWhiteSpace(hostName))
+                {
+                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("log4net_HostName", QueryComparisons.Equal, hostName));
                 }
 
                 return cloudTable.ExecuteQuery(tableQuery);
@@ -289,7 +318,14 @@
                         tableBatchOperation.Insert(new IndexTableEntity(partitionKey, rowKey));
                     }
 
-                    cloudTable.ExecuteBatch(tableBatchOperation);
+                    try
+                    {
+                        cloudTable.ExecuteBatch(tableBatchOperation);
+                    }
+                    catch
+                    {
+                        // HACK: another server may have beaten this one to set the same values
+                    }
                 }
             }
         }
