@@ -98,10 +98,12 @@
         /// <returns></returns>
         internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, Level minLevel, string message, int take)
         {
-            // check to see if any filtering needs to be done here (as opposed to just Azure table query)
-            if (!string.IsNullOrWhiteSpace(message) || // always filter message here as, no index
-                (!string.IsNullOrWhiteSpace(hostName) && !IndexService.Instance.GetMachineNames(appenderName).Any(x => x == hostName)) || // filter here if not in index
-                (!string.IsNullOrWhiteSpace(loggerName) && !IndexService.Instance.GetLoggerNames(appenderName).Any(x => x == loggerName))) // (Azure table querys don't support wildcards)
+            // flags to indiciate if filtering is requied here in c#
+            bool hostNameWildcardFiltering = !string.IsNullOrWhiteSpace(hostName) && !IndexService.Instance.GetMachineNames(appenderName).Any(x => x == hostName);
+            bool loggerNameWildcardFiltering = !string.IsNullOrWhiteSpace(loggerName) && !IndexService.Instance.GetLoggerNames(appenderName).Any(x => x == loggerName);
+
+            // check to see if any filtering needs to be done here (always filter message as it has no index)
+            if (!string.IsNullOrWhiteSpace(message) || hostNameWildcardFiltering || loggerNameWildcardFiltering)
             {
                 // additional filtering here- may require additional azure table queries
 
@@ -135,7 +137,13 @@
                     lastCount = logTableEntities.Count;
 
                     // take a large chunk to filter here - take size should be relative to the filter granularity
-                    IEnumerable<LogTableEntity> returnedLogTableEntities = this.ReadLogTableEntities(appenderName, lastPartitionKey, lastRowKey, minLevel)
+                    IEnumerable<LogTableEntity> returnedLogTableEntities = this.ReadLogTableEntities(
+                                                                                    appenderName,
+                                                                                    lastPartitionKey,
+                                                                                    lastRowKey,
+                                                                                    minLevel,
+                                                                                    loggerNameWildcardFiltering ? null : loggerName, // only set if
+                                                                                    hostNameWildcardFiltering ? null : hostName) // not using wildcards
                                                                                 .Take(100);
 
                     if (returnedLogTableEntities.Any())
@@ -180,10 +188,10 @@
         /// <param name="partitionKey">null or the last known partition key</param>
         /// <param name="rowKey">null or the last known row key</param>
         /// <param name="minLevel"></param>
-        /// <param name="loggerName">(optional) if set, looks for an exact match</param>
-        /// <param name="hostName">(optional) if set, looks for an exact match</param>
+        /// <param name="loggerName">if set, looks for an exact match</param>
+        /// <param name="hostName">if set, looks for an exact match</param>
         /// <returns>a collection of log items matching the supplied filter criteria</returns>
-        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, Level minLevel, string loggerName = null, string hostName = null)
+        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, Level minLevel, string loggerName, string hostName)
         {
             CloudTable cloudTable = this.GetCloudTable(appenderName);
 
