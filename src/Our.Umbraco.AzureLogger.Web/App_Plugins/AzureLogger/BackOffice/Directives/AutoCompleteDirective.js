@@ -18,10 +18,12 @@
                 // ensure only attached to input element of type text
                 if (element[0].tagName.toLowerCase() !== 'input' || element[0].type !== 'text') { return; }
 
+                scope.cursorIndex = -1;
+
                 // build auto-complete list markup
                 var template = angular.element(
                     '<ul class="auto-complete-directive" ng-show="show" style="top:' + $(element[0]).height() + 'px">' +
-                    '<li ng-repeat="option in options | filter:value" ng-click="selectOption(option)">{{option}}</li>' +
+                    '<li ng-repeat="option in options | filter:value" ng-class="{cursored: $index==cursorIndex}" ng-click="selectOption(option)">{{option}}</li>' +
                     '</ul>');
 
                 // inject markup
@@ -46,13 +48,39 @@
 
                     // show on all keys, otherwise hide if tab or enter key
                     scope.show = !(event.which === 9 || event.which === 13);
+
+                    // handle any cursoring
+                    switch(event.which)
+                    {
+                        case 13:
+                            if (scope.cursorIndex > -1) {
+                                console.log('cursor index = ' + scope.cursorIndex);
+                            }
+                            break;
+
+                        case 38: // cursor up
+                            if (scope.cursorIndex > -1) {
+                                scope.cursorIndex--;
+                            }
+                            break;
+
+                        case 40: // cursor down
+                            if (scope.cursorIndex < scope.options.length) {
+                                scope.cursorIndex++;
+                            }
+                            break;
+
+                        default:
+                            scope.cursorIndex = -1;
+                            break;
+                    }
+
                     scope.$apply();
                 });
 
                 // watch the input text - using watch (rather than $parsers) as not changing the value being watched
                 // http://stackoverflow.com/questions/19167517/angularjs-in-a-directive-that-changes-the-model-value-why-do-i-have-to-call
                 scope.$watch(attrs.ngModel, function (value) {
-                    console.log(value);
                     scope.value = value;
                 });
 

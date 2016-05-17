@@ -16,7 +16,8 @@
     padding:2px 10px 2px 5px;
 }
 
-.auto-complete-directive li:hover {
+.auto-complete-directive li:hover,
+.auto-complete-directive li.cursored {
     cursor:pointer;
     background-color: #2e8aea;
     color:white;
