@@ -259,7 +259,7 @@
                 return cloudTable.ExecuteQuery(
                     tableQuery,
                     new TableRequestOptions() {
-                        ServerTimeout = new TimeSpan(0,0,5)
+                        ServerTimeout = new TimeSpan(0,0,2)
                     });
             }
 
