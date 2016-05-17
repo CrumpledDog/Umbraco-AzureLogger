@@ -199,8 +199,8 @@
             {
                 TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>()
                                                                 .Select(new string[] {  // reduce data fields returned from Azure
-                                                                    //"PartitionKey", // always returned
-                                                                    //"RowKey",
+                                                                    //"PartitionKey", // always
+                                                                    //"RowKey",      // returned
                                                                     "Level",
                                                                     "LoggerName",
                                                                     "Message",
@@ -256,7 +256,11 @@
                     tableQuery.AndWhere(TableQuery.GenerateFilterCondition("log4net_HostName", QueryComparisons.Equal, hostName));
                 }
 
-                return cloudTable.ExecuteQuery(tableQuery);
+                return cloudTable.ExecuteQuery(
+                    tableQuery,
+                    new TableRequestOptions() {
+                        ServerTimeout = new TimeSpan(0,0,5)
+                    });
             }
 
             return Enumerable.Empty<LogTableEntity>(); // fallback
