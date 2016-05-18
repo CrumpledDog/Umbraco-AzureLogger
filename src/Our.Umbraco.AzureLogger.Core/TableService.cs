@@ -199,13 +199,12 @@
             {
                 TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>()
                                                                 .Select(new string[] {  // reduce data fields returned from Azure
-                                                                    //"PartitionKey", // always
-                                                                    //"RowKey",      // returned
                                                                     "Level",
                                                                     "LoggerName",
                                                                     "Message",
                                                                     "EventTimeStamp",
-                                                                    "log4net_HostName" });
+                                                                    "log4net_HostName"
+                                                                });
 
                 if (!string.IsNullOrWhiteSpace(partitionKey))
                 {

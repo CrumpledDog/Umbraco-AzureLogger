@@ -23,14 +23,15 @@
                 // build auto-complete list markup
                 var template = angular.element(
                     '<ul class="auto-complete-directive" ng-show="show" style="top:' + $(element[0]).height() + 'px">' +
-                    '<li ng-repeat="option in options | filter:value" ng-class="{cursored: $index==cursorIndex}" ng-click="selectOption(option)">{{option}}</li>' +
+                        '<li ng-repeat="option in options | filter:value" ' +
+                            'ng-class="{cursored: $index == cursorIndex}" ' +
+                            'ng-click="selectOption(option)">' +
+                            '{{option}}' +
+                        '</li>' +
                     '</ul>');
 
-                // inject markup
-                element.before(template);
-
-                // compile markup with scope
-                $compile(template)(scope);
+                element.before(template); // inject markup
+                $compile(template)(scope); // compile markup with scope
 
                 // show list
                 element.bind('focus', function (event) {
@@ -41,6 +42,7 @@
                 // hide list
                 element.bind('blur', function (event) {
                     scope.show = false;
+                    scope.cursorIndex = -1;
                     //scope.$apply(); // when applied, removes the list before it can be clicked
                 });
 
@@ -49,31 +51,35 @@
                     // show on all keys, otherwise hide if tab or enter key
                     scope.show = !(event.which === 9 || event.which === 13);
 
-                    // handle any cursoring
-                    switch(event.which)
-                    {
-                        case 13:
-                            if (scope.cursorIndex > -1) {
-                                console.log('cursor index = ' + scope.cursorIndex);
-                            }
-                            break;
+                    //// handle any cursoring
+                    //switch(event.which)
+                    //{
+                    //    case 9: // tab
+                    //    case 13: // enter
+                    //        if (scope.cursorIndex > -1) {
+                    //            //TODO: get position in filtered collection and set textbox
+                    //            scope.cursorIndex = -1; // reset
+                    //        }
+                    //        break;
 
-                        case 38: // cursor up
-                            if (scope.cursorIndex > -1) {
-                                scope.cursorIndex--;
-                            }
-                            break;
+                    //    case 38: // cursor up
+                    //        if (scope.cursorIndex > -1) {
+                    //            scope.cursorIndex--;
+                    //        }
+                    //        event.preventDefault();
+                    //        break;
 
-                        case 40: // cursor down
-                            if (scope.cursorIndex < scope.options.length) {
-                                scope.cursorIndex++;
-                            }
-                            break;
+                    //    case 40: // cursor down
+                    //        if (scope.cursorIndex < 7) { // TODO: get length of filterd collection
+                    //            scope.cursorIndex++;
+                    //        }
+                    //        event.preventDefault();
+                    //        break;
 
-                        default:
-                            scope.cursorIndex = -1;
-                            break;
-                    }
+                    //    default:
+                    //        scope.cursorIndex = -1;
+                    //        break;
+                    //}
 
                     scope.$apply();
                 });
