@@ -60,7 +60,6 @@
                     case "sessionId":
                         this.sessionId = (string)dictionaryEntry.Value;
                         break;
-
                 }
             }
         }
@@ -135,7 +134,8 @@
                     Location = logTableEntity.Location,
                     ProcessId = logTableEntity.processId,
                     AppDomainId = logTableEntity.appDomainId,
-                    Url = logTableEntity.url
+                    Url = logTableEntity.url,
+                    SessionId = logTableEntity.sessionId
                 };
         }
     }

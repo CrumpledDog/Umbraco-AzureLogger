@@ -38,5 +38,8 @@
 
         [JsonProperty("url")]
         public string Url { get; set; }
+
+        [JsonProperty("sessionId")]
+        public string SessionId { get; set; }
     }
 }

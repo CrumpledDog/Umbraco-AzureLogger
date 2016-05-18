@@ -156,6 +156,12 @@
                             <a href="{{logItem.details.url}}" ng-show="logItem.details.url">{{logItem.details.url}}</a>
                             <span ng-show="!logItem.details.url">Unknown</span>
                         </dd>
+
+                        <dt>SessionId</dt>
+                        <dd>
+                            {{logItem.details.sessionId ? logItem.details.sessionId : 'Unknown'}}
+                        </dd>
+
                     </dl>
                 </div><!-- /log-item-details-row -->
 
