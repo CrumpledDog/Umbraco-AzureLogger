@@ -23,10 +23,11 @@
                 // build auto-complete list markup
                 var template = angular.element(
                     '<ul class="auto-complete-directive" ng-show="show" style="top:' + $(element[0]).height() + 'px">' +
-                        '<li ng-repeat="option in options | filter:value" ' +
-                            'ng-class="{cursored: $index == cursorIndex}" ' +
-                            'ng-click="selectOption(option)">' +
-                            '{{option}}' +
+                        '<li ng-repeat="option in options | filter:value"' +
+                            ' ng-class="{cursored: $index == cursorIndex}"' +
+                            ' ng-click="selectOption(option)"' +
+                            ' ng-bind-html="option | highlight:value">' +
+                            //'*{{option}}*' +
                         '</li>' +
                     '</ul>');
 

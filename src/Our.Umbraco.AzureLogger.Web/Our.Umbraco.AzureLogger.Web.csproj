@@ -70,6 +70,8 @@
     <Content Include="App_Plugins\AzureLogger\BackOffice\Controllers\ViewLogController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\Directives\MonitorWidthDirective.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\Directives\SelectPlaceholderDirective.js" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\Filters\HighlightFilter.css" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\Filters\HighlightFilter.js" />
     <Content Include="App_Plugins\AzureLogger\package.manifest" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
