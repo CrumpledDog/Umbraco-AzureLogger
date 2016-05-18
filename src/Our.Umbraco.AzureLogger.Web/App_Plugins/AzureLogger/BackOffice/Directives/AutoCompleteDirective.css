@@ -26,5 +26,5 @@
 .auto-complete-directive li:hover .highlight,
 .auto-complete-directive li.cursored .highlight {
     background-color: #2e8aea;
-    color:black;
+    color:yellow;
 }
