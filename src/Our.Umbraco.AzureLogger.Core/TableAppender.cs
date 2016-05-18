@@ -66,20 +66,27 @@
         /// <param name="loggingEvent"></param>
         protected override void Append(LoggingEvent loggingEvent)
         {
+            loggingEvent.Properties["url"] = null;
+            loggingEvent.Properties["sessionId"] = null;
+
             try
             {
                 if (HttpContext.Current != null && HttpContext.Current.Handler != null)
                 {
-                    loggingEvent.Properties["url"] = HttpContext.Current.Request.Url.AbsoluteUri;
-                }
-                else
-                {
-                    loggingEvent.Properties["url"] = null;
+                    if (HttpContext.Current.Request != null && HttpContext.Current.Request.Url != null)
+                    {
+                        loggingEvent.Properties["url"] = HttpContext.Current.Request.Url.AbsoluteUri;
+                    }
+
+                    if (HttpContext.Current.Session != null)
+                    {
+                        loggingEvent.Properties["sessionId"] = HttpContext.Current.Session.SessionID;
+                    }
                 }
             }
             catch
             {
-                loggingEvent.Properties["url"] = null;
+                // failsafe as no exceptions should be ever thrown in this method
             }
 
             base.Append(loggingEvent);

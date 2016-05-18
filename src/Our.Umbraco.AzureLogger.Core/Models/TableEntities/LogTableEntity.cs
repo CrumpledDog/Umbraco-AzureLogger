@@ -56,6 +56,11 @@
                     case "url":
                         this.url = (string)dictionaryEntry.Value;
                         break;
+
+                    case "sessionId":
+                        this.sessionId = (string)dictionaryEntry.Value;
+                        break;
+
                 }
             }
         }
@@ -85,6 +90,8 @@
         public string log4net_HostName { get; set; }
 
         public string url { get; set; }
+
+        public string sessionId { get; set; }
 
         ///// <summary>
         ///// Gets or sets a value indicating any custom note associated with this log entry
