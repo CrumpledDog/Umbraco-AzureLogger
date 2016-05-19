@@ -251,6 +251,11 @@
                 {
                     tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", QueryComparisons.Equal, loggerName));
                 }
+                else
+                {
+                    // HACK: ensure index entities are not returned
+                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", QueryComparisons.NotEqual, string.Empty));
+                }
 
                 if (!string.IsNullOrWhiteSpace(hostName))
                 {
