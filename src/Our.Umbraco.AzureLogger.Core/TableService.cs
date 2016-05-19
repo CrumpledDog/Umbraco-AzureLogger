@@ -52,7 +52,7 @@
 
             if (cloudTable != null)
             {
-                // all loggingEvents converted to LogTableEntity objects
+                // all loggingEvents converted to LogTableEntity objects (required for indexing method - avoids duplicate constructions)
                 List<LogTableEntity> logTableEntities = new List<LogTableEntity>();
 
                 // group by logging event date & hour - each group equates to an Azure table partition key
@@ -71,8 +71,10 @@
 
                         foreach (LoggingEvent loggingEvent in batchLoggingEvents)
                         {
+                            // logic in constructor also parses out dictionary items into properties
                             LogTableEntity logTableEntity = new LogTableEntity(partitionKey, loggingEvent);
 
+                            // add to collection for indexing later
                             logTableEntities.Add(logTableEntity);
 
                             tableBatchOperation.Insert(logTableEntity);
@@ -328,7 +330,7 @@
                     }
                     catch
                     {
-                        // HACK: another server may have beaten this one to set the same values
+                        // surpress any errors (as another server may have already updated some or all of these index values)
                     }
                 }
             }
