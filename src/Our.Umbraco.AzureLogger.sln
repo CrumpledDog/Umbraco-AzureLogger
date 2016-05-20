@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.AzureLogger.Core", "Our.Umbraco.AzureLogger.Core\Our.Umbraco.AzureLogger.Core.csproj", "{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}"
 EndProject
@@ -13,10 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{2FA73200
 		..\build-appveyor.cmd = ..\build-appveyor.cmd
 		..\build.cmd = ..\build.cmd
 		..\build\transforms\log4net.config.install.xdt = ..\build\transforms\log4net.config.install.xdt
-		..\build\transforms\log4net.config.uninstall.xdt = ..\build\transforms\log4net.config.uninstall.xdt
 		..\build\Our.Umbraco.AzureLogger.proj = ..\build\Our.Umbraco.AzureLogger.proj
 		..\build\package.nuspec = ..\build\package.nuspec
 		..\build\package.xml = ..\build\package.xml
+		..\build\transforms\web.config.install.xdt = ..\build\transforms\web.config.install.xdt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D377F7D0-E965-49B6-9D85-ECF8043C86A0}"

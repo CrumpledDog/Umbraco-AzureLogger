@@ -1,0 +1,8 @@
+﻿<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+
+  <connectionStrings>
+    <add name="LoggingTableStorage" connectionString="DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+  </connectionStrings>
+
+</configuration>

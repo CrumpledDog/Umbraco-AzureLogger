@@ -98,8 +98,8 @@
 		<MakeDir Directories="$(ArtifactsDir)" />
 	</Target>
 
-  <!-- UPDATE PROJECT ASSEMBLEY VERSION -->
-  <Target Name="UpdateAssemblyInfo" DependsOnTargets="Clean">
+	<!-- UPDATE PROJECT ASSEMBLEY VERSION -->
+	<Target Name="UpdateAssemblyInfo" DependsOnTargets="Clean">
 	<FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
 	<FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
 	<FileUpdate Encoding="ASCII" Files="$(CoreProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
@@ -107,7 +107,7 @@
 	<FileUpdate Encoding="ASCII" Files="$(WebProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyVersion(&quot;$(FileVersion)&quot;)]" />
 	<FileUpdate Encoding="ASCII" Files="$(WebProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyFileVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyFileVersion(&quot;$(FileVersion)&quot;)]" />
 	<FileUpdate Encoding="ASCII" Files="$(WebProjectDir)\Properties\VersionInfo.cs" Regex="AssemblyInformationalVersion\(&quot;.*&quot;\)\]" ReplacementText="AssemblyInformationalVersion(&quot;$(ProductVersion)&quot;)]" />
-  </Target>
+	</Target>
 
 	<!-- COMPILE -->
 	<Target Name="Compile" DependsOnTargets="UpdateAssemblyInfo">
@@ -122,6 +122,7 @@
 		<PdbFiles Include="$(CoreProjectDir)\bin\$(BuildConfig)\Our.Umbraco.AzureLogger.Core.pdb" />
 		<AppPluginFiles Include="$(WebProjectDir)\App_Plugins\AzureLogger\**\*.*" />
 		<Log4NetConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\log4net.config.install.xdt" />
+		<WebConfigXDTInstallFile Include="$(MSBuildProjectDirectory)\transforms\web.config.install.xdt" />
 		
 		<!-- Umbraco specific -->
 		<PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
@@ -141,11 +142,12 @@
 	<Copy SourceFiles="@(PdbFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
 	<Copy SourceFiles="@(SrcFiles)" DestinationFiles="@(SrcFiles->'$(BuildNuGetDir)\src\%(RecursiveDir)%(Filename)%(Extension)')" />
 	<Copy SourceFiles="@(Log4NetConfigXDTInstallFile)" DestinationFolder="$(BuildNuGetDir)\Content\Config" />
+	<Copy SourceFiles="@(WebConfigXDTInstallFile)" DestinationFolder="$(BuildNuGetDir)\Content" />
 
 	<Copy SourceFiles="@(AppPluginFiles)" DestinationFiles="@(AppPluginFiles->'$(BuildNuGetDir)\Content\App_Plugins\AzureLogger\%(RecursiveDir)%(Filename)%(Extension)')" />
 	<Copy SourceFiles="@(NuSpecFile)" DestinationFolder="$(BuildNuGetDir)" />
 	
-  </Target>
+	</Target>
 
 	<!-- MANIFEST UMBRACO -->
 	<Target Name="ManifestUmbraco" DependsOnTargets="PrepareFiles">
