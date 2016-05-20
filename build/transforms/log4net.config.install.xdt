@@ -21,6 +21,7 @@
 		<param name="ConnectionString" value="LoggingTableStorage" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
 		<param name="TableName" value="UALWarnings" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
 		<param name="TreeName" value="Warnings" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+		<param name="IconName" value="icon-alert" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
 		<threshold value="WARN" xdt:Transform="InsertIfMissing"/>
 		<filter type="log4net.Filter.LevelRangeFilter" xdt:Transform="InsertIfMissing">
 			<levelMin value="WARN"/>
