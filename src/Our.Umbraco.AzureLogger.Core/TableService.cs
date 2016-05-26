@@ -98,7 +98,7 @@
         /// <param name="loggerName"></param>
         /// <param name="messageIntro"></param>
         /// <returns></returns>
-        internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, Level minLevel, string message, int take)
+        internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, Level minLevel, string message, string sessionId, int take)
         {
             // flags to indiciate if filtering is requied here in c#
             bool hostNameWildcardFiltering = !string.IsNullOrWhiteSpace(hostName) && !IndexService.Instance.GetMachineNames(appenderName).Any(x => x == hostName);
@@ -145,7 +145,8 @@
                                                                                     lastRowKey,
                                                                                     minLevel,
                                                                                     loggerNameWildcardFiltering ? null : loggerName, // only set if
-                                                                                    hostNameWildcardFiltering ? null : hostName) // not using wildcards
+                                                                                    hostNameWildcardFiltering ? null : hostName,
+                                                                                    sessionId) // not using wildcards
                                                                                 .Take(100);
 
                     if (returnedLogTableEntities.Any())
@@ -177,7 +178,7 @@
             else
             {
                 // filter at azure table query level only
-                return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel, loggerName, hostName).Take(take);
+                return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel, loggerName, hostName, sessionId).Take(take);
             }
         }
 
@@ -193,7 +194,7 @@
         /// <param name="loggerName">if set, looks for an exact match</param>
         /// <param name="hostName">if set, looks for an exact match</param>
         /// <returns>a collection of log items matching the supplied filter criteria</returns>
-        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, Level minLevel, string loggerName, string hostName)
+        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, Level minLevel, string loggerName, string hostName, string sessionId)
         {
             CloudTable cloudTable = this.GetCloudTable(appenderName);
 
@@ -260,6 +261,11 @@
                 if (!string.IsNullOrWhiteSpace(hostName))
                 {
                     tableQuery.AndWhere(TableQuery.GenerateFilterCondition("log4net_HostName", QueryComparisons.Equal, hostName));
+                }
+
+                if (!string.IsNullOrWhiteSpace(sessionId))
+                {
+                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("sessionId", QueryComparisons.Equal, sessionId));
                 }
 
                 return cloudTable.ExecuteQuery(

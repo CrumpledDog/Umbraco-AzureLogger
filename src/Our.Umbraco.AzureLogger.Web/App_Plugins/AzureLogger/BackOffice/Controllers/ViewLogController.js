@@ -10,7 +10,7 @@
     function ViewLogController($scope, $routeParams, navigationService, $q, $timeout, azureLoggerResource) {
 
         var appenderName = $routeParams.id;
-        var queryFilters = { hostName: '', loggerName: '', minLevel: '0', message: '' };
+        var queryFilters = { hostName: '', loggerName: '', minLevel: '0', message: '', sessionId: '' };
         var lastPartitionKey = null; // partition key of last item checked in last query (where to start next query)
         var lastRowKey = null; // row key of last item checked in last query (where to start next query)
 
@@ -92,11 +92,13 @@
                     var uiFilterLoggerName = $scope.uiFilters.loggerName.toLowerCase();
                     var uiFilterMinLevel = $scope.uiFilters.minLevel;
                     var uiFilterMessage = $scope.uiFilters.message.toLowerCase();
+                    //var uiFilterSessionId = $scope.uiFilters.sessionId;
 
                     var queryFilterHostName = queryFilters.hostName.toLowerCase();
                     var queryFilterLoggerName = queryFilters.loggerName.toLowerCase();
                     var queryFilterMinLevel = queryFilters.minLevel;
                     var queryFilterMessage = queryFilters.message.toLowerCase();
+                    //var queryFilterSessionId = quieryFilters.sessionId;
 
                     queryFilters = angular.copy($scope.uiFilters); // update queryFilters as early as possible
 
@@ -105,6 +107,7 @@
                                     && uiFilterLoggerName.indexOf(queryFilterLoggerName) > -1
                                     && uiFilterMinLevel >= queryFilterMinLevel
                                     && uiFilterMessage == queryFilterMessage; // any change in message will be reductive - as not all data client side
+                                    //&& uiFilterSessionId
 
                     // if reductive, then remove items that don't match (a new query may be triggered by the lazy load directive)
                     if (reductive) {
@@ -129,6 +132,8 @@
                                 return value.levelValue >= uiFilterMinLevel;
                             });
                         }
+
+                        // TODO: session reductive filtering
 
                         // tell lazy-load directive to fill screen, as number of items may have been reduced
                         triggerLazyLoad();

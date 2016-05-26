@@ -56,6 +56,7 @@
                                 (string)queryFilters.loggerName,
                                 (Level)Math.Max((int)queryFilters.minLevel, 0),
                                 (string)queryFilters.message,
+                                (string)queryFilters.sessionId,
                                 take) // need to supply take, as result may be a cloud table with items removed (in which case the take doesn't know where to re-start from)
                         .Select(x => (LogItemIntro)x)
                         .ToArray();

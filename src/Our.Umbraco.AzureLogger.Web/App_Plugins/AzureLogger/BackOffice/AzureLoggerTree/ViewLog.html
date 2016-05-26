@@ -65,6 +65,11 @@
                    class="icon icon-delete"></a>
             </span>
 
+            <span ng-show="uiFilters.sessionId">
+                {{uiFilters.sessionId}}
+                <a href="" ng-click="uiFilters.sessionId = null">X</a>
+            </span>
+
             <a href=""
                class="btn"
                ng-class="{ 'btn-primary': !currentlyFiltering && !filtersMatch() }"
@@ -159,7 +164,8 @@
 
                         <dt>SessionId</dt>
                         <dd>
-                            {{logItem.details.sessionId ? logItem.details.sessionId : 'Unknown'}}
+                            <a ng-show="logItem.details.sessionId && uiFilters.sessionId != logItem.details.sessionId" ng-click="uiFilters.sessionId = logItem.details.sessionId">{{logItem.details.sessionId}}</a>
+                            <span ng-show="!logItem.details.sessionId || uiFilters.sessionId == logItem.details.sessionId">{{logItem.details.sessionId ? logItem.details.sessionId : 'Unknown'}}</span>
                         </dd>
 
                     </dl>
