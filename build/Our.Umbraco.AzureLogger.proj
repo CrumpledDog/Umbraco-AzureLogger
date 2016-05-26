@@ -32,7 +32,7 @@
 		<Copyright>Copyright &#169; Jeavon Leopold, Hendy Racher and contributors.</Copyright>
 		<Owners>Jeavon Leopold</Owners>
 		<Description>An Azure storage table log4net appender and UI</Description>
-		<IconUrl>https://raw.githubusercontent.com/CrumpledDog/Umbraco-Azure-Logger/develop/build/assets/logo/azure-logo-128.png</IconUrl>
+		<IconUrl>https://raw.githubusercontent.com/CrumpledDog/Umbraco-Azure-Logger/develop/build/assets/icon/umbraco-azure-logger-128.png</IconUrl>
 		<Tags>umbraco azure table storage logging log4net</Tags>
 		<Language>en-GB</Language>
 		<RequireLicenseAcceptance>false</RequireLicenseAcceptance>
