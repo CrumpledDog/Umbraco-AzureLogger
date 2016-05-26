@@ -1,6 +1,6 @@
 # Umbraco Azure Logger
 
-![Azure Logger](build/assets/icon/umbraco-azure-logger-256.png)
+![Azure Logger](https://raw.githubusercontent.com/CrumpledDog/Umbraco-Azure-Logger/master/build/assets/icon/umbraco-azure-logger-256.png)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ivwi8cxt3cs05xxe?svg=true)](https://ci.appveyor.com/project/JeavonLeopold/umbraco-azure-logger)
 
