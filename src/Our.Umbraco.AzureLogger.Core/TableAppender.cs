@@ -73,9 +73,9 @@
             {
                 if (HttpContext.Current != null && HttpContext.Current.Handler != null)
                 {
-                    if (HttpContext.Current.Request != null && HttpContext.Current.Request.Url != null)
+                    if (HttpContext.Current.Request != null)
                     {
-                        loggingEvent.Properties["url"] = HttpContext.Current.Request.Url.AbsoluteUri;
+                        loggingEvent.Properties["url"] = HttpContext.Current.Request.RawUrl;
                     }
 
                     if (HttpContext.Current.Session != null)
