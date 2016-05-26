@@ -1,5 +1,9 @@
 # Umbraco Azure Logger
 
+![Azure Logger](build/assets/icon/umbraco-azure-logger-256.png)
+
+[![Build status](https://ci.appveyor.com/api/projects/status/ivwi8cxt3cs05xxe?svg=true)](https://ci.appveyor.com/project/JeavonLeopold/umbraco-azure-logger)
+
 This Umbraco package adds a appender for log4net that uses a Azure Storage table instead of the file system to store your Umbraco logs. Also included is a  UI for viewing and querying your log4net entries.
 
 Once installed, edit the ConnectionString named "LoggingTableStorage" added to web.config include the name and key of your Azure storage account (ensure the account has the Table service enabled).
@@ -41,5 +45,12 @@ As a useful enhancement we also now store to URL which triggered the log entry t
 
 ![Url Example](https://raw.githubusercontent.com/CrumpledDog/Umbraco-Azure-Logger/develop/docs/url-example.png)
 
-Currently this package is available only as a pre-release NuGet package from MyGet https://www.myget.org/gallery/umbracoazurelogger We will create a Umbraco installer package before RTM.
+## Installation ##
+
+Currently only NuGet packages are available
+
+|NuGet Packages    |Version           |
+|:-----------------|:-----------------|
+|**Release**|[![NuGet download](http://img.shields.io/nuget/v/Our.Umbraco.AzureLogger.svg)](https://www.nuget.org/packages/Our.Umbraco.AzureLogger/)
+|**Pre-release**|[![MyGet download](https://img.shields.io/myget/umbraco-packages/vpre/Our.Umbraco.AzureLogger.svg)](https://www.myget.org/gallery/umbraco-packages)
 
