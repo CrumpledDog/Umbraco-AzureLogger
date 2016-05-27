@@ -136,6 +136,8 @@
       <UmbracoOtherBinFiles Include="$(InstallerProjectDir)\bin\$(BuildConfig)\Microsoft.Web.XmlTransform.dll;$(CoreProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Edm.dll;$(CoreProjectDir)\bin\$(BuildConfig)\Microsoft.Data.OData.dll;$(CoreProjectDir)\bin\$(BuildConfig)\Microsoft.Data.Services.Client.dll;$(CoreProjectDir)\bin\$(BuildConfig)\Microsoft.WindowsAzure.Storage.dll;$(CoreProjectDir)\bin\$(BuildConfig)\System.Spatial.dll;$(CoreProjectDir)\bin\$(BuildConfig)\Microsoft.Azure.KeyVault.Core.dll" />
       <UmbracoInstallerLogo Include="$(MSBuildProjectDirectory)\assets\icon\umbraco-azure-logger-32.png"/>
       <PackageFile Include="$(MSBuildProjectDirectory)\package.xml" />
+      <InstallConfiguratorFiles Include="$(InstallerProjectDir)\Configurator\**\*.*" />
+
 
       <!-- NuGet specific -->
       <SrcFiles Include="$(CoreProjectDir)\**\*.cs" Exclude="$(CoreProjectDir)\obj\**"/>
@@ -150,6 +152,8 @@
     <Copy SourceFiles="@(AppPluginFiles)" DestinationFiles="@(AppPluginFiles->'$(BuildUmbDir)\App_Plugins\AzureLogger\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(Log4NetConfigXDTInstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\AzureLogger\Install" />
     <Copy SourceFiles="@(WebConfigXDTInstallFile)" DestinationFolder="$(BuildUmbDir)\App_Plugins\AzureLogger\Install" />
+    <Copy SourceFiles="@(InstallConfiguratorFiles)" DestinationFiles="@(InstallConfiguratorFiles->'$(BuildUmbDir)\App_Plugins\AzureLogger\Install\Configurator\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(UmbracoInstallerLogo)" DestinationFolder="$(BuildUmbDir)\App_Plugins\AzureLogger\Install" />
 
     <!--NuGet -->
     <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(BuildNuGetDir)\lib\net45" />
