@@ -1,9 +1,11 @@
 ﻿var configApp = angular.module('AzureLoggerLoader', []);
 
 configApp.controller("Loader", function ($scope, $http, $log) {
-  var postDataUrl = "/Umbraco/backoffice/AzureLogger/Installer/PostParameters";
+    var postDataUrl = "/Umbraco/backoffice/AzureLogger/Installer/PostParameters";
 
     $scope.saved = false;
+    // Default value
+    $scope.connectionString = "DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]";
 
     $scope.submitForm = function (e) {
         e.preventDefault();

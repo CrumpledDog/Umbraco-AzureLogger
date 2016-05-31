@@ -45,10 +45,10 @@
         <div class="row">
             <div>
                 <div class="alert alert-success" ng-show="saved && (status === 'Ok')">
-                   The Azure storage provider was sucessfully configured and your media is now as light as candyfloss
+                   The Azure Table Logger sucessfully configured, forever more logs will rain from the clouds
                 </div>
                 <div class="alert alert-error" ng-show="!saved && status === 'ConnectionError'">
-                    <strong>Oh no</strong>, there was something wrong with your Azure connection string, please check and try again, more info in the Umbraco log files
+                    <strong>Oh no</strong>, there was something wrong with your Azure connection string, please check and try again (ensure you're not using a ZRS or blobs only account)
                 </div>
             </div>
         </div>

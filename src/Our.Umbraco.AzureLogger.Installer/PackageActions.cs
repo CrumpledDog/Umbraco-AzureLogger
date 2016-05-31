@@ -15,7 +15,7 @@
         {
             public string Alias()
             {
-                return "UmbracoFileSystemProviders.Azure.TransformConfig";
+                return "AzureLogger.Azure.TransformConfig";
             }
 
             public bool Execute(string packageName, System.Xml.XmlNode xmlData)
@@ -25,7 +25,7 @@
 
             public System.Xml.XmlNode SampleXml()
             {
-                var str = "<Action runat=\"install\" undo=\"true\" alias=\"UmbracoFileSystemProviders.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">" +
+                var str = "<Action runat=\"install\" undo=\"true\" alias=\"AzureLogger.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/UmbracoFileSystemProviders/Azure/install/web.config\">" +
                          "</Action>";
                 return helper.parseStringToXmlNode(str);
             }
