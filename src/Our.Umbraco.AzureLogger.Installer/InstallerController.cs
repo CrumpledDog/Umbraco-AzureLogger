@@ -1,35 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Web.Hosting;
-using System.Web.Http;
-using System.Xml;
-using Microsoft.WindowsAzure.Storage;
-using Our.Umbraco.AzureLogger.Installer.Enums;
-using umbraco.cms.businesslogic.packager.standardPackageActions;
-using Umbraco.Core;
-using Umbraco.Core.Logging;
-using Umbraco.Web.Mvc;
-using Umbraco.Web.WebApi;
-
-namespace Our.Umbraco.AzureLogger.Installer
+﻿namespace Our.Umbraco.AzureLogger.Installer
 {
+    using System;
+    using System.Web.Hosting;
+    using System.Web.Http;
+    using System.Xml;
+
+    using umbraco.cms.businesslogic.packager.standardPackageActions;
+    using global::Umbraco.Core;
+    using global::Umbraco.Core.Logging;
+    using global::Umbraco.Web.Mvc;
+    using global::Umbraco.Web.WebApi;
+
+    using Microsoft.WindowsAzure.Storage;
+
+    using Enums;
+
     [PluginController("AzureLogger")]
     public class InstallerController : UmbracoAuthorizedApiController
     {
-        private readonly string log4netConfigInstallXdtPath = HostingEnvironment.MapPath(string.Format("{0}{1}.install.xdt", global::Our.Umbraco.AzureLogger.Installer.Constants.InstallerPath,global::Our.Umbraco.AzureLogger.Installer.Constants.Log4NetConfigFile));
-        private readonly string log4netConfigPath = HostingEnvironment.MapPath(string.Format("{0}{1}", global::Our.Umbraco.AzureLogger.Installer.Constants.UmbracoConfigPath,global::Our.Umbraco.AzureLogger.Installer.Constants.Log4NetConfigFile));
+        private readonly string _webConfigXdtPath =
+            HostingEnvironment.MapPath(string.Format("{0}{1}.install.xdt",
+                Constants.InstallerPath,
+                Constants.WebConfigFile));
 
-        private readonly string webConfigXdtPath = HostingEnvironment.MapPath(string.Format("{0}{1}.install.xdt", global::Our.Umbraco.AzureLogger.Installer.Constants.InstallerPath,global::Our.Umbraco.AzureLogger.Installer.Constants.WebConfigFile));
-        private readonly string webConfigPath = HostingEnvironment.MapPath(string.Format("~/{0}", global::Our.Umbraco.AzureLogger.Installer.Constants.WebConfigFile));
+        private readonly string _webConfigPath =
+            HostingEnvironment.MapPath(string.Format("~/{0}",
+                Installer.Constants.WebConfigFile));
 
-        // /Umbraco/backoffice/AzureLogger/Installer/PostParameters
+        // /Umbraco/backoffice/AzureLogger/Installer/PostConnectionString
         [HttpPost]
-        public InstallerStatus PostParameters([FromBody]string connectionString)
+        public InstallerStatus PostConnectionString([FromBody] string connectionString)
         {
             // Check connection string is valid
             if (!TestAzureCredentials(connectionString))
@@ -38,7 +38,7 @@ namespace Our.Umbraco.AzureLogger.Installer
             }
 
             // Save connectionString to XDT
-            if (!SaveConnectionStringoWebConfigXdt(webConfigXdtPath, connectionString))
+            if (!SaveConnectionStringoWebConfigXdt(_webConfigXdtPath, connectionString))
             {
                 return InstallerStatus.SaveXdtError;
             }
@@ -58,19 +58,33 @@ namespace Our.Umbraco.AzureLogger.Installer
             return InstallerStatus.Ok;
         }
 
+        // /Umbraco/backoffice/AzureLogger/Installer/GetConnectionString
+        [HttpGet]
+        public string GetConnectionString()
+        {
+            var connectionString = "DefaultEndpointsProtocol=https;AccountName=[myAccountName];AccountKey=[myAccountKey]";
+            var connectionStringFromConfig = GetConnectionStringFromWebConfig();
+
+            if (connectionStringFromConfig != null)
+            {
+                connectionString = connectionStringFromConfig;
+            }
+
+            return connectionString;
+        }
+
         private static bool SaveConnectionStringoWebConfigXdt(string xdtPath, string connectionString)
         {
             var result = false;
 
             var document = XmlHelper.OpenAsXmlDocument(xdtPath);
 
-            // Inset a Parameter element with Xdt remove so that updated values get saved (for upgrades), we don't want this for NuGet packages which is why it's here instead
             var nsMgr = new XmlNamespaceManager(document.NameTable);
             var strNamespace = "http://schemas.microsoft.com/XML-Document-Transform";
             nsMgr.AddNamespace("xdt", strNamespace);
 
-            var locationElement = document.SelectSingleNode("//configuration/connectionStrings/add[@name=\'LoggingTableStorage\']");
-            if (locationElement != null)
+            var locationElement = document.SelectSingleNode(string.Format("//configuration/connectionStrings/add[@name=\'{0}\']", Constants.ConnectionName));
+            if (locationElement != null && locationElement.Attributes != null)
             {
                 locationElement.Attributes["connectionString"].Value = connectionString;
             }
@@ -86,7 +100,7 @@ namespace Our.Umbraco.AzureLogger.Installer
             {
                 // Log error message
                 var message = "Error saving XDT Parameters: " + e.Message;
-                LogHelper.Error(typeof(InstallerController), message, e);
+                LogHelper.Error(typeof (InstallerController), message, e);
             }
 
             return result;
@@ -94,8 +108,10 @@ namespace Our.Umbraco.AzureLogger.Installer
 
         private static bool ExecuteWebConfigTransform()
         {
-            var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"AzureLogger.Azure.TransformConfig\" file=\"~/web.config\" xdtfile=\"~/app_plugins/AzureLogger/install/web.config\">" +
-         "</Action>").FirstChild;
+            var transFormConfigAction =
+                helper.parseStringToXmlNode(string.Format(
+                    "<Action runat=\"install\" undo=\"true\" alias=\"{0}\" file=\"~/{1}\" xdtfile=\"{2}{1}\">" +
+                    "</Action>",Constants.TransformConfigAlias, Constants.WebConfigFile, Constants.InstallerPath)).FirstChild;
 
             var transformConfig = new PackageActions.TransformConfig();
             return transformConfig.Execute("AzureLogger", transFormConfigAction);
@@ -103,8 +119,10 @@ namespace Our.Umbraco.AzureLogger.Installer
 
         private static bool ExecuteLog4NetConfigTransform()
         {
-            var transFormConfigAction = helper.parseStringToXmlNode("<Action runat=\"install\" undo=\"true\" alias=\"AzureLogger.Azure.TransformConfig\" file=\"~/config/log4net.config\" xdtfile=\"~/app_plugins/AzureLogger/install/log4net.config\">" +
-         "</Action>").FirstChild;
+            var transFormConfigAction =
+                helper.parseStringToXmlNode(string.Format(
+                    "<Action runat=\"install\" undo=\"true\" alias=\"{0}\" file=\"{1}{2}\" xdtfile=\"{3}{2}\">" +
+                    "</Action>",Constants.TransformConfigAlias, Constants.UmbracoConfigPath, Constants.Log4NetConfigFile, Constants.InstallerPath)).FirstChild;
 
             var transformConfig = new PackageActions.TransformConfig();
             return transformConfig.Execute("AzureLogger", transFormConfigAction);
@@ -124,11 +142,26 @@ namespace Our.Umbraco.AzureLogger.Installer
             }
             catch (Exception e)
             {
-                LogHelper.Error<InstallerController>(string.Format("Error validating Azure storage connection: {0}", e.Message), e);
+                LogHelper.Error<InstallerController>(
+                    string.Format("Error validating Azure storage connection: {0}", e.Message), e);
                 return false;
             }
 
             return true;
+        }
+
+        private string GetConnectionStringFromWebConfig()
+        {
+            var document = XmlHelper.OpenAsXmlDocument(_webConfigPath);
+
+            var addElement = document.SelectSingleNode(string.Format("//configuration/connectionStrings/add[@name=\'{0}\']", Constants.ConnectionName));
+
+            if (addElement != null && addElement.Attributes != null)
+            {
+                return addElement.Attributes["connectionString"].Value;
+            }
+
+            return null;
         }
     }
 }

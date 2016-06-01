@@ -7,5 +7,6 @@
         public const string UmbracoConfigPath = "~/Config/";
         public const string WebConfigFile = "web.config";
         public const string ConnectionName = "LoggingTableStorage";
+        public const string TransformConfigAlias = "AzureLogger.TransformConfig";
     }
 }
