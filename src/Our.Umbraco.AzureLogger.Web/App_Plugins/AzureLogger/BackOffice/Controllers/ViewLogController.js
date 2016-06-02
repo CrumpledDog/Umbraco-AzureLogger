@@ -92,13 +92,13 @@
                     var uiFilterLoggerName = $scope.uiFilters.loggerName.toLowerCase();
                     var uiFilterMinLevel = $scope.uiFilters.minLevel;
                     var uiFilterMessage = $scope.uiFilters.message.toLowerCase();
-                    //var uiFilterSessionId = $scope.uiFilters.sessionId;
+                    var uiFilterSessionId = $scope.uiFilters.sessionId;
 
                     var queryFilterHostName = queryFilters.hostName.toLowerCase();
                     var queryFilterLoggerName = queryFilters.loggerName.toLowerCase();
                     var queryFilterMinLevel = queryFilters.minLevel;
                     var queryFilterMessage = queryFilters.message.toLowerCase();
-                    //var queryFilterSessionId = quieryFilters.sessionId;
+                    var queryFilterSessionId = queryFilters.sessionId;
 
                     queryFilters = angular.copy($scope.uiFilters); // update queryFilters as early as possible
 
@@ -106,8 +106,8 @@
                     var reductive = uiFilterHostName.indexOf(queryFilterHostName) > -1
                                     && uiFilterLoggerName.indexOf(queryFilterLoggerName) > -1
                                     && uiFilterMinLevel >= queryFilterMinLevel
-                                    && uiFilterMessage == queryFilterMessage; // any change in message will be reductive - as not all data client side
-                                    //&& uiFilterSessionId
+                                    && uiFilterMessage == queryFilterMessage // any change in message will be reductive - as not all data client side
+                                    && uiFilterSessionId == queryFilterSessionId; // any change in session id will be reductive - as not all data client side
 
                     // if reductive, then remove items that don't match (a new query may be triggered by the lazy load directive)
                     if (reductive) {
