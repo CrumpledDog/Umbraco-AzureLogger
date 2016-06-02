@@ -1,7 +1,4 @@
-﻿.info {
-    float:right;
-    margin:10px 25px 0 0;
-}
+﻿
 
 /* filters */
 
@@ -55,6 +52,10 @@
     width:460px;
 }
 
+.filter-session {
+    width:200px;
+}
+
 .filters .btn {
     margin-bottom:10px;
 }
@@ -63,6 +64,11 @@
 .btn.disabled:hover, .btn.disabled:focus, .btn[disabled]:hover, .btn[disabled]:focus {
     background: #f2f2f2;
     color: #000;
+}
+
+.info {
+    float:right;
+    margin:10px 25px 0 0;
 }
 
 /* main view */

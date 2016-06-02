@@ -2,11 +2,6 @@
 
     <div class="umb-panel-header">
 
-        <div class="info">
-            <span ng-if="currentlyLoading">Loading... </span>
-            [{{logItems.length}}]
-        </div>
-
         <div class="filters">
 
             <select ng-model="uiFilters.minLevel"
@@ -56,7 +51,7 @@
                        ng-model="uiFilters.message"
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
-                       placeholder="Message"
+                       placeholder="Message Text"
                        class="filter-message" />
                 <a href=""
                    ng-if="!currentlyFiltering && uiFilters.message != ''"
@@ -65,9 +60,18 @@
                    class="icon icon-delete"></a>
             </span>
 
-            <span ng-show="uiFilters.sessionId">
-                {{uiFilters.sessionId}}
-                <a href="" ng-click="uiFilters.sessionId = null">X</a>
+            <span>
+                <input type="text"
+                       ng-model="uiFilters.sessionId"
+                       ng-disabled="currentlyFiltering"
+                       enter-key="handleFilters()"
+                       placeholder="Session Id"
+                       class="filter-session" />
+                <a href=""
+                   ng-if="!currentlyFiltering && uiFilters.sessionId != ''"
+                   ng-click="uiFilters.sessionId = ''"
+                   tabindex="-1"
+                   class="icon icon-delete"></a>
             </span>
 
             <a href=""
@@ -77,6 +81,12 @@
                ng-click="handleFilters()">Update</a>
 
         </div>
+
+        <div class="info">
+            <span ng-if="currentlyLoading">Loading... </span>
+            [ {{logItems.length}} ]
+        </div>
+
     </div>
 
     <!-- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- -->
