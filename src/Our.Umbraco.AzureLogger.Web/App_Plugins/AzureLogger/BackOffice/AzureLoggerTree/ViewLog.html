@@ -117,6 +117,10 @@
 
                 <div class="log-item-details level-key">
                     <dl>
+
+                        <dt>Level</dt>
+                        <dd>{{logItem.level}}</dd>
+
                         <dt>Event Timestamp</dt>
                         <dd>
                             <!--<a href="javascript:alert('reload log starting at this date - updates inline date filter at top of page')">-->
@@ -124,17 +128,11 @@
                             <!--</a>-->
                         </dd>
 
-                        <dt>Log Timestamp</dt>
-                        <dd>{{logItem.details.timestamp| date : 'EEE dd MMM yyyy - HH:mm:ss.sss'}}</dd>
-
-                        <dt>Domain</dt>
-                        <dd>{{logItem.details.domain}}</dd>
-
-                        <dt>Identity</dt>
-                        <dd>{{logItem.details.identity ? logItem.details.identity : 'Unknown'}}</dd>
-
-                        <dt>Level</dt>
-                        <dd>{{logItem.level}}</dd>
+                        <dt>Machine Name</dt>
+                        <dd>
+                            <a ng-show="uiFilters.hostName != logItem.hostName" ng-click="uiFilters.hostName = logItem.hostName">{{logItem.hostName}}</a>
+                            <span ng-show="uiFilters.hostName == logItem.hostName">{{logItem.hostName}}</span>
+                        </dd>
 
                         <dt>Logger Name</dt>
                         <dd>
@@ -145,25 +143,10 @@
                         <dt>Message</dt>
                         <dd><pre>{{logItem.details.message}}</pre></dd>
 
-                        <dt>Thread Name</dt>
-                        <dd>{{logItem.details.threadName}}</dd>
-
-                        <dt>User Name</dt>
-                        <dd>{{logItem.details.userName}}</dd>
-
-                        <dt>Location</dt>
-                        <dd>{{logItem.details.location}}</dd>
-
-                        <dt>ProcessId</dt>
-                        <dd>{{logItem.details.processId}}</dd>
-
-                        <dt>AppDomainId</dt>
-                        <dd>{{logItem.details.appDomainId}}</dd>
-
-                        <dt>Host Name</dt>
+                        <dt>SessionId</dt>
                         <dd>
-                            <a ng-show="uiFilters.hostName != logItem.hostName" ng-click="uiFilters.hostName = logItem.hostName">{{logItem.hostName}}</a>
-                            <span ng-show="uiFilters.hostName == logItem.hostName">{{logItem.hostName}}</span>
+                            <a ng-show="logItem.details.sessionId && uiFilters.sessionId != logItem.details.sessionId" ng-click="uiFilters.sessionId = logItem.details.sessionId">{{logItem.details.sessionId}}</a>
+                            <span ng-show="!logItem.details.sessionId || uiFilters.sessionId == logItem.details.sessionId">{{logItem.details.sessionId ? logItem.details.sessionId : 'Unknown'}}</span>
                         </dd>
 
                         <dt>Url</dt>
@@ -172,11 +155,29 @@
                             <span ng-show="!logItem.details.url">Unknown</span>
                         </dd>
 
-                        <dt>SessionId</dt>
-                        <dd>
-                            <a ng-show="logItem.details.sessionId && uiFilters.sessionId != logItem.details.sessionId" ng-click="uiFilters.sessionId = logItem.details.sessionId">{{logItem.details.sessionId}}</a>
-                            <span ng-show="!logItem.details.sessionId || uiFilters.sessionId == logItem.details.sessionId">{{logItem.details.sessionId ? logItem.details.sessionId : 'Unknown'}}</span>
-                        </dd>
+                        <dt>Domain</dt>
+                        <dd>{{logItem.details.domain}}</dd>
+
+                        <dt>Location</dt>
+                        <dd>{{logItem.details.location}}</dd>
+
+                        <dt>AppDomainId</dt>
+                        <dd>{{logItem.details.appDomainId}}</dd>
+
+                        <dt>ProcessId</dt>
+                        <dd>{{logItem.details.processId}}</dd>
+
+                        <dt>Thread Name</dt>
+                        <dd>{{logItem.details.threadName}}</dd>
+
+                        <dt>User Name</dt>
+                        <dd>{{logItem.details.userName}}</dd>
+
+                        <dt>Identity</dt>
+                        <dd>{{logItem.details.identity ? logItem.details.identity : 'Unknown'}}</dd>
+
+                        <dt>Log Timestamp</dt>
+                        <dd>{{logItem.details.timestamp| date : 'EEE dd MMM yyyy - HH:mm:ss.sss'}}</dd>
 
                     </dl>
                 </div><!-- /log-item-details-row -->
