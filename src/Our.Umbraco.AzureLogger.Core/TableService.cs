@@ -27,12 +27,15 @@
         }
 
         /// <summary>
-        /// prevent external construction (as is singleton)
+        /// Singleton constructor
         /// </summary>
         private TableService()
         {
         }
 
+        /// <summary>
+        /// Get a reference to the singleton instance of the TableService
+        /// </summary>
         internal static TableService Instance
         {
             get

@@ -43,7 +43,7 @@
         /// <summary>
         /// Attempts to get the associated azure table, but gives up if it takes longer than 1/2 second
         /// </summary>
-        /// <returns></returns>
+        /// <returns>true if the appender can connect to table storage, otherwise false</returns>
         internal bool IsConnected()
         {
             bool isConnected = false;
@@ -61,9 +61,9 @@
         }
 
         /// <summary>
-        /// Append extra logging data
+        /// Append extra logging data to a log item
         /// </summary>
-        /// <param name="loggingEvent"></param>
+        /// <param name="loggingEvent">the log item to extend</param>
         protected override void Append(LoggingEvent loggingEvent)
         {
             loggingEvent.Properties["url"] = null;

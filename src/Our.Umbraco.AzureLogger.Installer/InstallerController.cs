@@ -128,9 +128,13 @@
             return transformConfig.Execute("AzureLogger", transFormConfigAction);
         }
 
+        /// <summary>
+        /// Helper method to discover if table storage is supported
+        /// </summary>
+        /// <param name="connectionString">connection to test</param>
+        /// <returns>true if table storage is supported, otherwise false</returns>
         private static bool TestAzureCredentials(string connectionString)
         {
-
             try
             {
                 // Create and delete a test table to ensure storage account supports tables
@@ -142,8 +146,7 @@
             }
             catch (Exception e)
             {
-                LogHelper.Error<InstallerController>(
-                    string.Format("Error validating Azure storage connection: {0}", e.Message), e);
+                LogHelper.Error<InstallerController>(string.Format("Error validating Azure storage connection: {0}", e.Message), e);
                 return false;
             }
 

@@ -6,14 +6,20 @@
     using System.Linq;
 
     /// <summary>
-    /// Singleton used to update and supply collections of distincy machine names / logger names that exist in a given log
+    /// Singleton used to update and supply collections of distinct machine names / logger names that exist in a given log
     /// </summary>
     internal sealed partial class IndexService
     {
         private static readonly IndexService indexService = new IndexService();
 
+        /// <summary>
+        /// index data of machine names for each appender (key = appender name, value = list of machine names)
+        /// </summary>
         private ConcurrentDictionary<string, List<string>> appenderMachineNames = new ConcurrentDictionary<string, List<string>>();
 
+        /// <summary>
+        /// index data of logger names for each appender (key = appender name, value = list of logger names)
+        /// </summary>
         private ConcurrentDictionary<string, List<string>> appenderLoggerNames = new ConcurrentDictionary<string, List<string>>();
 
         static IndexService()
@@ -21,12 +27,15 @@
         }
 
         /// <summary>
-        /// prevent external construction (as is singleton)
+        /// Singleton constructor
         /// </summary>
         private IndexService()
         {
         }
 
+        /// <summary>
+        /// Get a reference to the singleton instance of the IndexService
+        /// </summary>
         internal static IndexService Instance
         {
             get
@@ -36,10 +45,10 @@
         }
 
         /// <summary>
-        /// Update the machine names and logger names collections
+        /// Update the indexes for a given appender
         /// </summary>
-        /// <param name="appenderName"></param>
-        /// <param name="logTableEntities"></param>
+        /// <param name="appenderName">appender name</param>
+        /// <param name="logTableEntities">a collection of log item POCOs from which to extract indexing data</param>
         internal void Process(string appenderName, IEnumerable<LogTableEntity> logTableEntities)
         {
             IEnumerable<string> machineNames = logTableEntities
