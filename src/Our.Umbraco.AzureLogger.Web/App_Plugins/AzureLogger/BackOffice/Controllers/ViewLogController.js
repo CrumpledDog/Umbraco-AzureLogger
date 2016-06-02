@@ -133,7 +133,7 @@
                             });
                         }
 
-                        // TODO: session reductive filtering
+                        // TODO: session reductive filtering (will require client side data)
 
                         // tell lazy-load directive to fill screen, as number of items may have been reduced
                         triggerLazyLoad();

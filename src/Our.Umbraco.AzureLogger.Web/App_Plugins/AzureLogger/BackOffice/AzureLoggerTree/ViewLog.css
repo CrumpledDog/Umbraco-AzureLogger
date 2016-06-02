@@ -155,6 +155,24 @@
     margin:0;
 }
 
+.log-item-details dt {
+    float:left;
+    clear:left;
+    width:130px;
+    text-align:right;
+}
+
+.log-item-details dt:after {
+    content: ":";
+}
+
+.log-item-details dd {
+    margin: 0 0 0 150px;
+    padding: 0 0 0.5em 0;
+}
+
+
+
 
 /* level key line */
 
