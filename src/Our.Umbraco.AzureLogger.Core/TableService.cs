@@ -27,12 +27,15 @@
         }
 
         /// <summary>
-        /// prevent external construction (as is singleton)
+        /// Singleton constructor
         /// </summary>
         private TableService()
         {
         }
 
+        /// <summary>
+        /// Get a reference to the singleton instance of the TableService
+        /// </summary>
         internal static TableService Instance
         {
             get
@@ -42,7 +45,7 @@
         }
 
         /// <summary>
-        ///
+        /// Persists log4net logging events into Azure table storage
         /// </summary>
         /// <param name="appenderName"></param>
         /// <param name="loggingEvents">collection of log4net logging events to persist into Azure table storage</param>
@@ -52,6 +55,9 @@
 
             if (cloudTable != null)
             {
+                // all loggingEvents converted to LogTableEntity objects (required for indexing method - avoids duplicate constructions)
+                List<LogTableEntity> logTableEntities = new List<LogTableEntity>();
+
                 // group by logging event date & hour - each group equates to an Azure table partition key
                 // (all items in the same Azure table batch operation must use the same partition key)
                 foreach (IGrouping<DateTime, LoggingEvent> groupedLoggingEvents in loggingEvents.GroupBy(x => x.TimeStamp.Date.AddHours(x.TimeStamp.Hour)))
@@ -68,17 +74,25 @@
 
                         foreach (LoggingEvent loggingEvent in batchLoggingEvents)
                         {
-                            tableBatchOperation.Insert(new LogTableEntity(partitionKey, loggingEvent));
+                            // logic in constructor also parses out dictionary items into properties
+                            LogTableEntity logTableEntity = new LogTableEntity(partitionKey, loggingEvent);
+
+                            // add to collection for indexing later
+                            logTableEntities.Add(logTableEntity);
+
+                            tableBatchOperation.Insert(logTableEntity);
                         }
 
                         cloudTable.ExecuteBatch(tableBatchOperation);
                     }
                 }
+
+                IndexService.Instance.Process(appenderName, logTableEntities);
             }
         }
 
         /// <summary>
-        /// wrapper method to handle any filtering (Azure table queries can't do wild card matching)
+        /// Wrapper method to handle any filtering (Azure table queries can't do wild card matching)
         /// </summary>
         /// <param name="appenderName"></param>
         /// <param name="partitionKey"></param>
@@ -87,11 +101,17 @@
         /// <param name="loggerName"></param>
         /// <param name="messageIntro"></param>
         /// <returns></returns>
-        internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, Level minLevel, string message, int take)
+        internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, Level minLevel, string message, string sessionId, int take)
         {
-            // if there's filtering that needs to be done here (AzureTables don't support wildcard matching)
-            if (!string.IsNullOrWhiteSpace(hostName) || !string.IsNullOrWhiteSpace(loggerName) || !string.IsNullOrWhiteSpace(message))
+            // flags to indiciate if filtering is requied here in c#
+            bool hostNameWildcardFiltering = !string.IsNullOrWhiteSpace(hostName) && !IndexService.Instance.GetMachineNames(appenderName).Any(x => x == hostName);
+            bool loggerNameWildcardFiltering = !string.IsNullOrWhiteSpace(loggerName) && !IndexService.Instance.GetLoggerNames(appenderName).Any(x => x == loggerName);
+
+            // check to see if any filtering needs to be done here (always filter message as it has no index)
+            if (!string.IsNullOrWhiteSpace(message) || hostNameWildcardFiltering || loggerNameWildcardFiltering)
             {
+                // additional filtering here- may require additional azure table queries
+
                 List<LogTableEntity> logTableEntities = new List<LogTableEntity>(); // collection to return
 
                 // calculate excess amount to request from a cloud query, which will filter down to the required take
@@ -110,7 +130,8 @@
                 int attempts = 0;
                 bool finished = false;
 
-                do {
+                do
+                {
                     attempts++;
 
                     if (attempts >= 3)
@@ -121,7 +142,14 @@
                     lastCount = logTableEntities.Count;
 
                     // take a large chunk to filter here - take size should be relative to the filter granularity
-                    IEnumerable<LogTableEntity> returnedLogTableEntities = this.ReadLogTableEntities(appenderName, lastPartitionKey, lastRowKey, minLevel)
+                    IEnumerable<LogTableEntity> returnedLogTableEntities = this.ReadLogTableEntities(
+                                                                                    appenderName,
+                                                                                    lastPartitionKey,
+                                                                                    lastRowKey,
+                                                                                    minLevel,
+                                                                                    loggerNameWildcardFiltering ? null : loggerName, // only set if
+                                                                                    hostNameWildcardFiltering ? null : hostName,
+                                                                                    sessionId) // not using wildcards
                                                                                 .Take(100);
 
                     if (returnedLogTableEntities.Any())
@@ -146,39 +174,43 @@
                     }
 
                 }
-                while(logTableEntities.Count < take && !finished);
+                while (logTableEntities.Count < take && !finished);
 
                 return logTableEntities.Take(take); // trim any excess
             }
-
-            // no filtering
-            return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel).Take(take);
-
-            // TODO: parse all retrieved log entries and find any new: machine names or logger names (to be used for auto suggest data)
+            else
+            {
+                // filter at azure table query level only
+                return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel, loggerName, hostName, sessionId).Take(take);
+            }
         }
 
         /// <summary>
+        /// Attempts to perform an Azure table query
         /// https://azure.microsoft.com/en-gb/documentation/articles/storage-dotnet-how-to-use-tables/
         /// Gets a collection of LogTableEntity objs suitable for casting to LogItemInto
         /// </summary>
+        /// <param name="appenderName"></param>
         /// <param name="partitionKey">null or the last known partition key</param>
         /// <param name="rowKey">null or the last known row key</param>
+        /// <param name="minLevel"></param>
+        /// <param name="loggerName">if set, looks for an exact match</param>
+        /// <param name="hostName">if set, looks for an exact match</param>
         /// <returns>a collection of log items matching the supplied filter criteria</returns>
-        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, Level minLevel)
+        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, Level minLevel, string loggerName, string hostName, string sessionId)
         {
             CloudTable cloudTable = this.GetCloudTable(appenderName);
 
             if (cloudTable != null)
             {
                 TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>()
-                                                                .Select(new string[] {
-                                                                    //"PartitionKey", // always returned
-                                                                    //"RowKey",
+                                                                .Select(new string[] {  // reduce data fields returned from Azure
                                                                     "Level",
                                                                     "LoggerName",
                                                                     "Message",
                                                                     "EventTimeStamp",
-                                                                    "log4net_HostName" });
+                                                                    "log4net_HostName"
+                                                                });
 
                 if (!string.IsNullOrWhiteSpace(partitionKey))
                 {
@@ -219,7 +251,31 @@
                     }
                 }
 
-                return cloudTable.ExecuteQuery(tableQuery);
+                if (!string.IsNullOrWhiteSpace(loggerName))
+                {
+                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", QueryComparisons.Equal, loggerName));
+                }
+                else
+                {
+                    // HACK: ensure index entities are not returned
+                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", QueryComparisons.NotEqual, string.Empty));
+                }
+
+                if (!string.IsNullOrWhiteSpace(hostName))
+                {
+                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("log4net_HostName", QueryComparisons.Equal, hostName));
+                }
+
+                if (!string.IsNullOrWhiteSpace(sessionId))
+                {
+                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("sessionId", QueryComparisons.Equal, sessionId));
+                }
+
+                return cloudTable.ExecuteQuery(
+                    tableQuery,
+                    new TableRequestOptions() {
+                        ServerTimeout = new TimeSpan(0,0,2)
+                    });
             }
 
             return Enumerable.Empty<LogTableEntity>(); // fallback
@@ -258,6 +314,62 @@
             {
                 cloudTable.Delete();
             }
+        }
+
+        /// <summary>
+        /// Creates IndexTableEntity objects to be persisted in Azure table storage
+        /// </summary>
+        /// <param name="appenderName"></param>
+        /// <param name="partitionKey">the index name</param>
+        /// <param name="rowKeys">an index value</param>
+        internal void CreateIndexTableEntities(string appenderName, string partitionKey, string[] rowKeys)
+        {
+            CloudTable cloudTable = this.GetCloudTable(appenderName);
+
+            if (cloudTable != null)
+            {
+                // ensure 100 or less items are inserted per Azure table batch insert operation
+                foreach (IEnumerable<string> batchRowKeys in rowKeys.Batch(100))
+                {
+                    TableBatchOperation tableBatchOperation = new TableBatchOperation();
+
+                    foreach(string rowKey in batchRowKeys)
+                    {
+                        tableBatchOperation.Insert(new IndexTableEntity(partitionKey, rowKey));
+                    }
+
+                    try
+                    {
+                        cloudTable.ExecuteBatch(tableBatchOperation);
+                    }
+                    catch
+                    {
+                        // surpress any errors (as another server may have already updated some or all of these index values)
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="appenderName"></param>
+        /// <param name="partitionKey">index name, eg. host_name</param>
+        /// <returns></returns>
+        internal IEnumerable<IndexTableEntity> ReadIndexTableEntities(string appenderName, string partitionKey)
+        {
+            CloudTable cloudTable = this.GetCloudTable(appenderName);
+
+            if (cloudTable != null)
+            {
+                TableQuery<IndexTableEntity> tableQuery = new TableQuery<IndexTableEntity>();
+
+                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey));
+
+                return cloudTable.ExecuteQuery(tableQuery);
+            }
+
+            return Enumerable.Empty<IndexTableEntity>(); // fallback
         }
 
         /// <summary>

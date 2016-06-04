@@ -2,11 +2,6 @@
 
     <div class="umb-panel-header">
 
-        <div class="info">
-            <span ng-if="currentlyLoading">Loading... </span>
-            [{{logItems.length}}]
-        </div>
-
         <div class="filters">
 
             <select ng-model="uiFilters.minLevel"
@@ -26,6 +21,7 @@
                        ng-model="uiFilters.hostName"
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
+                       auto-complete="machineNames"
                        placeholder="Machine Name"
                        class="filter-machine" />
                 <a href=""
@@ -40,6 +36,7 @@
                        ng-model="uiFilters.loggerName"
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
+                       auto-complete="loggerNames"
                        placeholder="Logger Name"
                        class="filter-logger" />
                 <a href=""
@@ -54,11 +51,25 @@
                        ng-model="uiFilters.message"
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
-                       placeholder="Message"
+                       placeholder="Message Text"
                        class="filter-message" />
                 <a href=""
                    ng-if="!currentlyFiltering && uiFilters.message != ''"
                    ng-click="uiFilters.message = ''"
+                   tabindex="-1"
+                   class="icon icon-delete"></a>
+            </span>
+
+            <span>
+                <input type="text"
+                       ng-model="uiFilters.sessionId"
+                       ng-disabled="currentlyFiltering"
+                       enter-key="handleFilters()"
+                       placeholder="Session Id"
+                       class="filter-session" />
+                <a href=""
+                   ng-if="!currentlyFiltering && uiFilters.sessionId != ''"
+                   ng-click="uiFilters.sessionId = ''"
                    tabindex="-1"
                    class="icon icon-delete"></a>
             </span>
@@ -70,12 +81,19 @@
                ng-click="handleFilters()">Update</a>
 
         </div>
+
+        <div class="info">
+            <span ng-if="currentlyLoading">Loading... </span>
+            [ {{logItems.length}} ]
+        </div>
+
     </div>
 
-    <div class="umb-panel-body umb-scrollable">
+    <!-- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- -->
+
+    <div class="umb-panel-body umb-scrollable" monitor-width="logItemsViewWidth" ng-class="{ 'narrow': logItemsViewWidth < 1020 }">
 
         <div class="umb-pane" lazy-load="getMoreLogItems()">
-
             <div ng-hide="currentlyFiltering" ng-repeat="logItem in logItems" class="level-{{logItem.level.toLowerCase()}}">
 
                 <div class="day-breaker" ng-if="differentDays(logItem, logItems[$index - 1])">
@@ -85,19 +103,24 @@
                 <div class="log-item-intro level-key" ng-click="toggleLogItemDetails($event, logItem)">
 
                     <div class="eventTimestamp">
-                        <div class="hms">{{logItem.eventTimestamp| date : 'HH:mm:ss'}}</div>
-                        <div class="ms">{{logItem.eventTimestamp| date : '.sss'}}</div>
+                        <span class="hms">{{logItem.eventTimestamp| date : 'HH:mm:ss'}}</span>
+                        <span class="ms">{{logItem.eventTimestamp| date : '.sss'}}</span>
                     </div>
 
                     <div>
-                        <span class="host-name">{{logItem.hostName}}</span> -
+                        <span class="host-name">{{logItem.hostName}}</span>
                         <span class="logger-name">{{logItem.loggerName}}</span>
+                        <span class="message">{{logItem.messageIntro}}</span>
                     </div>
-                    <p class="message">{{logItem.messageIntro}}</p>
+
                 </div>
 
                 <div class="log-item-details level-key">
                     <dl>
+
+                        <dt>Level</dt>
+                        <dd>{{logItem.level}}</dd>
+
                         <dt>Event Timestamp</dt>
                         <dd>
                             <!--<a href="javascript:alert('reload log starting at this date - updates inline date filter at top of page')">-->
@@ -105,17 +128,11 @@
                             <!--</a>-->
                         </dd>
 
-                        <dt>Log Timestamp</dt>
-                        <dd>{{logItem.details.timestamp| date : 'EEE dd MMM yyyy - HH:mm:ss.sss'}}</dd>
-
-                        <dt>Domain</dt>
-                        <dd>{{logItem.details.domain}}</dd>
-
-                        <dt>Identity</dt>
-                        <dd>{{logItem.details.identity ? logItem.details.identity : 'Unknown'}}</dd>
-
-                        <dt>Level</dt>
-                        <dd>{{logItem.level}}</dd>
+                        <dt>Machine Name</dt>
+                        <dd>
+                            <a ng-show="uiFilters.hostName != logItem.hostName" ng-click="uiFilters.hostName = logItem.hostName">{{logItem.hostName}}</a>
+                            <span ng-show="uiFilters.hostName == logItem.hostName">{{logItem.hostName}}</span>
+                        </dd>
 
                         <dt>Logger Name</dt>
                         <dd>
@@ -126,32 +143,42 @@
                         <dt>Message</dt>
                         <dd><pre>{{logItem.details.message}}</pre></dd>
 
+                        <dt>SessionId</dt>
+                        <dd>
+                            <a ng-show="logItem.details.sessionId && uiFilters.sessionId != logItem.details.sessionId" ng-click="uiFilters.sessionId = logItem.details.sessionId">{{logItem.details.sessionId}}</a>
+                            <span ng-show="!logItem.details.sessionId || uiFilters.sessionId == logItem.details.sessionId">{{logItem.details.sessionId ? logItem.details.sessionId : 'Unknown'}}</span>
+                        </dd>
+
+                        <dt>Url</dt>
+                        <dd>
+                            <a target="_blank" href="{{logItem.details.url}}" ng-show="logItem.details.url">{{logItem.details.url}}</a>
+                            <span ng-show="!logItem.details.url">Unknown</span>
+                        </dd>
+
+                        <dt>Domain</dt>
+                        <dd>{{logItem.details.domain}}</dd>
+
+                        <dt>Location</dt>
+                        <dd>{{logItem.details.location}}</dd>
+
+                        <dt>AppDomainId</dt>
+                        <dd>{{logItem.details.appDomainId}}</dd>
+
+                        <dt>ProcessId</dt>
+                        <dd>{{logItem.details.processId}}</dd>
+
                         <dt>Thread Name</dt>
                         <dd>{{logItem.details.threadName}}</dd>
 
                         <dt>User Name</dt>
                         <dd>{{logItem.details.userName}}</dd>
 
-                        <dt>Location</dt>
-                        <dd>{{logItem.details.location}}</dd>
+                        <dt>Identity</dt>
+                        <dd>{{logItem.details.identity ? logItem.details.identity : 'Unknown'}}</dd>
 
-                        <dt>ProcessId</dt>
-                        <dd>{{logItem.details.processId}}</dd>
+                        <dt>Log Timestamp</dt>
+                        <dd>{{logItem.details.timestamp| date : 'EEE dd MMM yyyy - HH:mm:ss.sss'}}</dd>
 
-                        <dt>AppDomainId</dt>
-                        <dd>{{logItem.details.appDomainId}}</dd>
-
-                        <dt>Host Name</dt>
-                        <dd>
-                            <a ng-show="uiFilters.hostName != logItem.hostName" ng-click="uiFilters.hostName = logItem.hostName">{{logItem.hostName}}</a>
-                            <span ng-show="uiFilters.hostName == logItem.hostName">{{logItem.hostName}}</span>
-                        </dd>
-
-                        <dt>Url</dt>
-                        <dd>
-                            <a href="{{logItem.details.url}}" ng-show="logItem.details.url">{{logItem.details.url}}</a>
-                            <span ng-show="!logItem.details.url">Unknown</span>
-                        </dd>
                     </dl>
                 </div><!-- /log-item-details-row -->
 

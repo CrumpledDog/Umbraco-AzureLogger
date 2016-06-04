@@ -43,7 +43,7 @@
         /// <summary>
         /// Attempts to get the associated azure table, but gives up if it takes longer than 1/2 second
         /// </summary>
-        /// <returns></returns>
+        /// <returns>true if the appender can connect to table storage, otherwise false</returns>
         internal bool IsConnected()
         {
             bool isConnected = false;
@@ -61,25 +61,32 @@
         }
 
         /// <summary>
-        /// Append extra logging data
+        /// Append extra logging data to a log item
         /// </summary>
-        /// <param name="loggingEvent"></param>
+        /// <param name="loggingEvent">the log item to extend</param>
         protected override void Append(LoggingEvent loggingEvent)
         {
+            loggingEvent.Properties["url"] = null;
+            loggingEvent.Properties["sessionId"] = null;
+
             try
             {
                 if (HttpContext.Current != null && HttpContext.Current.Handler != null)
                 {
-                    loggingEvent.Properties["url"] = HttpContext.Current.Request.Url.AbsoluteUri;
-                }
-                else
-                {
-                    loggingEvent.Properties["url"] = null;
+                    if (HttpContext.Current.Request != null)
+                    {
+                        loggingEvent.Properties["url"] = HttpContext.Current.Request.RawUrl;
+                    }
+
+                    if (HttpContext.Current.Session != null)
+                    {
+                        loggingEvent.Properties["sessionId"] = HttpContext.Current.Session.SessionID;
+                    }
                 }
             }
             catch
             {
-                loggingEvent.Properties["url"] = null;
+                // failsafe as no exceptions should be ever thrown in this method
             }
 
             base.Append(loggingEvent);

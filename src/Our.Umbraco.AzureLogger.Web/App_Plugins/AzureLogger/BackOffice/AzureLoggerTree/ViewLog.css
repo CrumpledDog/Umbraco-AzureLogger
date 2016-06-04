@@ -1,7 +1,4 @@
-﻿.info {
-    float:right;
-    margin:10px 25px 0 0;
-}
+﻿
 
 /* filters */
 
@@ -13,7 +10,7 @@
     width:100px;
 }
 
-.filter-min-level option { /* TODO: move into SelectPlaceholderDirective */
+.filter-min-level option {
     color:black;
 }
 
@@ -26,6 +23,10 @@
     padding-right:25px;
     color:black;
 }
+
+/*.filters span input:focus {
+    border-color:#2e8aea;
+}*/
 
 .filters span input::-ms-clear { /* http://stackoverflow.com/questions/14007655/remove-ie10s-clear-field-x-button-on-certain-inputs */
     width : 0;
@@ -51,6 +52,10 @@
     width:460px;
 }
 
+.filter-session {
+    width:200px;
+}
+
 .filters .btn {
     margin-bottom:10px;
 }
@@ -59,6 +64,11 @@
 .btn.disabled:hover, .btn.disabled:focus, .btn[disabled]:hover, .btn[disabled]:focus {
     background: #f2f2f2;
     color: #000;
+}
+
+.info {
+    float:right;
+    margin:10px 25px 0 0;
 }
 
 /* main view */
@@ -76,43 +86,62 @@
 
 .log-item-intro {
     margin-top:5px;
-    height:3em;
-    padding:5px;
+    padding:2px;
+    white-space:nowrap;
     cursor:pointer;
 }
 
-.log-item-intro.open, .log-item-intro:hover {
-    background-color:#f8f8f8;
+.log-item-intro div {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 2px;
+}
+
+    .narrow .log-item-intro .ms,
+    .narrow .log-item-intro .message {
+       display: block;
+    }
+
+.log-item-intro.open,
+.log-item-intro:hover {
+  background-color:#f8f8f8 ;
+
 }
 
 .log-item-intro .eventTimestamp {
-    width:6em;
-    padding-right:10px;
-    float:left;
-    text-align:right;
+  width: 7em;
+  text-align: right;
 }
 
 .log-item-intro .hms {
-    font-size:larger;
+  font-size: larger;
 }
 .log-item-intro .ms {
-    font-size:xx-small;
+  font-size:xx-small;
 }
 
-.log-item-intro .host-name, .log-item-intro .logger-name {
-    font-size:larger;
+.host-name:after { content: " -"; }
+
+.log-item-intro .host-name,
+.log-item-intro .logger-name {
+  font-size:larger;
+}
+
+.log-item-intro .logger-name {
+    padding-right:15px;
 }
 
 .log-item-intro .message {
-    white-space:nowrap;
-    font-weight:bold;
+  font-weight:bold;
 }
+
+
 
 /* details row */
 
 .log-item-details {
     display:none;
-    padding-left:calc(6em + 15px);
+    padding-left:calc(7em + 15px);
     padding-top:10px;
 }
 
@@ -125,6 +154,24 @@
 .log-item-details dl {
     margin:0;
 }
+
+.log-item-details dt {
+    float:left;
+    clear:left;
+    width:130px;
+    text-align:right;
+}
+
+.log-item-details dt:after {
+    content: ":";
+}
+
+.log-item-details dd {
+    margin: 0 0 0 150px;
+    padding: 0 0 0.5em 0;
+}
+
+
 
 
 /* level key line */
