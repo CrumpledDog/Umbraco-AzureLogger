@@ -1,35 +1,43 @@
-﻿angular
-    .module('umbraco')
-    .controller('AzureLogger.EditConfigFileController', [
-        '$scope', '$http',
-        function ($scope, $http) {
+﻿(function() {
+    'use strict';
 
-            /* vars */
-            $scope.log4netConfigFile = null;
+    angular
+        .module('umbraco')
+        .controller('AzureLogger.EditConfigFileController', EditConfigFileController);
 
-            /* startup */
+    EditConfigFileController.$inject = ['$scope', '$http'];
 
+    function EditConfigFileController($scope, $http) {
+
+        /* vars */
+        $scope.log4netConfigFile = null;
+
+        /* startup */
+
+        $http({
+            method: 'GET',
+            url: 'BackOffice/AzureLogger/Api/ReadLog4NetConfigFile'
+        })
+        .then(function (response) {
+            $scope.log4netConfigFile = response.data;
+            console.log('yes');
+        });
+
+
+        /* methods */
+
+
+        $scope.save = function () {
             $http({
-                method: 'GET',
-                url: 'BackOffice/AzureLogger/Api/ReadLog4NetConfigFile'
+                method: 'POST',
+                url: 'BackOffice/AzureLogger/Api/WriteLog4NetConfigFile',
+                data: $scope.log4netConfigFile
             })
-            .then(function (response) {
-                $scope.log4netConfigFile = response.data;
+            .then(function () {
+
             });
+        };
 
-            /* methods */
+    }
 
-
-            $scope.save = function () {
-                $http({
-                    method: 'POST',
-                    url: 'BackOffice/AzureLogger/Api/WriteLog4NetConfigFile',
-                    data: $scope.log4netConfigFile
-                })
-                .then(function () {
-
-                });
-            };
-
-
-        }]);
+})();

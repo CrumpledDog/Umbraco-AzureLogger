@@ -5,7 +5,7 @@
         .module('umbraco')
         .controller('AzureLogger.ViewLogController', ViewLogController);
 
-    ViewLogController.$inject = ['$scope', '$routeParams', 'navigationService', '$q', '$timeout', 'AzureLogger.AzureLoggerResource']
+    ViewLogController.$inject = ['$scope', '$routeParams', 'navigationService', '$q', '$timeout', 'AzureLogger.AzureLoggerResource'];
 
     function ViewLogController($scope, $routeParams, navigationService, $q, $timeout, azureLoggerResource) {
 
