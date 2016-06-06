@@ -19,5 +19,10 @@ By default the installer will create two appenders and loggers, the first one (A
 	    <bufferSize value="0"/>
       </appender>
 
-
 As a useful enhancement we also now store to URL and SessionId which triggered the log entry to be made, this can be very handy for tracking down issues.
+
+## NuGet ##
+
+NuGet version is available:
+
+    Install-Package Our.Umbraco.AzureLogger -Pre
