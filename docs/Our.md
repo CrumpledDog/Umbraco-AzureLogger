@@ -1,6 +1,8 @@
-This Umbraco package adds a log4net appender that uses Azure table storage and extends the Umbraco developer tree with functionality to view these logs, (using Azure table storage for logs in preference to the file-system has an additional benefit of reducing file replication activity in load balanced environments where the file system is being synchronised such as Azure Web Apps).
+This Umbraco package adds a log4net appender that uses Azure table storage and extends the Umbraco developer tree with functionality to view these logs. 
 
-Once installed, edit the ConnectionString named "LoggingTableStorage" added to web.config include the name and key of your Azure storage account (ensure the account has the Table service enabled).
+Using Azure table storage for logs in preference to the file-system has an additional benefit of reducing file replication activity in load balanced environments where the file system is being synchronised (such as Azure Web Apps).
+
+You will need to have a Azure Storage Account wit the tables service enabled (not ZRS) and you will need to have the account and and a access key for the Umbraco installation process. Once installed, will will have a new ConnectionString named "LoggingTableStorage" added to web.config.
 
 By default the installer will create two appenders and loggers, the first one (AllTableAppender) captures all logs and the second one (WarningsTableAppender) captures only logs of warn level or above. You find you wish to add further appenders and loggers, here is an example for capturing publish events & xml refresh events using 2 loggers and one appender.
 
