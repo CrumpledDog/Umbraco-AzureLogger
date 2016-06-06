@@ -1,0 +1,197 @@
+﻿<div ng-controller="AzureLogger.ViewLogController" class="view-log">
+
+    <div class="umb-panel-header">
+
+        <div class="filters">
+
+            <select ng-model="uiFilters.minLevel"
+                    ng-disabled="currentlyFiltering"
+                    enter-key="handleFilters()"
+                    placeholder="Min Level"
+                    class="filter-min-level">
+                <option value="0">DEBUG</option>
+                <option value="1">INFO</option>
+                <option value="2">WARN</option>
+                <option value="3">ERROR</option>
+                <option value="4">FATAL</option>
+            </select>
+
+            <span>
+                <input type="text"
+                       ng-model="uiFilters.hostName"
+                       ng-disabled="currentlyFiltering"
+                       enter-key="handleFilters()"
+                       auto-complete="machineNames"
+                       placeholder="Machine Name"
+                       class="filter-machine" />
+                <a href=""
+                   ng-if="!currentlyFiltering && uiFilters.hostName != ''"
+                   ng-click="uiFilters.hostName = ''"
+                   tabindex="-1"
+                   class="icon icon-delete"></a>
+            </span>
+
+            <span>
+                <input type="text"
+                       ng-model="uiFilters.loggerName"
+                       ng-disabled="currentlyFiltering"
+                       enter-key="handleFilters()"
+                       auto-complete="loggerNames"
+                       placeholder="Logger Name"
+                       class="filter-logger" />
+                <a href=""
+                   ng-if="!currentlyFiltering && uiFilters.loggerName != ''"
+                   ng-click="uiFilters.loggerName = ''"
+                   tabindex="-1"
+                   class="icon icon-delete"></a>
+            </span>
+
+            <span>
+                <input type="text"
+                       ng-model="uiFilters.message"
+                       ng-disabled="currentlyFiltering"
+                       enter-key="handleFilters()"
+                       placeholder="Message Text"
+                       class="filter-message" />
+                <a href=""
+                   ng-if="!currentlyFiltering && uiFilters.message != ''"
+                   ng-click="uiFilters.message = ''"
+                   tabindex="-1"
+                   class="icon icon-delete"></a>
+            </span>
+
+            <span>
+                <input type="text"
+                       ng-model="uiFilters.sessionId"
+                       ng-disabled="currentlyFiltering"
+                       enter-key="handleFilters()"
+                       placeholder="Session Id"
+                       class="filter-session" />
+                <a href=""
+                   ng-if="!currentlyFiltering && uiFilters.sessionId != ''"
+                   ng-click="uiFilters.sessionId = ''"
+                   tabindex="-1"
+                   class="icon icon-delete"></a>
+            </span>
+
+            <a href=""
+               class="btn"
+               ng-class="{ 'btn-primary': !currentlyFiltering && !filtersMatch() }"
+               ng-disabled="currentlyFiltering || filtersMatch()"
+               ng-click="handleFilters()">Update</a>
+
+        </div>
+
+        <div class="info">
+            <span ng-if="currentlyLoading">Loading... </span>
+            [ {{logItems.length}} ]
+        </div>
+
+    </div>
+
+    <!-- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- -->
+
+    <div class="umb-panel-body umb-scrollable" monitor-width="logItemsViewWidth" ng-class="{ 'narrow': logItemsViewWidth < 1020 }">
+
+        <div class="umb-pane" lazy-load="getMoreLogItems()">
+            <div ng-hide="currentlyFiltering" ng-repeat="logItem in logItems" class="level-{{logItem.level.toLowerCase()}}">
+
+                <div class="day-breaker" ng-if="differentDays(logItem, logItems[$index - 1])">
+                    <h3>{{logItem.eventTimestamp| date : 'EEEE dd MMMM yyyy'}}</h3>
+                </div>
+
+                <div class="log-item-intro level-key" ng-click="toggleLogItemDetails($event, logItem)">
+
+                    <div class="eventTimestamp">
+                        <span class="hms">{{logItem.eventTimestamp| date : 'HH:mm:ss'}}</span>
+                        <span class="ms">{{logItem.eventTimestamp| date : '.sss'}}</span>
+                    </div>
+
+                    <div>
+                        <span class="host-name">{{logItem.hostName}}</span>
+                        <span class="logger-name">{{logItem.loggerName}}</span>
+                        <span class="message">{{logItem.messageIntro}}</span>
+                    </div>
+
+                </div>
+
+                <div class="log-item-details level-key">
+                    <dl>
+
+                        <dt>Level</dt>
+                        <dd>{{logItem.level}}</dd>
+
+                        <dt>Event Timestamp</dt>
+                        <dd>
+                            <!--<a href="javascript:alert('reload log starting at this date - updates inline date filter at top of page')">-->
+                            {{logItem.eventTimestamp| date : 'EEE dd MMM yyyy - HH:mm:ss.sss'}}
+                            <!--</a>-->
+                        </dd>
+
+                        <dt>Machine Name</dt>
+                        <dd>
+                            <a ng-show="uiFilters.hostName != logItem.hostName" ng-click="uiFilters.hostName = logItem.hostName">{{logItem.hostName}}</a>
+                            <span ng-show="uiFilters.hostName == logItem.hostName">{{logItem.hostName}}</span>
+                        </dd>
+
+                        <dt>Logger Name</dt>
+                        <dd>
+                            <a ng-show="uiFilters.loggerName != logItem.loggerName" ng-click="uiFilters.loggerName = logItem.loggerName">{{logItem.loggerName}}</a>
+                            <span ng-show="uiFilters.loggerName == logItem.loggerName">{{logItem.loggerName}}</span>
+                        </dd>
+
+                        <dt>Message</dt>
+                        <dd><pre>{{logItem.details.message}}</pre></dd>
+
+                        <dt>SessionId</dt>
+                        <dd>
+                            <a ng-show="logItem.details.sessionId && uiFilters.sessionId != logItem.details.sessionId" ng-click="uiFilters.sessionId = logItem.details.sessionId">{{logItem.details.sessionId}}</a>
+                            <span ng-show="!logItem.details.sessionId || uiFilters.sessionId == logItem.details.sessionId">{{logItem.details.sessionId ? logItem.details.sessionId : 'Unknown'}}</span>
+                        </dd>
+
+                        <dt>Url</dt>
+                        <dd>
+                            <a target="_blank" href="{{logItem.details.url}}" ng-show="logItem.details.url">{{logItem.details.url}}</a>
+                            <span ng-show="!logItem.details.url">Unknown</span>
+                        </dd>
+
+                        <dt>Domain</dt>
+                        <dd>{{logItem.details.domain}}</dd>
+
+                        <dt>Location</dt>
+                        <dd>{{logItem.details.location}}</dd>
+
+                        <dt>AppDomainId</dt>
+                        <dd>{{logItem.details.appDomainId}}</dd>
+
+                        <dt>ProcessId</dt>
+                        <dd>{{logItem.details.processId}}</dd>
+
+                        <dt>Thread Name</dt>
+                        <dd>{{logItem.details.threadName}}</dd>
+
+                        <dt>User Name</dt>
+                        <dd>{{logItem.details.userName}}</dd>
+
+                        <dt>Identity</dt>
+                        <dd>{{logItem.details.identity ? logItem.details.identity : 'Unknown'}}</dd>
+
+                        <dt>Log Timestamp</dt>
+                        <dd>{{logItem.details.timestamp| date : 'EEE dd MMM yyyy - HH:mm:ss.sss'}}</dd>
+
+                    </dl>
+                </div><!-- /log-item-details-row -->
+
+            </div><!-- /ng-repeat -->
+            <!-- should never see this link, as the auto scrolling will push it further down the page out of sight -->
+            <!--<a class="info-banner" ng-show="!currentlyLoading && !finishedLoading" ng-click="getMoreLogItems()">Get More Log Items</a>-->
+            <!-- angular can't handle 10,000s of this data, so reset start time filter (not saveable) -->
+            <!--<a ng-show="logItems.length >= logItemLimit">Reset from this log entry event time</a>-->
+
+            <div class="info-banner" ng-show="currentlyFiltering || currentlyLoading">Searching</div>
+            <div class="info-banner" ng-show="finishedLoading && logItems.length == 0">No Log Items</div>
+            <div class="info-banner" ng-show="finishedLoading && logItems.length > 0">Finished Loading</div>
+
+        </div><!-- /umb-panel-body -->
+    </div>
+</div>

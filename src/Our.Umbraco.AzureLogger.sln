@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.AzureLogger.Core", "Our.Umbraco.AzureLogger.Core\Our.Umbraco.AzureLogger.Core.csproj", "{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.AzureLogger.Web", "Our.Umbraco.AzureLogger.Web\Our.Umbraco.AzureLogger.Web.csproj", "{FD6F9580-BDCB-4C35-A598-45CD09027AFA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{2FA73200-A320-4A5D-95AE-B0D181F28A19}"
+	ProjectSection(SolutionItems) = preProject
+		..\appveyor.yml = ..\appveyor.yml
+		..\build-appveyor.cmd = ..\build-appveyor.cmd
+		..\build.cmd = ..\build.cmd
+		..\build\transforms\log4net.config.install.xdt = ..\build\transforms\log4net.config.install.xdt
+		..\build\Our.Umbraco.AzureLogger.proj = ..\build\Our.Umbraco.AzureLogger.proj
+		..\build\package.nuspec = ..\build\package.nuspec
+		..\build\package.xml = ..\build\package.xml
+		..\build\transforms\web.config.install.xdt = ..\build\transforms\web.config.install.xdt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D377F7D0-E965-49B6-9D85-ECF8043C86A0}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.AzureLogger.Installer", "Our.Umbraco.AzureLogger.Installer\Our.Umbraco.AzureLogger.Installer.csproj", "{D3A428A4-79EE-45E5-B7D8-F7F547A58FA3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD6F9580-BDCB-4C35-A598-45CD09027AFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD6F9580-BDCB-4C35-A598-45CD09027AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD6F9580-BDCB-4C35-A598-45CD09027AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD6F9580-BDCB-4C35-A598-45CD09027AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3A428A4-79EE-45E5-B7D8-F7F547A58FA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3A428A4-79EE-45E5-B7D8-F7F547A58FA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3A428A4-79EE-45E5-B7D8-F7F547A58FA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3A428A4-79EE-45E5-B7D8-F7F547A58FA3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,34 @@
+﻿<?xml version="1.0"?>
+<log4net xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+
+	<root>
+		<priority value="Info"/>
+		<appender-ref ref="AsynchronousLog4NetAppender" xdt:Locator="Match(ref)" xdt:Transform="Remove" /><!-- all log items -->
+		<appender-ref ref="AllTableAppender" xdt:Locator="Match(ref)" xdt:Transform="InsertIfMissing" />
+		<appender-ref ref="WarningsTableAppender" xdt:Locator="Match(ref)" xdt:Transform="InsertIfMissing" /><!-- warning or more serious items only -->
+
+	</root>
+
+	<appender name="AllTableAppender" type="Our.Umbraco.AzureLogger.Core.TableAppender, Our.Umbraco.AzureLogger.Core" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing">
+		<param name="ConnectionString" value="LoggingTableStorage" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+		<param name="TableName" value="UALUmbracoTraceLog" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+		<param name="TreeName" value="All Events" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+		<bufferSize value="5" xdt:Transform="InsertIfMissing" />
+		<!-- 0 indexed -->
+	</appender>
+
+	<appender name="WarningsTableAppender" type="Our.Umbraco.AzureLogger.Core.TableAppender, Our.Umbraco.AzureLogger.Core" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing">
+		<param name="ConnectionString" value="LoggingTableStorage" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+		<param name="TableName" value="UALWarnings" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+		<param name="TreeName" value="Warnings" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+		<param name="IconName" value="icon-alert" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+		<threshold value="WARN" xdt:Transform="InsertIfMissing"/>
+		<filter type="log4net.Filter.LevelRangeFilter" xdt:Transform="InsertIfMissing">
+			<levelMin value="WARN"/>
+			<levelMax value="ERROR"/>
+		</filter>
+		<bufferSize value="0" xdt:Transform="InsertIfMissing"/>
+		<!-- 1 item in buffer -->
+	</appender>  
+	
+</log4net>

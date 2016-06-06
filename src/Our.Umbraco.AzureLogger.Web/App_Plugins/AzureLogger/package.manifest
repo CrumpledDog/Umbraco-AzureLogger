@@ -1,0 +1,18 @@
+﻿{
+    javascript:[
+		'/App_Plugins/AzureLogger/BackOffice/Controllers/WipeLogController.js',
+		'/App_Plugins/AzureLogger/BackOffice/Controllers/ViewLogController.js',
+		'/App_Plugins/AzureLogger/BackOffice/Directives/AutoCompleteDirective.js',
+		'/App_Plugins/AzureLogger/BackOffice/Directives/LazyLoadDirective.js',
+		'/App_Plugins/AzureLogger/BackOffice/Directives/EnterKeyDirective.js',
+		'/App_Plugins/AzureLogger/BackOffice/Directives/MonitorWidthDirective.js',
+		'/App_Plugins/AzureLogger/BackOffice/Directives/SelectPlaceholderDirective.js',
+		'/App_Plugins/AzureLogger/BackOffice/Filters/HighlightFilter.js',
+		'/App_Plugins/AzureLogger/BackOffice/AzureLoggerResource.js'
+	],
+    css:[
+        '/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ViewLog.css',
+		'/App_Plugins/AzureLogger/BackOffice/Directives/AutoCompleteDirective.css',
+		'/App_Plugins/AzureLogger/BackOffice/Filters/HighlightFilter.css'
+    ]
+}
