@@ -58,7 +58,7 @@ NuGet & Umbraco packages are available
 
 |Umbraco Packages  |                  |
 |:-----------------|:-----------------|
-|**Release**|[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/collaboration/azurelogger/) 
+|**Release**|[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/developer-tools/azure-logger-for-umbraco/) 
 |**Pre-release**| [![AppVeyor Artifacts](https://img.shields.io/badge/appveyor-umbraco-orange.svg)](https://ci.appveyor.com/project/JeavonLeopold/umbraco-azure-logger/build/artifacts)
 
 ## Licensing ##
