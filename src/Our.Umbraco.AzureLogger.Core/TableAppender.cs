@@ -32,6 +32,9 @@
         /// </summary>
         public string IconName { get; set; }
 
+
+        public bool ReadOnly { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -50,7 +53,7 @@
 
             Thread thread = new Thread(() => {
                 CloudTable cloudTable = TableService.Instance.GetCloudTable(this.Name);
-                isConnected = cloudTable != null && cloudTable.Exists();//( new TableRequestOptions() { ServerTimeout = new System.TimeSpan(500) });
+                isConnected = cloudTable != null && cloudTable.Exists();
             });
 
             thread.Start();
@@ -66,27 +69,30 @@
         /// <param name="loggingEvent">the log item to extend</param>
         protected override void Append(LoggingEvent loggingEvent)
         {
-            loggingEvent.Properties["url"] = null;
-            loggingEvent.Properties["sessionId"] = null;
-
-            try
+            if (!this.ReadOnly)
             {
-                if (HttpContext.Current != null && HttpContext.Current.Handler != null)
-                {
-                    if (HttpContext.Current.Request != null)
-                    {
-                        loggingEvent.Properties["url"] = HttpContext.Current.Request.RawUrl;
-                    }
+                loggingEvent.Properties["url"] = null;
+                loggingEvent.Properties["sessionId"] = null;
 
-                    if (HttpContext.Current.Session != null)
+                try
+                {
+                    if (HttpContext.Current != null && HttpContext.Current.Handler != null)
                     {
-                        loggingEvent.Properties["sessionId"] = HttpContext.Current.Session.SessionID;
+                        if (HttpContext.Current.Request != null)
+                        {
+                            loggingEvent.Properties["url"] = HttpContext.Current.Request.RawUrl;
+                        }
+
+                        if (HttpContext.Current.Session != null)
+                        {
+                            loggingEvent.Properties["sessionId"] = HttpContext.Current.Session.SessionID;
+                        }
                     }
                 }
-            }
-            catch
-            {
-                // failsafe as no exceptions should be ever thrown in this method
+                catch
+                {
+                    // failsafe as no exceptions should be ever thrown in this method
+                }
             }
 
             base.Append(loggingEvent);
@@ -98,8 +104,11 @@
         /// <param name="events">the log events to persist</param>
         protected override void SendBuffer(LoggingEvent[] loggingEvents)
         {
-            // spin off a new thread to avoid waiting
-            Task.Run(() => TableService.Instance.CreateLogTableEntities(this.Name, loggingEvents));
+            if (!this.ReadOnly)
+            {
+                // spin off a new thread to avoid waiting
+                Task.Run(() => TableService.Instance.CreateLogTableEntities(this.Name, loggingEvents));
+            }
         }
     }
 }
