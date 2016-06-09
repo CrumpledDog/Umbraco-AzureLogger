@@ -32,7 +32,9 @@
         /// </summary>
         public string IconName { get; set; }
 
-
+        /// <summary>
+        /// From (optional) configuration setting
+        /// </summary>
         public bool ReadOnly { get; set; }
 
         /// <summary>
