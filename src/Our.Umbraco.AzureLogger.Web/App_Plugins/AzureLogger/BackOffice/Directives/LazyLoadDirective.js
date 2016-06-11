@@ -26,33 +26,25 @@
             link: function (scope, element, attrs) {
 
                 var expanding = false; // locker
-                var previousScrollTop = 0; // temp to calculate scroll direction
+                var previousScrollTop = 0; // calculate scroll direction
                 var div = $(element[0].firstElementChild); // <div class="umb-pane">
 
-                // jQuery find div with class 'umb-scrollable', as it's this outer element that is scrolled
+                scope.lazyLoad = lazyLoad; // the controller will call this after reductive filtering, or a complete clear
+
+                // scrolling
                 $(element).closest('.umb-scrollable').bind('scroll', function () {
 
-                    // calculate direction of scroll
                     var currentScrollTop = $(this).scrollTop();
-                    if (currentScrollTop <= previousScrollTop) { // up
-                        // TODO: cancel any lazy-load currenty in process
-                    } else { // down
-                        if (!expanding && canExpand()) {
-                            lazyLoad();
-                        }
+                    if (currentScrollTop <= previousScrollTop) {
+                        // up
+                        scope.$apply(attrs.abort);
+                    } else {
+                        // down
+                        lazyLoad();
                     }
 
                     previousScrollTop = currentScrollTop;
                 });
-
-                // HACK: add method to the scope so can be called from controller (we know this is the only instance of the directive being used)
-                // the controller will call this after reductive filtering, or a complete clear
-                scope.lazyLoad = function () {
-                    // TODO: cancel any lazy-load currenty in process
-                    if (!expanding && canExpand()) { // safety check;
-                        lazyLoad();
-                    }
-                };
 
                 lazyLoad(); // startup
 
@@ -63,17 +55,26 @@
                     return (div.offset().top + div.height() < $(window).height() + 1000); // 1000 = number of pixels below view
                 }
 
-                // handles the 'method to call', and attempts to fill the screen
+                // activates the trigger
                 function lazyLoad() {
-                    expanding = true;
+
+                    // TODO: cancel any trigger currenty in process
+
+                    if (!expanding && canExpand()) { // safety check;
+                        expanding = true;
+                        trigger();
+                    }
+                }
+
+                function trigger() {
 
                     $timeout(function () { // timeout to ensure scope is ready
 
                         scope.$apply(attrs.trigger) // execute the 'method to call'
-                        .then(function (canLoadMore) { // return value of the promise
+                        .then(function (tryAgain) { // return value of the promise
 
-                            if (canLoadMore && canExpand()) { // check to see if screen filled
-                                lazyLoad(); // try again
+                            if (tryAgain && canExpand()) { // check to see if screen filled
+                                trigger();
                             }
                             else {
                                 expanding = false;
