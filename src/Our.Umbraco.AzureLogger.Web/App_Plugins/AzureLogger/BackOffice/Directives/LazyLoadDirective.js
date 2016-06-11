@@ -16,7 +16,7 @@
     function LazyLoadDirective($timeout, azureLoggerResource) {
 
         return {
-            restrict: 'A',
+            restrict: 'E',
             link: function (scope, element, attrs) {
 
                 var expanding = false; // locker
@@ -62,14 +62,17 @@
 
                     $timeout(function () { // timeout to ensure scope is ready
 
-                        scope.$apply(attrs.lazyLoad) // execute angular expression string (the 'method to call')
+                        scope.$apply(attrs.trigger) // execute the 'method to call'
                         .then(function (canLoadMore) { // return value of the promise
 
                             if (canLoadMore && elementCanExpand()) { // check to see if screen filled
                                 lazyLoad(); // try again
                             }
+                            else
+                            {
+                                expanding = false;
+                            }
 
-                            expanding = false;
                         });
                     });
                 };
