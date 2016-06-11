@@ -26,7 +26,8 @@
             link: function (scope, element, attrs) {
 
                 var expanding = false; // locker
-                var previousScrollTop = 0;
+                var previousScrollTop = 0; // temp to calculate scroll direction
+                var div = $(element[0].firstElementChild); // <div class="umb-pane">
 
                 // jQuery find div with class 'umb-scrollable', as it's this outer element that is scrolled
                 $(element).closest('.umb-scrollable').bind('scroll', function () {
@@ -36,7 +37,7 @@
                     if (currentScrollTop <= previousScrollTop) { // up
                         // TODO: cancel any lazy-load currenty in process
                     } else { // down
-                        if (!expanding && elementCanExpand()) {
+                        if (!expanding && canExpand()) {
                             lazyLoad();
                         }
                     }
@@ -48,7 +49,7 @@
                 // the controller will call this after reductive filtering, or a complete clear
                 scope.lazyLoad = function () {
                     // TODO: cancel any lazy-load currenty in process
-                    if (!expanding && elementCanExpand()) { // safety check;
+                    if (!expanding && canExpand()) { // safety check;
                         lazyLoad();
                     }
                 };
@@ -57,11 +58,8 @@
 
                 // --------------------------------------------------------------------------------
 
-                // returns true if the element doesn't stretch below the bottom of the view
-                function elementCanExpand() {
-
-                    var div = $(element[0].firstElementChild); // <div class="umb-pane">
-
+                // returns true if the div doesn't stretch below the bottom of the view
+                function canExpand() {
                     return (div.offset().top + div.height() < $(window).height() + 1000); // 1000 = number of pixels below view
                 }
 
@@ -74,7 +72,7 @@
                         scope.$apply(attrs.trigger) // execute the 'method to call'
                         .then(function (canLoadMore) { // return value of the promise
 
-                            if (canLoadMore && elementCanExpand()) { // check to see if screen filled
+                            if (canLoadMore && canExpand()) { // check to see if screen filled
                                 lazyLoad(); // try again
                             }
                             else {
