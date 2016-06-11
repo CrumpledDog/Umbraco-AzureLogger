@@ -182,6 +182,10 @@
             return deferred.promise;
         }
 
+        function abort() {
+            console.log('abort');
+        }
+
         function toggleLogItemDetails($event, logItem) {
 
             var logItemRow = $($event.currentTarget);
