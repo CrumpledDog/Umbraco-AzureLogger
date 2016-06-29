@@ -19,6 +19,7 @@ Example:
 	    <appender-ref ref="AsynchronousLog4NetAppender" />
 	    <appender-ref ref="AllTableAppender"/>
 	    <appender-ref ref="WarningsTableAppender"/>
+	    <appender-ref ref="ReadOnlyTableAppender"/> <!-- enable the ui to read the logs, but prevent this server from writing -->
 	  </root>
 
 	  <appender name="AllTableAppender" type="Our.Umbraco.AzureLogger.Core.TableAppender, Our.Umbraco.AzureLogger.Core">
@@ -42,6 +43,12 @@ Example:
 	    <bufferSize value="0"/>
 	    <!-- 1 item in buffer -->
 	  </appender>
+	  
+	  <appender name="ReadOnlyTableAppender" type="Out.Umbraco.AzureLogger.Core.TableAppender, Our.Umbraco.AzureLogger.Core">
+	    <param name="ConnectionString" value="LoggingTableStorage"/>
+	    <param name="TableName" value="UALReadOnly"/>
+	    <param name="ReadOnly" value="true"/>
+	  </appneder>
 
 As a useful enhancement we also now store to URL and SessionId which triggered the log entry to be made, this can be very handy for tracking down issues.
 
