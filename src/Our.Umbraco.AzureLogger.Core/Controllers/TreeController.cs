@@ -37,6 +37,8 @@
                                                             .Cast<TableAppender>()
                                                             .OrderBy(x => x.Name))
                 {
+                    string cssClass = tableAppender.ReadOnly ? " azure-logger-read-only" : " azure-logger";
+
                     if (tableAppender.IsConnected())
                     {
                         treeNodeCollection.Add(this.CreateTreeNode(
@@ -44,7 +46,7 @@
                                                         "-1", // parentId
                                                         queryStrings,
                                                         tableAppender.TreeName ?? tableAppender.Name,  // get the best friendly name
-                                                        !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName : "icon-list",
+                                                        !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName + cssClass : "icon-list" + cssClass,
                                                         false, // has children
                                                         this.BuildRoute("ViewLog", tableAppender.Name)));
                     }

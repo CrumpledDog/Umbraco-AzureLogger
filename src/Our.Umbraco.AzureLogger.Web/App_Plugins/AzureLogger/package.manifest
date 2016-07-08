@@ -13,6 +13,7 @@
     css:[
         '/App_Plugins/AzureLogger/BackOffice/AzureLoggerTree/ViewLog.css',
 		'/App_Plugins/AzureLogger/BackOffice/Directives/AutoCompleteDirective.css',
-		'/App_Plugins/AzureLogger/BackOffice/Filters/HighlightFilter.css'
+		'/App_Plugins/AzureLogger/BackOffice/Filters/HighlightFilter.css',
+		'/App_Plugins/AzureLogger/BackOffice/AzureLogger.css'
     ]
 }

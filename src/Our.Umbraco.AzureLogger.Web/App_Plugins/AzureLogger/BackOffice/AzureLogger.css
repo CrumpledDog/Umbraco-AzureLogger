@@ -1,0 +1,13 @@
+﻿.azure-logger-read-only:after{
+    content: '\2022';
+    color: black;
+    font-size: larger;
+    margin-right: -9px;
+}
+
+/*.azure-logger:after{
+    content: '\2022';
+    color: green;
+    font-size: larger;
+    margin-right: -8px;
+}*/
