@@ -1,13 +1,15 @@
-﻿.azure-logger-read-only:after{
+﻿.azure-logger:after{
     content: '\2022';
-    color: black;
     font-size: larger;
     margin-right: -9px;
+
+    color:green;
 }
 
-/*.azure-logger:after{
-    content: '\2022';
-    color: green;
-    font-size: larger;
-    margin-right: -8px;
-}*/
+.appender-read-only:after {
+    color:black;
+}
+
+.appender-not-connected:after {
+    color:red;
+}

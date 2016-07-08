@@ -37,7 +37,9 @@
                                                             .Cast<TableAppender>()
                                                             .OrderBy(x => x.Name))
                 {
-                    string cssClass = tableAppender.ReadOnly ? " azure-logger-read-only" : " azure-logger";
+                    string css = " azure-logger";
+                    css += tableAppender.ReadOnly ? " appender-read-only" : string.Empty;
+                    css += !tableAppender.IsConnected() ? " appender-not-connected" : string.Empty;
 
                     if (tableAppender.IsConnected())
                     {
@@ -46,7 +48,7 @@
                                                         "-1", // parentId
                                                         queryStrings,
                                                         tableAppender.TreeName ?? tableAppender.Name,  // get the best friendly name
-                                                        !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName + cssClass : "icon-list" + cssClass,
+                                                        !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName + css : "icon-list" + css,
                                                         false, // has children
                                                         this.BuildRoute("ViewLog", tableAppender.Name)));
                     }
@@ -58,7 +60,7 @@
                                                         "-1",
                                                         queryStrings,
                                                         tableAppender.TreeName ?? tableAppender.Name,  // get the best friendly name
-                                                        "icon-alert-alt red",
+                                                        !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName + css : "icon-alert-alt" + css,
                                                         false,
                                                         "/developer/"));
                     }
