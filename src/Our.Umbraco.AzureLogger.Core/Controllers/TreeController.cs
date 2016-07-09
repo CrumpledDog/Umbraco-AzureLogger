@@ -37,30 +37,28 @@
                                                             .Cast<TableAppender>()
                                                             .OrderBy(x => x.Name))
                 {
-                    string css = " azure-logger";
-                    css += tableAppender.ReadOnly ? " appender-read-only" : string.Empty;
-                    css += !tableAppender.IsConnected() ? " appender-not-connected" : string.Empty;
+                    string title = tableAppender.TreeName ?? tableAppender.Name; // get the best friendly name
+                    string icon = !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName : "icon-list"; // use custom icon if set
 
                     if (tableAppender.IsConnected())
                     {
                         treeNodeCollection.Add(this.CreateTreeNode(
-                                                        "appender|" + tableAppender.Name, // id - appender name should be distinct
+                                                        "appender|" + tableAppender.Name, // id
                                                         "-1", // parentId
                                                         queryStrings,
-                                                        tableAppender.TreeName ?? tableAppender.Name,  // get the best friendly name
-                                                        !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName + css : "icon-list" + css,
+                                                        title,
+                                                        tableAppender.ReadOnly ? icon + " azure-logger-appender-read-only" : icon,
                                                         false, // has children
                                                         this.BuildRoute("ViewLog", tableAppender.Name)));
                     }
                     else
                     {
-                        // no connection
                         treeNodeCollection.Add(this.CreateTreeNode(
                                                         "noConnection|" + tableAppender.Name,
                                                         "-1",
                                                         queryStrings,
-                                                        tableAppender.TreeName ?? tableAppender.Name,  // get the best friendly name
-                                                        !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName + css : "icon-alert-alt" + css,
+                                                        title,
+                                                        icon + " azure-logger-appender-not-connected",
                                                         false,
                                                         "/developer/"));
                     }

@@ -1,15 +1,18 @@
-﻿.azure-logger:after{
-    content: '\2022';
-    font-size: larger;
-    margin-right: -9px;
-
-    color:green;
-}
-
-.appender-read-only:after {
-    color:black;
-}
-
-.appender-not-connected:after {
+﻿.azure-logger-appender-not-connected:before {
     color:red;
 }
+
+.azure-logger-appender-read-only:before {
+    color: lightgrey;
+}
+
+/*
+    .class:after{
+        content: '\2022'
+    }
+
+    "\e25d" warning
+    "\e116" pause
+    "\e0a7" lock
+    "\e0a9" record
+*/
