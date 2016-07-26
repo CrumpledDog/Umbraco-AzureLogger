@@ -7,7 +7,7 @@
             <select ng-model="uiFilters.minLevel"
                     ng-disabled="currentlyFiltering"
                     enter-key="handleFilters()"
-                    placeholder="Min Level"
+                    selectPlaceholder="Min Level"
                     class="filter-min-level">
                 <option value="0">DEBUG</option>
                 <option value="1">INFO</option>
@@ -22,7 +22,7 @@
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
                        auto-complete="machineNames"
-                       placeholder="Machine Name"
+                       selectPlaceholder="Machine Name"
                        class="filter-machine" />
                 <a href=""
                    ng-if="!currentlyFiltering && uiFilters.hostName != ''"
@@ -37,7 +37,7 @@
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
                        auto-complete="loggerNames"
-                       placeholder="Logger Name"
+                       selectPlaceholder="Logger Name"
                        class="filter-logger" />
                 <a href=""
                    ng-if="!currentlyFiltering && uiFilters.loggerName != ''"
@@ -51,7 +51,7 @@
                        ng-model="uiFilters.message"
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
-                       placeholder="Message Text"
+                       selectPlaceholder="Message Text"
                        class="filter-message" />
                 <a href=""
                    ng-if="!currentlyFiltering && uiFilters.message != ''"
@@ -65,7 +65,7 @@
                        ng-model="uiFilters.sessionId"
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
-                       placeholder="Session Id"
+                       selectPlaceholder="Session Id"
                        class="filter-session" />
                 <a href=""
                    ng-if="!currentlyFiltering && uiFilters.sessionId != ''"
