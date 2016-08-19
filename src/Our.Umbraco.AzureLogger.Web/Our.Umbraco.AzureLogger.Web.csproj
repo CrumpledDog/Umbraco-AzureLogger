@@ -19,6 +19,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -83,7 +84,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ViewLog.css" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -122,10 +125,16 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(TargetDir)Our.Umbraco.AzureLogger.*.dll" "$(SolutionDir)..\www\bin\" /Y
+XCOPY "$(TargetDir)Microsoft.WindowsAzure.Storage.dll" "$(SolutionDir)..\www\bin\" /Y
+
+
 
 IF NOT EXIST "$(SolutionDir)..\www\App_Plugins\AzureLogger" MKDIR "$(SolutionDir)..\www\App_Plugins\AzureLogger"
 
 XCOPY "$(ProjectDir)App_Plugins\AzureLogger\*.*" "$(SolutionDir)..\www\App_Plugins\AzureLogger" /y /s /e
+
+
+
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
