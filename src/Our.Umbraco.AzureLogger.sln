@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.AzureLogger.Core", "Our.Umbraco.AzureLogger.Core\Our.Umbraco.AzureLogger.Core.csproj", "{88A427CC-ED74-43FE-BF60-5DD2E6505B5F}"
 EndProject
@@ -26,6 +26,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D377F7D0-E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Our.Umbraco.AzureLogger.Installer", "Our.Umbraco.AzureLogger.Installer\Our.Umbraco.AzureLogger.Installer.csproj", "{D3A428A4-79EE-45E5-B7D8-F7F547A58FA3}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "http://umbracoazurelogger.local", "http://umbracoazurelogger.local", "{65536195-2042-433F-9E16-B91B6251B7DA}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "false"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		Debug.AspNetCompiler.VirtualPath = "/umbracoazurelogger.local"
+		Debug.AspNetCompiler.PhysicalPath = "..\www\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\umbracoazurelogger.local\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/umbracoazurelogger.local"
+		Release.AspNetCompiler.PhysicalPath = "..\www\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\umbracoazurelogger.local\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "..\www\"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +65,8 @@ Global
 		{D3A428A4-79EE-45E5-B7D8-F7F547A58FA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3A428A4-79EE-45E5-B7D8-F7F547A58FA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3A428A4-79EE-45E5-B7D8-F7F547A58FA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65536195-2042-433F-9E16-B91B6251B7DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65536195-2042-433F-9E16-B91B6251B7DA}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

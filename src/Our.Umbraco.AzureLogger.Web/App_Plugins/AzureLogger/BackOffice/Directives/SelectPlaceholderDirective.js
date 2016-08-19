@@ -3,7 +3,7 @@
 
     angular
         .module('umbraco')
-        .directive('placeholder', SelectPlaceholderDirective);
+        .directive('selectPlaceholder', SelectPlaceholderDirective);
 
     function SelectPlaceholderDirective() {
 

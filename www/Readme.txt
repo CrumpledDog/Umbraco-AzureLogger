@@ -1,0 +1,1 @@
+Install Umbraco here (in the /www folder) as http://umbracoazurelogger.local (vs.net .sln reference to site, and build event xcopy)
