@@ -12,7 +12,7 @@
         var appenderName;
 
         $scope.init = init;
-        $scope.canel = cancel;
+        $scope.cancel = cancel;
         $scope.wipeLog = wipeLog;
 
         // --------------------------------------------------------------------------------
