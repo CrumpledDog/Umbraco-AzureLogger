@@ -28,14 +28,7 @@
             if (this.IsRoot(id))
             {
                 // get all table appenders
-                foreach(TableAppender tableAppender in  LogManager
-                                                            .GetLogger(typeof(TableAppender))
-                                                            .Logger
-                                                            .Repository
-                                                            .GetAppenders()
-                                                            .Where(x => x is TableAppender)
-                                                            .Cast<TableAppender>()
-                                                            .OrderBy(x => x.Name))
+                foreach(TableAppender tableAppender in TableService.Instance.GetTableAppenders())
                 {
                     string title = tableAppender.TreeName ?? tableAppender.Name; // get the best friendly name
                     string icon = !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName : "icon-list"; // use custom icon if set

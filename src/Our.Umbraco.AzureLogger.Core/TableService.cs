@@ -382,14 +382,7 @@
             if (!this.appenderCloudTables.ContainsKey(appenderName))
             {
                 // attempt to get at table from the appender details
-                TableAppender tableAppender = LogManager
-                                                .GetLogger(typeof(TableAppender))
-                                                .Logger
-                                                .Repository
-                                                .GetAppenders()
-                                                .Where(x => x is TableAppender)
-                                                .Cast<TableAppender>()
-                                                .SingleOrDefault(x => x.Name == appenderName);
+                TableAppender tableAppender = this.GetTableAppender(appenderName);
 
                 if (tableAppender != null)
                 {
@@ -446,6 +439,23 @@
             }
 
             return this.appenderCloudTables[appenderName];
+        }
+
+        internal TableAppender GetTableAppender(string appenderName)
+        {
+            return  this.GetTableAppenders().SingleOrDefault(x => x.Name == appenderName);
+        }
+
+        internal IEnumerable<TableAppender> GetTableAppenders()
+        {
+            return LogManager
+                    .GetLogger(typeof(TableAppender))
+                    .Logger
+                    .Repository
+                    .GetAppenders()
+                    .Where(x => x is TableAppender)
+                    .Cast<TableAppender>()
+                    .OrderBy(x => x.Name);
         }
     }
 }
