@@ -3,6 +3,7 @@
     using log4net.Appender;
     using log4net.Core;
     using Microsoft.WindowsAzure.Storage.Table;
+    using System.Configuration;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Web;
@@ -13,7 +14,7 @@
     public class TableAppender : BufferingAppenderSkeleton
     {
         /// <summary>
-        /// From configuration setting
+        /// From configuration setting, this could be the full connection string, or the name of a connection string in the web.config
         /// </summary>
         public string ConnectionString { get; set; }
 
@@ -43,6 +44,22 @@
         public TableAppender()
         {
             this.Lossy = false;
+        }
+
+        /// <summary>
+        /// attempts to get the actual connection string (whether that was set in the log-4-net config, or the web.config
+        /// </summary>
+        /// <returns></returns>
+        internal string GetConnectionString()
+        {
+            // attempt to find connection string in web.config
+            if (ConfigurationManager.ConnectionStrings[this.ConnectionString] != null)
+            {
+                return ConfigurationManager.ConnectionStrings[this.ConnectionString].ConnectionString;
+            }
+
+            // fallback to assuming tableAppender has the full connection string
+            return this.ConnectionString;
         }
 
         /// <summary>

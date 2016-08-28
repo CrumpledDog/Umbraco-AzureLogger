@@ -9,7 +9,6 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.Linq;
     using Level = Our.Umbraco.AzureLogger.Core.Models.Level;
 
@@ -386,20 +385,7 @@
 
                 if (tableAppender != null)
                 {
-                    string connectionString;
-
-                    // attempt to find connection string in web.config
-                    if (ConfigurationManager.ConnectionStrings[tableAppender.ConnectionString] != null)
-                    {
-                        connectionString = ConfigurationManager.ConnectionStrings[tableAppender.ConnectionString].ConnectionString;
-                    }
-                    else
-                    {
-                        // fallback to assuming tableAppender has the full connection string
-                        connectionString = tableAppender.ConnectionString;
-                    }
-
-                    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
+                    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(tableAppender.GetConnectionString());
 
                     CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
 
