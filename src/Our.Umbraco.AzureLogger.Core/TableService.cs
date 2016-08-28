@@ -372,48 +372,22 @@
         }
 
         /// <summary>
-        /// Helper to get the cloud table associated with the supplied appender name
+        /// Helper to get (and cache) the cloud table associated with the supplied appender name
         /// </summary>
         /// <param name="appenderName">unique name to identify a log4net Azure TableAppender</param>
         /// <returns></returns>
-        internal CloudTable GetCloudTable(string appenderName)
+        private CloudTable GetCloudTable(string appenderName)
         {
+            // if not in local cache
             if (!this.appenderCloudTables.ContainsKey(appenderName))
             {
-                // attempt to get at table from the appender details
                 TableAppender tableAppender = this.GetTableAppender(appenderName);
 
                 if (tableAppender != null)
                 {
-                    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(tableAppender.GetConnectionString());
+                    CloudTable cloudTable = tableAppender.GetCloudTable();
 
-                    CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
-
-                    CloudTable cloudTable = cloudTableClient.GetTableReference(tableAppender.TableName);
-
-                    bool cloudTableReady = false;
-
-                    //bool retry;
-                    //do
-                    //{
-                    //    retry = false;
-                        try
-                        {
-                            cloudTable.CreateIfNotExists();
-
-                            cloudTableReady = true;
-                        }
-                        catch //(StorageException exception)
-                        {
-                            //if (exception.RequestInformation.HttpStatusCode == 409 &&
-                            //    exception.RequestInformation.ExtendedErrorInformation.ErrorCode.Equals(TableErrorCodeStrings.TableBeingDeleted))
-                            //{
-                            //    retry = true;
-                            //}
-                        }
-                    //} while (retry);
-
-                    if (cloudTableReady)
+                    if (cloudTable != null)
                     {
                         this.appenderCloudTables[appenderName] = cloudTable;
                     }

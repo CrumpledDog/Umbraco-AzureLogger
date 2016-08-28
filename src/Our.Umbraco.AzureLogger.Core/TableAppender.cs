@@ -2,7 +2,9 @@
 {
     using log4net.Appender;
     using log4net.Core;
+    using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
+    using Microsoft.WindowsAzure.Storage.Table.Protocol;
     using System.Configuration;
     using System.Threading;
     using System.Threading.Tasks;
@@ -63,6 +65,39 @@
         }
 
         /// <summary>
+        /// Gets the Azure table storage object (or null)
+        /// </summary>
+        /// <returns></returns>
+        internal CloudTable GetCloudTable()
+        {
+            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(this.GetConnectionString());
+
+            CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
+
+            CloudTable cloudTable = cloudTableClient.GetTableReference(this.TableName);
+
+            bool retry;
+            do
+            {
+                retry = false;
+                try
+                {
+                    cloudTable.CreateIfNotExists();
+                }
+                catch (StorageException exception)
+                {
+                    if (exception.RequestInformation.HttpStatusCode == 409 &&
+                        exception.RequestInformation.ExtendedErrorInformation.ErrorCode.Equals(TableErrorCodeStrings.TableBeingDeleted))
+                    {
+                        retry = true;
+                    }
+                }
+            } while (retry);
+
+            return cloudTable;
+        }
+
+        /// <summary>
         /// Attempts to get the associated azure table, but gives up if it takes longer than 1/2 second
         /// </summary>
         /// <returns>true if the appender can connect to table storage, otherwise false</returns>
@@ -71,8 +106,10 @@
             bool isConnected = false;
 
             Thread thread = new Thread(() => {
-                CloudTable cloudTable = TableService.Instance.GetCloudTable(this.Name);
+
+                CloudTable cloudTable = this.GetCloudTable();
                 isConnected = cloudTable != null && cloudTable.Exists();
+
             });
 
             thread.Start();
