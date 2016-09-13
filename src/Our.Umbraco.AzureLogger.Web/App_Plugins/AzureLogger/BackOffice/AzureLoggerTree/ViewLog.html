@@ -82,7 +82,9 @@
                ng-click="handleFilters()">Update</a>
 
             <a href=""
-               class="btn btn-primary"
+               class="btn"
+               ng-class="{ 'btn-primary': !currentlyLoading }"
+               ng-disabled="currentlyLoading"
                ng-click="reload()">Reload</a>
 
         </div>
