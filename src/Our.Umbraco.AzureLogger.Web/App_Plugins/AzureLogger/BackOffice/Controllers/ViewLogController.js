@@ -27,6 +27,7 @@
 
         $scope.filtersMatch = filtersMatch;
         $scope.handleFilters = handleFilters;
+        $scope.reload = reload;
         $scope.getMoreLogItems = getMoreLogItems;
         $scope.toggleLogItemDetails = toggleLogItemDetails;
         $scope.differentDays = differentDays;
@@ -150,6 +151,11 @@
             }
 
             return deferred.promise;
+        }
+
+        // deletes all log items items in the view, and triggers new data from 'now' to be requested
+        function reload() {
+            clearLogItems(); // delete all items as we may be missing data (this will trigger a refresh)
         }
 
         // returns a promise with a bool result - the bool indicates whether the caller should try again
