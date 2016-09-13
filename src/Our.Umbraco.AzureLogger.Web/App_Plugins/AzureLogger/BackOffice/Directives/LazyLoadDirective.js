@@ -41,10 +41,15 @@
                 // HACK: add method to the scope so can be called from controller (we know this is the only instance of the directive being used)
                 // the controller will call this after reductive filtering, or a complete clear
                 scope.lazyLoad = function () {
-                    // TODO: cancel any lazy-load currenty in process
-                    if (!expanding && elementCanExpand()) { // safety check;
-                        lazyLoad();
-                    }
+
+                    $timeout(function () { // timeout to ensure scope is ready (and element height calculated correctly)
+
+                        // TODO: cancel any lazy-load currenty in process
+                        if (!expanding && elementCanExpand()) { // safety check;
+                            lazyLoad();
+                        }
+
+                    });
                 };
 
                 lazyLoad(); // startup
