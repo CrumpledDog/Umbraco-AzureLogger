@@ -81,6 +81,12 @@
                ng-disabled="currentlyFiltering || filtersMatch()"
                ng-click="handleFilters()">Update</a>
 
+            <a href=""
+               class="btn"
+               ng-class="{ 'btn-primary': !currentlyLoading }"
+               ng-disabled="currentlyLoading"
+               ng-click="reload()">Reload</a>
+
         </div>
 
         <div class="info">
