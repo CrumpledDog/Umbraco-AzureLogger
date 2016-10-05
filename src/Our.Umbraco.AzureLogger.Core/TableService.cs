@@ -3,7 +3,6 @@
     using Extensions;
     using log4net;
     using log4net.Core;
-    using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
     using System;
