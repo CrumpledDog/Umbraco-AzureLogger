@@ -9,7 +9,7 @@ cache:
 branches:
   only:
     - develop
-    - file-config-multi-appenders
+    - /release.*/
 
 # UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
@@ -42,7 +42,7 @@ deploy:
     draft: false
     prerelease: false
     on:
-      branch: master
+      branch: /release.*/
       appveyor_repo_tag: true        # deploy on tag push only
 
      # NuGet Deployment for releases
@@ -52,5 +52,5 @@ deploy:
       secure: adk3pI9HCByZg2VRxplX9UR6qHf97bA3as6dusxLswCKI8BQQE8DO5a0frLrI+EO
     artifact: /.*\.nupkg/
     on:
-      branch: master
+      branch: /release.*/
       appveyor_repo_tag: true
