@@ -28,38 +28,37 @@
         }
 
         /// <summary>
-        /// Gets the log items to render in the main list
+        /// Gets as many log items as possible (within a single query, or a set duration) to render in the main list
         /// </summary>
         /// <param name="appenderName">name of the log4net appender</param>
-        /// <param name="partitionKey">the last known partitionKey</param>
-        /// <param name="rowKey">the last known rowKey</param>
-        /// <param name="take">number of log items to get</param>
-        /// <param name="queryFilters">using dynamic to avoid making a strongly typed model</param>
+        /// <param name="partitionKey">the last known partitionKey (or null)</param>
+        /// <param name="rowKey">the last known rowKey (or null)</param>
+        /// <param name="queryFilters">filter critera: debug level, machine name, logger name, message text, session id</param>
         /// <returns></returns>
         [HttpPost]
-        public object ReadLogItemIntros([FromUri]string appenderName, [FromUri] string partitionKey, [FromUri] string rowKey, [FromUri] int take, [FromBody] dynamic queryFilters)
+        public object ReadLogItemIntros([FromUri]string appenderName, [FromUri] string partitionKey, [FromUri] string rowKey, [FromBody] dynamic queryFilters)
         {
-            LogItemIntro[] logItemIntros;
+            // initialise default return values
+            LogItemIntro[] logItemIntros = new LogItemIntro[] { };
             string lastPartitionKey = null;
-            string lastRowKey= null;
+            string lastRowKey = null;
             bool finishedLoading = false;
 
             try
             {
                 logItemIntros = TableService
-                        .Instance
-                        .ReadLogTableEntities(
-                                appenderName,
-                                partitionKey,
-                                rowKey,
-                                (string)queryFilters.hostName,
-                                (string)queryFilters.loggerName,
-                                (Level)Math.Max((int)queryFilters.minLevel, 0),
-                                (string)queryFilters.message,
-                                (string)queryFilters.sessionId,
-                                take) // need to supply take, as result may be a cloud table with items removed (in which case the take doesn't know where to re-start from)
-                        .Select(x => (LogItemIntro)x)
-                        .ToArray();
+                                .Instance
+                                .ReadLogTableEntities(
+                                        appenderName,
+                                        partitionKey,
+                                        rowKey,
+                                        (string)queryFilters.hostName,
+                                        (string)queryFilters.loggerName,
+                                        (Level)Math.Max((int)queryFilters.minLevel, 0),
+                                        (string)queryFilters.message,
+                                        (string)queryFilters.sessionId)
+                                .Select(x => (LogItemIntro)x)
+                                .ToArray();
 
                 if (logItemIntros.Any())
                 {
@@ -73,9 +72,8 @@
             }
             catch (TableQueryTimeoutException exception)
             {
-                logItemIntros = exception.Data.Select(x => (LogItemIntro)((LogTableEntity)x)).ToArray();
                 lastPartitionKey = exception.LastPartitionKey;
-                lastRowKey =  exception.LastRowKey;
+                lastRowKey = exception.LastRowKey;
             }
 
             return new

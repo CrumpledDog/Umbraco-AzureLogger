@@ -8,9 +8,13 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using Level = Our.Umbraco.AzureLogger.Core.Models.Level;
 
+    /// <summary>
+    /// Singleton service class
+    /// </summary>
     internal sealed class TableService
     {
         private static readonly TableService tableService = new TableService();
@@ -45,7 +49,7 @@
         /// <summary>
         /// Persists log4net logging events into Azure table storage
         /// </summary>
-        /// <param name="appenderName"></param>
+        /// <param name="appenderName">name of the log4net appender</param>
         /// <param name="loggingEvents">collection of log4net logging events to persist into Azure table storage</param>
         internal void CreateLogTableEntities(string appenderName, LoggingEvent[] loggingEvents)
         {
@@ -90,118 +94,47 @@
         }
 
         /// <summary>
-        /// Wrapper method to handle any filtering (Azure table queries can't do wild card matching)
+        /// Queries Azure, until *some* results are returned, or a timeout could also be thrown (if no results found in x duration)
         /// </summary>
-        /// <param name="appenderName"></param>
+        /// <param name="appenderName">name of the log4net appender</param>
         /// <param name="partitionKey"></param>
         /// <param name="rowKey"></param>
         /// <param name="hostName"></param>
         /// <param name="loggerName"></param>
-        /// <param name="messageIntro"></param>
+        /// <param name="minLevel"></param>
+        /// <param name="message"></param>
+        /// <param name="sessionId"></param>
         /// <returns></returns>
-        internal IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, Level minLevel, string message, string sessionId, int take)
+        internal LogTableEntity[] ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, Level minLevel, string message, string sessionId)
         {
-            // flags to indiciate if filtering is requied here in c#
+            LogTableEntity[] logTableEntities = new LogTableEntity[] { }; // default return value
+
+            CloudTable cloudTable = this.GetCloudTable(appenderName);
+
+            if (cloudTable == null)
+            {
+                return logTableEntities;
+            }
+
             bool hostNameWildcardFiltering = !string.IsNullOrWhiteSpace(hostName) && !IndexService.Instance.GetMachineNames(appenderName).Any(x => x == hostName);
             bool loggerNameWildcardFiltering = !string.IsNullOrWhiteSpace(loggerName) && !IndexService.Instance.GetLoggerNames(appenderName).Any(x => x == loggerName);
 
-            // check to see if any filtering needs to be done here (always filter message as it has no index)
-            if (!string.IsNullOrWhiteSpace(message) || hostNameWildcardFiltering || loggerNameWildcardFiltering)
+            // local filtering function applied to returned Azure table results
+            Func<LogTableEntity, bool> customFiltering = (x) => { return true; }; // default empty method (no custom filtering performed)
+
+            // check to see if custom filtering (in c#) is required in addition to the Azure query
+            if (hostNameWildcardFiltering || loggerNameWildcardFiltering || !string.IsNullOrWhiteSpace(message)) // message filtering always done in c#
             {
-                // additional filtering here- may require additional azure table queries
-
-                List<LogTableEntity> logTableEntities = new List<LogTableEntity>(); // collection to return
-
-                // calculate excess amount to request from a cloud query, which will filter down to the required take
-                // machine name: low
-                // logger name: low
-                // level-debug: low
-                // level-info: medium
-                // level-warn: high
-                // level-error: high
-                // level-fatal: high
-                // message: medium
-
-                int lastCount;
-                string lastPartitionKey = partitionKey;
-                string lastRowKey = rowKey;
-                int attempts = 0;
-                bool finished = false;
-
-                do
+                customFiltering = (x) =>
                 {
-                    attempts++;
-
-                    if (attempts >= 3)
-                    {
-                        throw new TableQueryTimeoutException(lastPartitionKey, lastRowKey, logTableEntities.ToArray());
-                    }
-
-                    lastCount = logTableEntities.Count;
-
-                    // take a large chunk to filter here - take size should be relative to the filter granularity
-                    IEnumerable<LogTableEntity> returnedLogTableEntities = this.ReadLogTableEntities(
-                                                                                    appenderName,
-                                                                                    lastPartitionKey,
-                                                                                    lastRowKey,
-                                                                                    minLevel,
-                                                                                    loggerNameWildcardFiltering ? null : loggerName, // only set if
-                                                                                    hostNameWildcardFiltering ? null : hostName,
-                                                                                    sessionId) // not using wildcards
-                                                                                .Take(100);
-
-                    if (returnedLogTableEntities.Any())
-                    {
-                        logTableEntities.AddRange(returnedLogTableEntities);
-
-                        // set last known, before filtering out
-                        lastPartitionKey = logTableEntities.Last().PartitionKey;
-                        lastRowKey = logTableEntities.Last().RowKey;
-
-                        // performing filtering on local list, otherwise it seems to affect table query performance (as every row in table returned and cast)
-                        logTableEntities = logTableEntities
-                                        .Where(x => string.IsNullOrWhiteSpace(hostName) || (x.log4net_HostName != null && x.log4net_HostName.IndexOf(hostName, StringComparison.InvariantCultureIgnoreCase) > -1))
-                                        .Where(x => string.IsNullOrWhiteSpace(loggerName) || (x.LoggerName != null && x.LoggerName.IndexOf(loggerName, StringComparison.InvariantCultureIgnoreCase) > -1))
-                                        .Where(x => string.IsNullOrWhiteSpace(message) || (x.Message != null && x.Message.IndexOf(message, StringComparison.InvariantCultureIgnoreCase) > -1))
-                                        .ToList();
-                    }
-                    else
-                    {
-                        // no data returned from Azure query
-                        finished = true;
-                    }
-
-                }
-                while (logTableEntities.Count < take && !finished);
-
-                return logTableEntities.Take(take); // trim any excess
+                    return (string.IsNullOrWhiteSpace(hostName) || x.log4net_HostName != null && x.log4net_HostName.IndexOf(hostName, StringComparison.InvariantCultureIgnoreCase) > -1)
+                        && (string.IsNullOrWhiteSpace(loggerName) || x.LoggerName != null && x.LoggerName.IndexOf(loggerName, StringComparison.InvariantCultureIgnoreCase) > -1)
+                        && (string.IsNullOrWhiteSpace(message) || x.Message != null && x.Message.IndexOf(message, StringComparison.InvariantCultureIgnoreCase) > -1);
+                };
             }
-            else
-            {
-                // filter at azure table query level only
-                return this.ReadLogTableEntities(appenderName, partitionKey, rowKey, minLevel, loggerName, hostName, sessionId).Take(take);
-            }
-        }
 
-        /// <summary>
-        /// Attempts to perform an Azure table query
-        /// https://azure.microsoft.com/en-gb/documentation/articles/storage-dotnet-how-to-use-tables/
-        /// Gets a collection of LogTableEntity objs suitable for casting to LogItemInto
-        /// </summary>
-        /// <param name="appenderName"></param>
-        /// <param name="partitionKey">null or the last known partition key</param>
-        /// <param name="rowKey">null or the last known row key</param>
-        /// <param name="minLevel"></param>
-        /// <param name="loggerName">if set, looks for an exact match</param>
-        /// <param name="hostName">if set, looks for an exact match</param>
-        /// <returns>a collection of log items matching the supplied filter criteria</returns>
-        private IEnumerable<LogTableEntity> ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, Level minLevel, string loggerName, string hostName, string sessionId)
-        {
-            CloudTable cloudTable = this.GetCloudTable(appenderName);
-
-            if (cloudTable != null)
-            {
-                TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>()
+            // build the Azure table query
+            TableQuery<LogTableEntity> tableQuery = new TableQuery<LogTableEntity>()
                                                                 .Select(new string[] {  // reduce data fields returned from Azure
                                                                     "Level",
                                                                     "LoggerName",
@@ -210,73 +143,100 @@
                                                                     "log4net_HostName"
                                                                 });
 
-                if (!string.IsNullOrWhiteSpace(partitionKey))
-                {
-                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, partitionKey));
-                }
+            if (!string.IsNullOrWhiteSpace(partitionKey))
+            {
+                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.GreaterThanOrEqual, partitionKey));
+            }
 
-                if (!string.IsNullOrWhiteSpace(rowKey))
-                {
-                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.GreaterThan, rowKey));
-                }
+            if (!string.IsNullOrWhiteSpace(rowKey))
+            {
+                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.GreaterThan, rowKey));
+            }
 
-                if (minLevel != Level.DEBUG)
+            if (minLevel != Level.DEBUG)
+            {
+                // a number comparrison would be better, but log4net level and enum level don't match
+                switch (minLevel)
                 {
-                    // a number comparrison would be better, but log4net level and enum level don't match
-                    switch (minLevel)
+                    case Level.INFO: // show all except debug
+                        tableQuery.AndWhere(TableQuery.GenerateFilterCondition("Level", QueryComparisons.NotEqual, Level.DEBUG.ToString()));
+                        break;
+
+                    case Level.WARN: // show all except debug and info
+                        tableQuery.AndWhere(TableQuery.CombineFilters(
+                                                TableQuery.GenerateFilterCondition("Level", QueryComparisons.NotEqual, Level.DEBUG.ToString()),
+                                                TableOperators.And,
+                                                TableQuery.GenerateFilterCondition("Level", QueryComparisons.NotEqual, Level.INFO.ToString())));
+                        break;
+
+                    case Level.ERROR: // show if error or fatal
+                        tableQuery.AndWhere(TableQuery.CombineFilters(
+                                                TableQuery.GenerateFilterCondition("Level", QueryComparisons.Equal, Level.ERROR.ToString()),
+                                                TableOperators.Or,
+                                                TableQuery.GenerateFilterCondition("Level", QueryComparisons.Equal, Level.FATAL.ToString())));
+                        break;
+
+                    case Level.FATAL: // show fatal only
+                        tableQuery.AndWhere(TableQuery.GenerateFilterCondition("Level", QueryComparisons.Equal, Level.FATAL.ToString()));
+                        break;
+                }
+            }
+
+            if (!loggerNameWildcardFiltering && !string.IsNullOrWhiteSpace(loggerName))
+            {
+                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", QueryComparisons.Equal, loggerName));
+            }
+            else
+            {
+                // HACK: ensure index entities are not returned
+                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", QueryComparisons.NotEqual, string.Empty));
+            }
+
+            if (!hostNameWildcardFiltering && !string.IsNullOrWhiteSpace(hostName))
+            {
+                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("log4net_HostName", QueryComparisons.Equal, hostName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(sessionId))
+            {
+                tableQuery.AndWhere(TableQuery.GenerateFilterCondition("sessionId", QueryComparisons.Equal, sessionId));
+            }
+
+            tableQuery.Take(50);
+
+            // perform query
+            TableContinuationToken tableContinuationToken = null;
+            TableQuerySegment<LogTableEntity> response;
+            bool retry;
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            do
+            {
+                response = cloudTable.ExecuteQuerySegmented(tableQuery, tableContinuationToken);
+
+                logTableEntities = response.Results.Where(x => customFiltering(x)).ToArray();
+
+                if (!logTableEntities.Any() && tableContinuationToken != null)
+                {
+                    if (stopwatch.ElapsedMilliseconds > 10000) // 10 seconds
                     {
-                        case Level.INFO: // show all except debug
-                            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("Level", QueryComparisons.NotEqual, Level.DEBUG.ToString()));
-                            break;
-
-                        case Level.WARN: // show all except debug and info
-                            tableQuery.AndWhere(TableQuery.CombineFilters(
-                                                    TableQuery.GenerateFilterCondition("Level", QueryComparisons.NotEqual, Level.DEBUG.ToString()),
-                                                    TableOperators.And,
-                                                    TableQuery.GenerateFilterCondition("Level", QueryComparisons.NotEqual, Level.INFO.ToString())));
-                            break;
-
-                        case Level.ERROR: // show if error or fatal
-                            tableQuery.AndWhere(TableQuery.CombineFilters(
-                                                    TableQuery.GenerateFilterCondition("Level", QueryComparisons.Equal, Level.ERROR.ToString()),
-                                                    TableOperators.Or,
-                                                    TableQuery.GenerateFilterCondition("Level", QueryComparisons.Equal, Level.FATAL.ToString())));
-                            break;
-
-                        case Level.FATAL: // show fatal only
-                            tableQuery.AndWhere(TableQuery.GenerateFilterCondition("Level", QueryComparisons.Equal, Level.FATAL.ToString()));
-                            break;
+                        throw new TableQueryTimeoutException(response.ContinuationToken.NextPartitionKey, response.ContinuationToken.NextRowKey);
                     }
-                }
 
-                if (!string.IsNullOrWhiteSpace(loggerName))
-                {
-                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", QueryComparisons.Equal, loggerName));
+                    tableContinuationToken = response.ContinuationToken;
+
+                    retry = true;
                 }
                 else
                 {
-                    // HACK: ensure index entities are not returned
-                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("LoggerName", QueryComparisons.NotEqual, string.Empty));
+                    retry = false;
                 }
 
-                if (!string.IsNullOrWhiteSpace(hostName))
-                {
-                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("log4net_HostName", QueryComparisons.Equal, hostName));
-                }
+            } while (retry);
 
-                if (!string.IsNullOrWhiteSpace(sessionId))
-                {
-                    tableQuery.AndWhere(TableQuery.GenerateFilterCondition("sessionId", QueryComparisons.Equal, sessionId));
-                }
 
-                return cloudTable.ExecuteQuery(
-                    tableQuery,
-                    new TableRequestOptions() {
-                        ServerTimeout = new TimeSpan(0,0,2)
-                    });
-            }
-
-            return Enumerable.Empty<LogTableEntity>(); // fallback
+            return logTableEntities;
         }
 
         /// <summary>
@@ -319,7 +279,7 @@
         /// </summary>
         /// <param name="appenderName"></param>
         /// <param name="partitionKey">the index name</param>
-        /// <param name="rowKeys">an index value</param>
+        /// <param name="rowKeys">index values</param>
         internal void CreateIndexTableEntities(string appenderName, string partitionKey, string[] rowKeys)
         {
             CloudTable cloudTable = this.GetCloudTable(appenderName);

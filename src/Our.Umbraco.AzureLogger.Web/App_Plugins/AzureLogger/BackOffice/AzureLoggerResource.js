@@ -38,8 +38,7 @@
                 params: {
                     'appenderName': appenderName,
                     'partitionKey': partitionKey != null ? escape(partitionKey) : '',
-                    'rowKey': rowKey != null ? escape(rowKey) : '',
-                    'take': 50
+                    'rowKey': rowKey != null ? escape(rowKey) : ''
                 },
                 data: queryFilters
             });

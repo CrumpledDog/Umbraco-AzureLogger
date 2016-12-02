@@ -3,7 +3,7 @@
     using System;
 
     /// <summary>
-    /// Thrown when an excess number of Azure table calls have been made for a request
+    /// Thrown after queries to Azure table storage return have returned no results within a set time period
     /// </summary>
     internal class TableQueryTimeoutException : Exception
     {
@@ -18,21 +18,14 @@
         internal string LastRowKey { get; private set; }
 
         /// <summary>
-        /// any data from the query that has already been found
-        /// </summary>
-        internal new object[] Data { get; private set; }
-
-        /// <summary>
         /// constructor
         /// </summary>
-        /// <param name="lastPartitionKey"></param>
-        /// <param name="lastRowKey"></param>
-        /// <param name="data"></param>
-        internal TableQueryTimeoutException(string lastPartitionKey, string lastRowKey, object[] data)
+        /// <param name="lastPartitionKey">the partition key of the last row checked</param>
+        /// <param name="lastRowKey">the row key of the last row checked</param>
+        internal TableQueryTimeoutException(string lastPartitionKey, string lastRowKey)
         {
             this.LastPartitionKey = lastPartitionKey;
             this.LastRowKey = lastRowKey;
-            this.Data = data;
         }
     }
 }
