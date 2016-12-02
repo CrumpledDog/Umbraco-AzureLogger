@@ -213,6 +213,8 @@
             stopwatch.Start();
             do
             {
+                retry = false;
+
                 response = cloudTable.ExecuteQuerySegmented(tableQuery, tableContinuationToken); // blocking
 
                 logTableEntities = response.Results.Where(x => customFiltering(x)).ToArray();
@@ -227,10 +229,6 @@
                     tableContinuationToken = response.ContinuationToken;
 
                     retry = true;
-                }
-                else
-                {
-                    retry = false;
                 }
 
             } while (retry);
