@@ -94,16 +94,16 @@
         }
 
         /// <summary>
-        /// Queries Azure, until *some* results are returned, or a timeout could also be thrown (if no results found in x duration)
+        /// Queries Azure table storage until results are returned or a timeout is thown
         /// </summary>
         /// <param name="appenderName">name of the log4net appender</param>
-        /// <param name="partitionKey"></param>
-        /// <param name="rowKey"></param>
-        /// <param name="hostName"></param>
-        /// <param name="loggerName"></param>
-        /// <param name="minLevel"></param>
-        /// <param name="message"></param>
-        /// <param name="sessionId"></param>
+        /// <param name="partitionKey">a partional key to begin search from (can be null)</param>
+        /// <param name="rowKey">a row key to begin search from (can be null)</param>
+        /// <param name="hostName">host name to filter on</param>
+        /// <param name="loggerName">logger name to filter on</param>
+        /// <param name="minLevel">logger level to filter</param>
+        /// <param name="message">message text to filter</param>
+        /// <param name="sessionId">session id to filter</param>
         /// <returns></returns>
         internal LogTableEntity[] ReadLogTableEntities(string appenderName, string partitionKey, string rowKey, string hostName, string loggerName, Level minLevel, string message, string sessionId)
         {
@@ -202,7 +202,7 @@
                 tableQuery.AndWhere(TableQuery.GenerateFilterCondition("sessionId", QueryComparisons.Equal, sessionId));
             }
 
-            tableQuery.Take(50);
+            tableQuery.Take(50); // max results to be returned in single query
 
             // perform query
             TableContinuationToken tableContinuationToken = null;
@@ -213,7 +213,7 @@
             stopwatch.Start();
             do
             {
-                response = cloudTable.ExecuteQuerySegmented(tableQuery, tableContinuationToken);
+                response = cloudTable.ExecuteQuerySegmented(tableQuery, tableContinuationToken); // blocking
 
                 logTableEntities = response.Results.Where(x => customFiltering(x)).ToArray();
 
@@ -262,7 +262,7 @@
         /// <summary>
         /// Attempts to delete the cloud table
         /// </summary>
-        /// <param name="appenderName"></param>
+        /// <param name="appenderName">name of the log4net appender</param>
         internal void WipeLog(string appenderName)
         {
             CloudTable cloudTable;
@@ -277,7 +277,7 @@
         /// <summary>
         /// Creates IndexTableEntity objects to be persisted in Azure table storage
         /// </summary>
-        /// <param name="appenderName"></param>
+        /// <param name="appenderName">name of the log4net appender</param>
         /// <param name="partitionKey">the index name</param>
         /// <param name="rowKeys">index values</param>
         internal void CreateIndexTableEntities(string appenderName, string partitionKey, string[] rowKeys)
@@ -309,9 +309,9 @@
         }
 
         /// <summary>
-        ///
+        /// Queries Azure table storage for all index table entities of a given index name
         /// </summary>
-        /// <param name="appenderName"></param>
+        /// <param name="appenderName">name of the log4net appender</param>
         /// <param name="partitionKey">index name, eg. host_name</param>
         /// <returns></returns>
         internal IEnumerable<IndexTableEntity> ReadIndexTableEntities(string appenderName, string partitionKey)
@@ -333,8 +333,8 @@
         /// <summary>
         /// Helper to get (and cache) the cloud table associated with the supplied appender name
         /// </summary>
-        /// <param name="appenderName">unique name to identify a log4net Azure TableAppender</param>
-        /// <returns></returns>
+        /// <param name="appenderName">name of the log4net appender</param>
+        /// <returns>the CloudTable for the supplied appender if found, otherwise null</returns>
         private CloudTable GetCloudTable(string appenderName)
         {
             // if not in local cache
@@ -360,11 +360,20 @@
             return this.appenderCloudTables[appenderName];
         }
 
+        /// <summary>
+        /// Get a specific TableAppender
+        /// </summary>
+        /// <param name="appenderName">name of the log4net appender</param>
+        /// <returns>the TableAppender or null</returns>
         internal TableAppender GetTableAppender(string appenderName)
         {
             return  this.GetTableAppenders().SingleOrDefault(x => x.Name == appenderName);
         }
 
+        /// <summary>
+        /// Get all TableAppenders
+        /// </summary>
+        /// <returns>an eumerable of all TableAppenders</returns>
         internal IEnumerable<TableAppender> GetTableAppenders()
         {
             return LogManager
