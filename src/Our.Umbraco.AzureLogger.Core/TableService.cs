@@ -204,22 +204,25 @@
 
             tableQuery.Take(50); // max results to be returned in single query
 
-            // perform query
+            // TODO: increase take if custom filtering
+            
             TableContinuationToken tableContinuationToken = null;
             TableQuerySegment<LogTableEntity> response;
             bool retry;
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
+
             do
             {
                 retry = false;
 
+                // single Azure table storage requsest
                 response = cloudTable.ExecuteQuerySegmented(tableQuery, tableContinuationToken); // blocking
 
                 logTableEntities = response.Results.Where(x => customFiltering(x)).ToArray();
 
-                if (!logTableEntities.Any() && tableContinuationToken != null)
+                if (!logTableEntities.Any() && response.ContinuationToken != null)
                 {
                     if (stopwatch.ElapsedMilliseconds > 10000) // 10 seconds
                     {
