@@ -100,7 +100,8 @@
 
     <div class="umb-panel-body umb-scrollable" monitor-width="logItemsViewWidth" ng-class="{ 'narrow': logItemsViewWidth < 1020 }">
 
-        <div class="umb-pane" lazy-load="getMoreLogItems()">
+        <lazy-load trigger="getMoreLogItems()"><!-- cancel="" -->
+
             <div ng-hide="currentlyFiltering" ng-repeat="logItem in logItems" class="level-{{logItem.level.toLowerCase()}}">
 
                 <div class="day-breaker" ng-if="differentDays(logItem, logItems[$index - 1])">
@@ -199,6 +200,7 @@
             <div class="info-banner" ng-show="finishedLoading && logItems.length == 0">No Log Items</div>
             <div class="info-banner" ng-show="finishedLoading && logItems.length > 0">Finished Loading</div>
 
-        </div><!-- /umb-panel-body -->
+        </lazy-load>
+
     </div>
 </div>
