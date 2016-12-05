@@ -115,6 +115,8 @@
                 return logTableEntities;
             }
 
+            int take = 50; // default take for Azure query
+
             bool hostNameWildcardFiltering = !string.IsNullOrWhiteSpace(hostName) && !IndexService.Instance.GetMachineNames(appenderName).Any(x => x == hostName);
             bool loggerNameWildcardFiltering = !string.IsNullOrWhiteSpace(loggerName) && !IndexService.Instance.GetLoggerNames(appenderName).Any(x => x == loggerName);
 
@@ -130,6 +132,9 @@
                         && (string.IsNullOrWhiteSpace(loggerName) || x.LoggerName != null && x.LoggerName.IndexOf(loggerName, StringComparison.InvariantCultureIgnoreCase) > -1)
                         && (string.IsNullOrWhiteSpace(message) || x.Message != null && x.Message.IndexOf(message, StringComparison.InvariantCultureIgnoreCase) > -1);
                 };
+
+                // increase take, to account for customFiltering further reducing dataset
+                take = 1000;
             }
 
             // build the Azure table query
@@ -201,10 +206,8 @@
                 tableQuery.AndWhere(TableQuery.GenerateFilterCondition("sessionId", QueryComparisons.Equal, sessionId));
             }
 
-            tableQuery.Take(50); // max results to be returned in single query
+            tableQuery.Take(take);
 
-            // TODO: increase take if custom filtering
-            
             TableContinuationToken tableContinuationToken = null;
             TableQuerySegment<LogTableEntity> response;
 
