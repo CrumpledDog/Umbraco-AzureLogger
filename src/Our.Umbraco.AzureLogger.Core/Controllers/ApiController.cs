@@ -44,36 +44,28 @@
             string lastRowKey = null;
             bool finishedLoading = false;
 
-            try
-            {
-                logItemIntros = TableService
-                                .Instance
-                                .ReadLogTableEntities(
-                                        appenderName,
-                                        partitionKey,
-                                        rowKey,
-                                        (string)queryFilters.hostName,
-                                        (string)queryFilters.loggerName,
-                                        (Level)Math.Max((int)queryFilters.minLevel, 0),
-                                        (string)queryFilters.message,
-                                        (string)queryFilters.sessionId)
-                                .Select(x => (LogItemIntro)x)
-                                .ToArray();
+            logItemIntros = TableService
+                            .Instance
+                            .ReadLogTableEntities(
+                                    appenderName,
+                                    partitionKey,
+                                    rowKey,
+                                    (string)queryFilters.hostName,
+                                    (string)queryFilters.loggerName,
+                                    (Level)Math.Max((int)queryFilters.minLevel, 0),
+                                    (string)queryFilters.message,
+                                    (string)queryFilters.sessionId)
+                            .Select(x => (LogItemIntro)x)
+                            .ToArray();
 
-                if (logItemIntros.Any())
-                {
-                    lastPartitionKey = logItemIntros.Last().PartitionKey;
-                    lastRowKey = logItemIntros.Last().RowKey;
-                }
-                else
-                {
-                    finishedLoading = true;
-                }
-            }
-            catch (TableQueryTimeoutException exception)
+            if (logItemIntros.Any())
             {
-                lastPartitionKey = exception.LastPartitionKey;
-                lastRowKey = exception.LastRowKey;
+                lastPartitionKey = logItemIntros.Last().PartitionKey;
+                lastRowKey = logItemIntros.Last().RowKey;
+            }
+            else
+            {
+                finishedLoading = true;
             }
 
             return new

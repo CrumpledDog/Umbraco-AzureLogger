@@ -8,7 +8,6 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using Level = Our.Umbraco.AzureLogger.Core.Models.Level;
 
@@ -210,9 +209,6 @@
             TableQuerySegment<LogTableEntity> response;
             bool retry;
 
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-
             do
             {
                 retry = false;
@@ -224,11 +220,6 @@
 
                 if (!logTableEntities.Any() && response.ContinuationToken != null)
                 {
-                    if (stopwatch.ElapsedMilliseconds > 10000) // 10 seconds
-                    {
-                        throw new TableQueryTimeoutException(response.ContinuationToken.NextPartitionKey, response.ContinuationToken.NextRowKey);
-                    }
-
                     tableContinuationToken = response.ContinuationToken;
 
                     retry = true;
