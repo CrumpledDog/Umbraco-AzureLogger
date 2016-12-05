@@ -207,25 +207,17 @@
             
             TableContinuationToken tableContinuationToken = null;
             TableQuerySegment<LogTableEntity> response;
-            bool retry;
 
             do
             {
-                retry = false;
-
                 // single Azure table storage requsest
                 response = cloudTable.ExecuteQuerySegmented(tableQuery, tableContinuationToken); // blocking
 
                 logTableEntities = response.Results.Where(x => customFiltering(x)).ToArray();
 
-                if (!logTableEntities.Any() && response.ContinuationToken != null)
-                {
-                    tableContinuationToken = response.ContinuationToken;
+                tableContinuationToken = response.ContinuationToken;
 
-                    retry = true;
-                }
-
-            } while (retry);
+            } while (!logTableEntities.Any() && tableContinuationToken != null);
 
 
             return logTableEntities;
