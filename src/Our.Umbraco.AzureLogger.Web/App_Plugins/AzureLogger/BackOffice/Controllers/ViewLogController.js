@@ -10,7 +10,6 @@
     function ViewLogController($scope, $routeParams, navigationService, $q, $timeout, azureLoggerResource) {
 
         var appenderName = $routeParams.id;
-        var queryFilters = { hostName: '', loggerName: '', minLevel: '0', message: '', sessionId: '' };
         var lastPartitionKey = null; // partition key of last item checked in last query (where to start next query)
         var lastRowKey = null; // row key of last item checked in last query (where to start next query)
 
@@ -22,7 +21,8 @@
         // TODO: $scope.startEventTimestamp; // set with date picker
         // TODO: $scope.threadIdentity; // built from AppDomainId + ProcessId + ThreadName (set by clicking in details view)
         // TODO: $scope.logItemLimit = 1000; // size of logItems array before it is reset (and a new start date time in the filter)
-        $scope.uiFilters = angular.copy(queryFilters); // set the ui filter state to match
+        $scope.queryFilters = { hostName: '', loggerName: '', minLevel: '0', message: '', sessionId: '' };
+        $scope.uiFilters = angular.copy($scope.queryFilters); // set the ui filter state to match
         $scope.currentlyFiltering = false;
 
         $scope.filtersMatch = filtersMatch;
@@ -73,7 +73,7 @@
 
         // checks to see if the ui filters and the query filters represent the same state - returns bool
         function filtersMatch() {
-            return angular.equals($scope.uiFilters, queryFilters);
+            return angular.equals($scope.uiFilters, $scope.queryFilters);
         }
 
         // handles any filter ui changes
@@ -94,13 +94,13 @@
                     var uiFilterMessage = $scope.uiFilters.message.toLowerCase();
                     var uiFilterSessionId = $scope.uiFilters.sessionId;
 
-                    var queryFilterHostName = queryFilters.hostName.toLowerCase();
-                    var queryFilterLoggerName = queryFilters.loggerName.toLowerCase();
-                    var queryFilterMinLevel = queryFilters.minLevel;
-                    var queryFilterMessage = queryFilters.message.toLowerCase();
-                    var queryFilterSessionId = queryFilters.sessionId;
+                    var queryFilterHostName = $scope.queryFilters.hostName.toLowerCase();
+                    var queryFilterLoggerName = $scope.queryFilters.loggerName.toLowerCase();
+                    var queryFilterMinLevel = $scope.queryFilters.minLevel;
+                    var queryFilterMessage = $scope.queryFilters.message.toLowerCase();
+                    var queryFilterSessionId = $scope.queryFilters.sessionId;
 
-                    queryFilters = angular.copy($scope.uiFilters); // update queryFilters as early as possible
+                    $scope.queryFilters = angular.copy($scope.uiFilters); // update queryFilters as early as possible
 
                     // when true, indicates that the current result set will be reduced
                     var reductive = uiFilterHostName.indexOf(queryFilterHostName) > -1
@@ -168,7 +168,7 @@
             else {
                 $scope.currentlyLoading = true;
 
-                azureLoggerResource.readLogItemIntros(appenderName, lastPartitionKey, lastRowKey, queryFilters)
+                azureLoggerResource.readLogItemIntros(appenderName, lastPartitionKey, lastRowKey, $scope.queryFilters)
                 .then(function (response) {
 
                     $scope.logItems = $scope.logItems.concat(response.data.logItemIntros);

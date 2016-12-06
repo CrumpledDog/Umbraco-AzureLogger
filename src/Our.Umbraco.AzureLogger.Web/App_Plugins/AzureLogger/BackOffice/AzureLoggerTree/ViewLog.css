@@ -73,6 +73,35 @@
 
 /* main view */
 
+/* current query filters */
+
+dl:before, dl:after { 
+    content: ''; 
+    display: table; 
+    clear: both; 
+}
+
+dl * {
+    float: left;
+    color: #343434;
+    line-height: 1;
+}
+
+dt {
+    clear: both;
+    padding: 5px;  
+    margin-bottom: 10px;
+    min-width: 10em;
+}
+
+dd {
+    background: lightgrey;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border-radius: 3px; 
+}
+
+
 .view-log h1 {
     margin: 30px 20px;
 }
