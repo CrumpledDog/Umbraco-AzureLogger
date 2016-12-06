@@ -5,14 +5,17 @@
         .module('umbraco')
         .factory('AzureLogger.AzureLoggerResource', AzzureLoggerResource);
 
-    AzzureLoggerResource.$inject = ['$rootScope', '$http'];
+    AzzureLoggerResource.$inject = ['$rootScope', '$http', '$q'];
 
-    function AzzureLoggerResource($rootScope, $http) {
+    function AzzureLoggerResource($rootScope, $http, $q) {
+
+        var readLogItemIntrosCanceller = null; // promise used to be able to cancel long running http requests for 'readLogItemIntros'
 
         var resource = {
             activeAppenderViewLog: null, // identify the appender currently being viewed
             getIndexes: getIndexes,
             readLogItemIntros: readLogItemIntros,
+            cancelReadLogItemIntros: cancelReadLogItemIntros,
             readLogItemDetail: readLogItemDetail,
             wipeLog: wipeLog
         };
@@ -32,16 +35,30 @@
         }
 
         function readLogItemIntros(appenderName, partitionKey, rowKey, queryFilters) {
+
+            cancelReadLogItemIntros();
+
+            readLogItemIntrosCanceller = $q.defer();
+
             return $http({
                 method: 'POST',
                 url: 'BackOffice/AzureLogger/Api/ReadLogItemIntros',
                 params: {
                     'appenderName': appenderName,
                     'partitionKey': partitionKey != null ? escape(partitionKey) : '',
-                    'rowKey': rowKey != null ? escape(rowKey) : ''
+                    'rowKey': rowKey != null ? escape(rowKey) : ''                    
                 },
-                data: queryFilters
+                data: queryFilters,
+                timeout: readLogItemIntrosCanceller.promise
             });
+        }
+
+        /* cancel any http request for readLogItemItros() */
+        function cancelReadLogItemIntros() {
+            if (readLogItemIntrosCanceller != null) {
+                readLogItemIntrosCanceller.resolve();
+                readLogItemIntrosCanceller = null;
+            }
         }
 
         function readLogItemDetail(appenderName, partitionKey, rowKey) {

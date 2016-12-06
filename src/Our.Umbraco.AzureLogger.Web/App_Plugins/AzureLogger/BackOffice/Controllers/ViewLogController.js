@@ -28,6 +28,7 @@
         $scope.filtersMatch = filtersMatch;
         $scope.handleFilters = handleFilters;
         $scope.getMoreLogItems = getMoreLogItems;
+        $scope.cancelGetMoreLogItems = cancelGetMoreLogItems;
         $scope.toggleLogItemDetails = toggleLogItemDetails;
         $scope.differentDays = differentDays;
 
@@ -163,7 +164,7 @@
                 $scope.currentlyLoading = true;
 
                 azureLoggerResource.readLogItemIntros(appenderName, lastPartitionKey, lastRowKey, $scope.queryFilters)
-                .then(function (response) {
+                .then(function (response) { // success
 
                     $scope.logItems = $scope.logItems.concat(response.data.logItemIntros);
                     lastPartitionKey = response.data.lastPartitionKey;
@@ -172,10 +173,19 @@
                     $scope.currentlyLoading = false;
 
                     deferred.resolve(!$scope.finishedLoading); // when true indicates the caller could try again
+                }, function (response) { // failure
+
+                    $scope.currentlyLoading = false;
+                    console.log('http failed / aborted');
+                    deferred.resolve(false);
                 });
             }
 
             return deferred.promise;
+        }
+
+        function cancelGetMoreLogItems() {
+            azureLoggerResource.cancelReadLogItemIntros();
         }
 
         function toggleLogItemDetails($event, logItem) {
