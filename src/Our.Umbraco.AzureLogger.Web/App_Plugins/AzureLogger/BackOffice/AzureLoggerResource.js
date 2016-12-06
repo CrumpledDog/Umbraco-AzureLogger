@@ -36,7 +36,7 @@
 
         function readLogItemIntros(appenderName, partitionKey, rowKey, queryFilters) {
 
-            cancelReadLogItemIntros();
+            cancelReadLogItemIntros(); // ensure any previous request is cancelled
 
             readLogItemIntrosCanceller = $q.defer();
 

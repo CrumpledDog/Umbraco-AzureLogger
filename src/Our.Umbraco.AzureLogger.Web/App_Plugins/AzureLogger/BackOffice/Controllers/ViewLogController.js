@@ -83,6 +83,7 @@
             if (!$scope.currentlyFiltering && !$scope.filtersMatch()) {
 
                 // TODO: cancel any previous request
+                cancelGetMoreLogItems();
 
                 $scope.currentlyFiltering = true;
 
@@ -173,11 +174,12 @@
                     $scope.currentlyLoading = false;
 
                     deferred.resolve(!$scope.finishedLoading); // when true indicates the caller could try again
+
                 }, function (response) { // failure
 
                     $scope.currentlyLoading = false;
-                    console.log('http failed / aborted');
                     deferred.resolve(false);
+
                 });
             }
 
