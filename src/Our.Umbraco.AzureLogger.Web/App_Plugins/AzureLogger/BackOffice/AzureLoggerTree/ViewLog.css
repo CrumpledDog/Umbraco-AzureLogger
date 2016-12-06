@@ -75,26 +75,27 @@
 
 /* current query filters */
 
-dl:before, dl:after { 
+dl.query-filters:before, 
+dl.query-filters:after { 
     content: ''; 
     display: table; 
     clear: both; 
 }
 
-dl * {
+dl.query-filters * {
     float: left;
     color: #343434;
     line-height: 1;
 }
 
-dt {
+.query-filters dt {
     clear: both;
     padding: 5px;  
     margin-bottom: 10px;
     min-width: 10em;
 }
 
-dd {
+.query-filters dd {
     background: lightgrey;
     padding: 5px 10px;
     margin: 0 5px;
