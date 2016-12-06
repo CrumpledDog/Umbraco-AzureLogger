@@ -75,17 +75,15 @@
                    class="icon icon-delete"></a>
             </span>
 
+            <!--<a href=""
+               class="btn btn-primary"
+               ng-click="refresh()">Refresh</a>-->
+
             <a href=""
                class="btn"
                ng-class="{ 'btn-primary': !currentlyFiltering && !filtersMatch() }"
                ng-disabled="currentlyFiltering || filtersMatch()"
                ng-click="handleFilters()">Filter</a>
-
-            <a href=""
-               class="btn"
-               ng-class="{ 'btn-primary': !currentlyLoading }"
-               ng-disabled="currentlyLoading"
-               ng-click="reload()">Reload</a>
 
         </div>
 
