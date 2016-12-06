@@ -76,15 +76,14 @@
             return angular.equals($scope.uiFilters, queryFilters);
         }
 
-        // handles any filter ui changes - returns a promise
+        // handles any filter ui changes
         function handleFilters() {
 
-            var deferred = $q.defer();
-
             // if already filtering, or there's no update of the query filters required
-            if ($scope.currentlyFiltering || $scope.filtersMatch()) {
-                deferred.resolve();
-            } else {
+            if (!$scope.currentlyFiltering && !$scope.filtersMatch()) {
+
+                // TODO: cancel any previous request
+
                 $scope.currentlyFiltering = true;
 
                 $timeout(function () { // timeout ensures scope is ready
@@ -146,11 +145,8 @@
                 }) // no delay in timeout
                 .then(function () {
                     $scope.currentlyFiltering = false;
-                    deferred.resolve(); // promise so caller can do somthing else when this has completed
                 });
             }
-
-            return deferred.promise;
         }
 
         // deletes all log items items in the view, and triggers new data from 'now' to be requested

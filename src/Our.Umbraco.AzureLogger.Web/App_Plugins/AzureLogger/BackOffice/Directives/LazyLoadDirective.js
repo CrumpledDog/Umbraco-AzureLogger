@@ -27,9 +27,7 @@
 
                     // calculate direction of scroll
                     var currentScrollTop = $(this).scrollTop();
-                    if (currentScrollTop <= previousScrollTop) { // up
-                        // TODO: cancel any lazy-load currenty in process
-                    } else { // down
+                    if (currentScrollTop > previousScrollTop) { // user scrolling down
                         if (!expanding && elementCanExpand()) {
                             lazyLoad();
                         }
