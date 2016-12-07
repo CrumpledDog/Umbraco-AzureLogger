@@ -38,5 +38,11 @@
 
         [JsonProperty("hostName")]
         public string HostName { get; set; }
+
+        /// <summary>
+        /// when true, indicates that this log item has an associated session id (used to render user or computer icon)
+        /// </summary>
+        [JsonProperty("hasSessionId")]
+        public bool HasSessionId { get; set; }
     }
 }

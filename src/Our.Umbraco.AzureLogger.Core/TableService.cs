@@ -144,7 +144,8 @@
                                                                     "LoggerName",
                                                                     "Message",
                                                                     "EventTimeStamp",
-                                                                    "log4net_HostName"
+                                                                    "log4net_HostName",
+                                                                    "sessionId"
                                                                 });
 
             if (!string.IsNullOrWhiteSpace(partitionKey))

@@ -112,7 +112,8 @@
                     LoggerName = logTableEntity.LoggerName,
                     MessageIntro = logTableEntity.Message != null && logTableEntity.Message.Length > 100 ? logTableEntity.Message.Substring(0, 97) + "..." : logTableEntity.Message, // limit message size
                     EventTimestamp = logTableEntity.EventTimeStamp,
-                    HostName = logTableEntity.log4net_HostName
+                    HostName = logTableEntity.log4net_HostName,
+                    HasSessionId = !string.IsNullOrWhiteSpace(logTableEntity.sessionId)
                 };
         }
 
