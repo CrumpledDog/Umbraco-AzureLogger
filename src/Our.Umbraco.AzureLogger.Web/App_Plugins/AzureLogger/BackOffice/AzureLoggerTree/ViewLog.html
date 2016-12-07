@@ -121,6 +121,8 @@
 
                 <div class="log-item-intro level-key" ng-click="toggleLogItemDetails($event, logItem)">
 
+                    <i ng-class="{'icon-user': logItem.hasSessionId, 'icon-imac': !logItem.hasSessionId}"></i>
+
                     <div class="eventTimestamp">
                         <span class="hms">{{logItem.eventTimestamp| date : 'HH:mm:ss'}}</span>
                         <span class="ms">{{logItem.eventTimestamp| date : '.sss'}}</span>
