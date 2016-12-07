@@ -75,10 +75,6 @@
                    class="icon icon-delete"></a>
             </span>
 
-            <!--<a href=""
-               class="btn btn-primary"
-               ng-click="refresh()">Refresh</a>-->
-
             <a href=""
                class="btn"
                ng-class="{ 'btn-primary': !currentlyFiltering && !filtersMatch() }"
@@ -211,7 +207,7 @@
             <!-- angular can't handle 10,000s of this data, so reset start time filter (not saveable) -->
             <!--<a ng-show="logItems.length >= logItemLimit">Reset from this log entry event time</a>-->
 
-            <div class="info-banner" ng-show="currentlyFiltering || currentlyLoading">Searching - <a ng-click="cancelGetMoreLogItems()">Cancel</a></div>
+            <div class="info-banner" ng-show="currentlyFiltering || currentlyLoading">Searching - <a href="" ng-click="cancelGetMoreLogItems()">Cancel</a></div>
             <div class="info-banner" ng-show="finishedLoading && logItems.length == 0">No Log Items</div>
             <div class="info-banner" ng-show="finishedLoading && logItems.length > 0">Finished Loading</div>
 
