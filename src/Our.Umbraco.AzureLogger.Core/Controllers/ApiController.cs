@@ -2,6 +2,7 @@
 {
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.WebApi;
+    using Microsoft.WindowsAzure.Storage.Table;
     using Our.Umbraco.AzureLogger.Core;
     using Our.Umbraco.AzureLogger.Core.Models;
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
@@ -22,9 +23,33 @@
         {
             TableAppender tableAppender = TableService.Instance.GetTableAppender(appenderName);
 
+            string name = null;
+            bool? connected = null;
+            string connectionString = null;
+            string tableName = null;
+            bool? readOnly = null;
+            int bufferSize = 0; 
+
+            // TODO: log entry count, first datetime, latest datetime
+
+            if (tableAppender != null)
+            {
+                name = tableAppender.Name;
+                connected = tableAppender.IsConnected();
+                connectionString = tableAppender.GetConnectionString();
+                tableName = tableAppender.TableName;
+                readOnly = tableAppender.ReadOnly;
+                bufferSize = tableAppender.BufferSize;
+            }
+
             return new
             {
-                readOnly = tableAppender != null ? (bool?)tableAppender.ReadOnly : null
+                name = name,
+                connected = connected,
+                connectionString = connectionString,
+                tableName = tableName,
+                readOnly = readOnly,
+                bufferSize = bufferSize
             };
         }
 
