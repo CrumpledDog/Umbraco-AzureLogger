@@ -84,6 +84,7 @@
             }
             else if (id.StartsWith("appender"))
             {
+                menuItemCollection.Items.Add(new MenuItem("AboutLog", "About Log") { Icon = "help-alt" });
                 menuItemCollection.Items.Add(new MenuItem("WipeLog", "Wipe Log") { Icon = "alert" }); // red class doesn't work here
             }
             else if (id.StartsWith("noConnection"))

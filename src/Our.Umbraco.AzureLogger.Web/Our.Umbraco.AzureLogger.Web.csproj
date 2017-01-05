@@ -62,6 +62,8 @@
   <ItemGroup>
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLogger.css" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerResource.js" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\AboutLog.html" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\Controllers\AboutLogController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\Controllers\WipeLogController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\WipeLog.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\Directives\AutoCompleteDirective.css" />
