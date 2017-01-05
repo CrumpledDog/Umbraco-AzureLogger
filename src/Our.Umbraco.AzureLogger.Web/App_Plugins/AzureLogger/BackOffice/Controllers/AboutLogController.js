@@ -5,9 +5,9 @@
         .module('umbraco')
         .controller('AzureLogger.AboutLogController', AboutLogController);
 
-    AboutLogController.$inject = ['$scope', 'AzureLogger.AzureLoggerResource'];
+    AboutLogController.$inject = ['$scope', 'navigationService', 'AzureLogger.AzureLoggerResource'];
 
-    function AboutLogController($scope, azureLoggerResource) {
+    function AboutLogController($scope, navigationService, azureLoggerResource) {
 
         var appenderName;
 
@@ -17,6 +17,7 @@
         $scope.tableName = null;
         $scope.readOnly = null;
         $scope.bufferSize = null;
+        $scope.close = close;
 
         // --------------------------------------------------------------------------------
 
@@ -35,7 +36,11 @@
                 $scope.bufferSize = response.data.bufferSize;
 
             });
-        };
+        }
+
+        function close() {
+            navigationService.hideNavigation();
+        }
     }
 
 })();

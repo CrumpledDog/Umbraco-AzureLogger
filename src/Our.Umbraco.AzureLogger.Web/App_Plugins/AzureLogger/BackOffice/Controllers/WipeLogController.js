@@ -21,11 +21,11 @@
         // the current node represents the tree node associated with the current menu option
         function init(currentNode) {
             appenderName = currentNode.id.split('|')[1]; // strip the 'appender|' prefix
-        };
+        }
 
         function cancel() {
             navigationService.hideNavigation();
-        };
+        }
 
         function wipeLog() {
             // TODO: update ui to indicate operation taking place...
@@ -33,7 +33,7 @@
             .then(function () {
                 navigationService.hideNavigation();
             });
-        };
+        }
 
     }
 
