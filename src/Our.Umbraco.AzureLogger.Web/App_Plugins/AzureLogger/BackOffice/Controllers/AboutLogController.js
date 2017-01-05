@@ -12,6 +12,11 @@
         var appenderName;
 
         $scope.init = init;
+        $scope.appenderName = null;
+        $scope.connectionString = null;
+        $scope.tableName = null;
+        $scope.readOnly = null;
+        $scope.bufferSize = null;
 
         // --------------------------------------------------------------------------------
 
@@ -20,7 +25,16 @@
         function init(currentNode) {
             appenderName = currentNode.id.split('|')[1]; // strip the 'appender|' prefix
 
+            azureLoggerResource.getDetails(appenderName)
+            .then(function (response) {
 
+                $scope.appenderName = response.data.name;
+                $scope.connectionString = response.data.connectionString;
+                $scope.tableName = response.data.tableName;
+                $scope.readOnly = response.data.readOnly;
+                $scope.bufferSize = response.data.bufferSize;
+
+            });
         };
     }
 
