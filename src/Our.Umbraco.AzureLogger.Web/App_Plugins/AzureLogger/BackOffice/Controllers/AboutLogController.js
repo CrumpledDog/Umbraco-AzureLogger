@@ -17,7 +17,7 @@
         $scope.tableName = null;
         $scope.readOnly = null;
         $scope.bufferSize = null;
-        $scope.close = close;
+        $scope.cancel = cancel;
 
         // --------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@
             });
         }
 
-        function close() {
+        function cancel() {
             navigationService.hideNavigation();
         }
     }
