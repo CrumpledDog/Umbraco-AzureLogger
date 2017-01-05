@@ -13,6 +13,7 @@
         var lastPartitionKey = null; // partition key of last item checked in last query (where to start next query)
         var lastRowKey = null; // row key of last item checked in last query (where to start next query)
 
+        $scope.readOnlyAppender = null;
         $scope.logItems = [];
         $scope.machineNames = [];
         $scope.loggerNames = [];
@@ -47,6 +48,11 @@
             // forces the tree to highlight appender used for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
             navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'appender|' + appenderName], forceReload: false });
+
+            azureLoggerResource.getDetails(appenderName)
+            .then(function (response) {
+                $scope.readOnlyAppender = response.data.readOnly;
+            });
 
             // tell the resource that this is now the currently active view
             azureLoggerResource.activeAppenderViewLog = appenderName;

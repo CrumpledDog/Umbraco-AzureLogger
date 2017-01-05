@@ -13,9 +13,25 @@
     public class ApiController : UmbracoAuthorizedApiController
     {
         /// <summary>
+        /// Gets details for a given appender
+        /// </summary>
+        /// <param name="appenderName">name of the log4net appender</param>
+        /// <returns>the details for an appender</returns>
+        [HttpGet]
+        public object GetDetails([FromUri]string appenderName)
+        {
+            TableAppender tableAppender = TableService.Instance.GetTableAppender(appenderName);
+
+            return new
+            {
+                readOnly = tableAppender != null ? (bool?)tableAppender.ReadOnly : null
+            };
+        }
+
+        /// <summary>
         /// Gets all known machine names and logger names (for the auto-suggest)
         /// </summary>
-        /// <param name="appenderName"></param>
+        /// <param name="appenderName">name of the log4net appender</param>
         /// <returns></returns>
         [HttpGet]
         public object GetIndexes([FromUri]string appenderName)

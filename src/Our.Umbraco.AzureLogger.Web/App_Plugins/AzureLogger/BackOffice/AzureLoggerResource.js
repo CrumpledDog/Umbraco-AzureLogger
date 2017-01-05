@@ -13,6 +13,7 @@
 
         var resource = {
             activeAppenderViewLog: null, // identify the appender currently being viewed
+            getDetails: getDetails,
             getIndexes: getIndexes,
             readLogItemIntros: readLogItemIntros,
             cancelReadLogItemIntros: cancelReadLogItemIntros,
@@ -23,6 +24,17 @@
         return resource;
 
         // --------------------------------------------------------------------------------
+
+        function getDetails(appenderName) {
+
+            return $http({
+                method: 'GET',
+                url: 'BackOffice/AzureLogger/Api/GetDetails',
+                params: {
+                    'appenderName': appenderName
+                }
+            });
+        }
 
         function getIndexes(appenderName) {
             return $http({
