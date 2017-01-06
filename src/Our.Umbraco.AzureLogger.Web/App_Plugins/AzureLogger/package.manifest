@@ -1,6 +1,7 @@
 ﻿{
   javascript: [
     "/App_Plugins/AzureLogger/BackOffice/Controllers/AboutLogController.js",
+    "/App_Plugins/AzureLogger/BackOffice/Controllers/ConfigurationController.js",
     "/App_Plugins/AzureLogger/BackOffice/Controllers/WipeLogController.js",
     "/App_Plugins/AzureLogger/BackOffice/Controllers/ViewLogController.js",
     "/App_Plugins/AzureLogger/BackOffice/Directives/AutoCompleteDirective.js",
