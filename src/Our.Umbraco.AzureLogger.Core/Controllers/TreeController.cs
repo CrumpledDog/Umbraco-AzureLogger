@@ -79,12 +79,13 @@
 
             if (this.IsRoot(id))
             {
-                menuItemCollection.Items.Add<ActionRefresh>(localizedTextService.Localize(ActionRefresh.Instance.Alias), false);
+                menuItemCollection.Items.Add(new MenuItem("Configuration", "Configuration") { Icon = "settings" });
+                menuItemCollection.Items.Add<ActionRefresh>(localizedTextService.Localize(ActionRefresh.Instance.Alias), true);
             }
             else if (id.StartsWith("appender"))
             {
                 menuItemCollection.Items.Add(new MenuItem("AboutLog", "About Log") { Icon = "help-alt" });
-                menuItemCollection.Items.Add(new MenuItem("WipeLog", "Wipe Log") { Icon = "alert" }); // red class doesn't work here
+                menuItemCollection.Items.Add(new MenuItem("WipeLog", "Wipe Log") { Icon = "alert", SeperatorBefore = true }); // red class doesn't work here
             }
             else if (id.StartsWith("noConnection"))
             {
