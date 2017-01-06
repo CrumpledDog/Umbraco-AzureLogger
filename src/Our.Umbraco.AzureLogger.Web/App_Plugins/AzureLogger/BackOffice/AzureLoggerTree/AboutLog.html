@@ -2,6 +2,8 @@
 
     <umb-pane>
 
+        <!-- appender -->
+        <!--<h4>Appender</h4>-->
         <dl>
             <dt>Appender Name</dt>
             <dd>{{ appenderName }}</dd>
@@ -19,19 +21,33 @@
             <dd>{{ bufferSize }}</dd>
         </dl>
 
-        <hr/>
+        <!--<hr />-->
 
+        <!-- indexes -->
+        <!--<h4>Indexes</h4>
+        <dl>
+            <dt>Machines</dt>
+            <dd>(count)</dd>
+
+            <dt>Loggers</dt>
+            <dd>(count)</dd>
+        </dl>
+
+        <hr/>-->
+
+        <!-- log entries -->
+        <!--<h4>Entries</h4>
         <dl>
             
-            <dt>Stared</dt>
+            <dt>First Entry</dt>
             <dd>(date time)</dd>
 
-            <dt>Last Updated</dt>
+            <dt>Latest Entry</dt>
             <dd>(date time)</dd>
 
-            <dt>Entry Count</dt>
+            <dt>Total Entries</dt>
+            <dd>(count)</dd>
             <dd>          
-                (count)  
                 <table>
                     <tr>
                         <th>Debug</th>
@@ -49,14 +65,7 @@
                     </tr>
                 </table>            
             </dd>
-
-            <dt>Machine Count</dt>
-            <dd>(count)</dd>
-
-            <dt>Logger Count</dt>
-            <dd>(count)</dd>
-
-        </dl>
+        </dl>-->
 
         <a href="" class="btn btn-link" ng-click="cancel()"><localize key="general_cancel">Cancel</localize></a>
 

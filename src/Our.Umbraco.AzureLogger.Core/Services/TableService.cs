@@ -12,7 +12,7 @@
     using Level = Our.Umbraco.AzureLogger.Core.Models.Level;
 
     /// <summary>
-    /// Singleton service class
+    /// Singleton service class - methods that query / change data in Azure table storage
     /// </summary>
     internal sealed class TableService
     {
