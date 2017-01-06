@@ -5,8 +5,7 @@
     using global::Umbraco.Web.Models.Trees;
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.Trees;
-    using log4net;
-    using System.Linq;
+    using Our.Umbraco.AzureLogger.Core.Services;
     using System.Net.Http.Formatting;
     using umbraco.BusinessLogic.Actions;
     using UmbracoTreeController = global::Umbraco.Web.Trees.TreeController;

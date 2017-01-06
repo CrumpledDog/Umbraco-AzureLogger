@@ -2,10 +2,10 @@
 {
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.WebApi;
-    using Microsoft.WindowsAzure.Storage.Table;
     using Our.Umbraco.AzureLogger.Core;
     using Our.Umbraco.AzureLogger.Core.Models;
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
+    using Our.Umbraco.AzureLogger.Core.Services;
     using System;
     using System.Linq;
     using System.Web.Http;

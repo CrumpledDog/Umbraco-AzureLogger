@@ -25,7 +25,10 @@
         // the current node represents the tree node associated with the current menu option
         function init(currentNode) {
             appenderName = currentNode.id.split('|')[1]; // strip the 'appender|' prefix
+            load();
+        }
 
+        function load() {
             azureLoggerResource.getDetails(appenderName)
             .then(function (response) {
 

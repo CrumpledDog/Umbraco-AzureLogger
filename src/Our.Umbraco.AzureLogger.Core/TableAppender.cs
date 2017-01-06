@@ -5,6 +5,7 @@
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
     using Microsoft.WindowsAzure.Storage.Table.Protocol;
+    using Our.Umbraco.AzureLogger.Core.Services;
     using System.Configuration;
     using System.Threading;
     using System.Threading.Tasks;

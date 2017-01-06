@@ -1,4 +1,4 @@
-﻿namespace Our.Umbraco.AzureLogger.Core
+﻿namespace Our.Umbraco.AzureLogger.Core.Services
 {
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
     using System.Collections.Concurrent;

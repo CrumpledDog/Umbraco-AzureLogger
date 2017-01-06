@@ -1,4 +1,4 @@
-﻿namespace Our.Umbraco.AzureLogger.Core
+﻿namespace Our.Umbraco.AzureLogger.Core.Services
 {
     using Extensions;
     using log4net;
