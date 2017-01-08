@@ -79,7 +79,7 @@
 
             if (this.IsRoot(id))
             {
-                menuItemCollection.Items.Add(new MenuItem("Configuration", "Configuration") { Icon = "settings" });
+                menuItemCollection.Items.Add(new MenuItem("ConfigurationLauncher", "Configuration") { Icon = "settings" });
                 menuItemCollection.Items.Add<ActionRefresh>(localizedTextService.Localize(ActionRefresh.Instance.Alias), true);
             }
             else if (id.StartsWith("appender"))

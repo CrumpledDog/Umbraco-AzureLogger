@@ -64,8 +64,10 @@
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerResource.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\AboutLog.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\Configuration.html" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\ConfigurationLauncher.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\Controllers\AboutLogController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\Controllers\ConfigurationController.js" />
+    <Content Include="App_Plugins\AzureLogger\BackOffice\Controllers\ConfigurationLauncherController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\Controllers\WipeLogController.js" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\AzureLoggerTree\WipeLog.html" />
     <Content Include="App_Plugins\AzureLogger\BackOffice\Directives\AutoCompleteDirective.css" />
