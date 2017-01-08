@@ -15,6 +15,9 @@
 
         function init() {
 
+            azureLoggerResource.readConfigurationFile().then(function (response) {
+                $scope.configurationFile = response.data;
+            });
 
         }
 

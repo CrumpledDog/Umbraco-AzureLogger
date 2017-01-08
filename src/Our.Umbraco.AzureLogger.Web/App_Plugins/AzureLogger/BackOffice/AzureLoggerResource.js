@@ -13,6 +13,7 @@
 
         var resource = {
             activeAppenderViewLog: null, // identify the appender currently being viewed
+            readConfigurationFile: readConfigurationFile,
             getDetails: getDetails,
             getIndexes: getIndexes,
             readLogItemIntros: readLogItemIntros,
@@ -24,6 +25,14 @@
         return resource;
 
         // --------------------------------------------------------------------------------
+
+        function readConfigurationFile() {
+
+            return $http({
+                method: 'GET',
+                url: 'BackOffice/AzureLogger/Api/ReadConfigurationFile'
+            });
+        }
 
         function getDetails(appenderName) {
 

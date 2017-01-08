@@ -7,12 +7,20 @@
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
     using Our.Umbraco.AzureLogger.Core.Services;
     using System;
+    using System.IO;
     using System.Linq;
+    using System.Web.Hosting;
     using System.Web.Http;
 
     [PluginController("AzureLogger")]
     public class ApiController : UmbracoAuthorizedApiController
     {
+        [HttpGet]
+        public string ReadConfigurationFile()
+        {
+            return File.ReadAllText(HostingEnvironment.MapPath("~/config/log4net.config"));
+        }
+
         /// <summary>
         /// Gets details for a given appender
         /// </summary>
