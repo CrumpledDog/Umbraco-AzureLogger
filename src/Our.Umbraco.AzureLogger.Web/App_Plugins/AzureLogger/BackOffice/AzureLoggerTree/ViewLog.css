@@ -49,7 +49,7 @@
 }
 
 .filter-message {
-    width:460px;
+    width:420px;
 }
 
 .filter-session {
@@ -72,6 +72,36 @@
 }
 
 /* main view */
+
+/* current query filters */
+
+dl.query-filters:before, 
+dl.query-filters:after { 
+    content: ''; 
+    display: table; 
+    clear: both; 
+}
+
+dl.query-filters * {
+    float: left;
+    color: #343434;
+    line-height: 1;
+}
+
+.query-filters dt {
+    clear: both;
+    padding: 5px;  
+    margin-bottom: 10px;
+    min-width: 10em;
+}
+
+.query-filters dd {
+    background: lightgrey;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border-radius: 3px; 
+}
+
 
 .view-log h1 {
     margin: 30px 20px;

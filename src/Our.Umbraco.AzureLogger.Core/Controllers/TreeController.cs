@@ -5,8 +5,7 @@
     using global::Umbraco.Web.Models.Trees;
     using global::Umbraco.Web.Mvc;
     using global::Umbraco.Web.Trees;
-    using log4net;
-    using System.Linq;
+    using Our.Umbraco.AzureLogger.Core.Services;
     using System.Net.Http.Formatting;
     using umbraco.BusinessLogic.Actions;
     using UmbracoTreeController = global::Umbraco.Web.Trees.TreeController;
@@ -28,35 +27,30 @@
             if (this.IsRoot(id))
             {
                 // get all table appenders
-                foreach(TableAppender tableAppender in  LogManager
-                                                            .GetLogger(typeof(TableAppender))
-                                                            .Logger
-                                                            .Repository
-                                                            .GetAppenders()
-                                                            .Where(x => x is TableAppender)
-                                                            .Cast<TableAppender>()
-                                                            .OrderBy(x => x.Name))
+                foreach(TableAppender tableAppender in TableService.Instance.GetTableAppenders())
                 {
+                    string title = tableAppender.TreeName ?? tableAppender.Name; // get the best friendly name
+                    string icon = !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName : "icon-list"; // use custom icon if set
+
                     if (tableAppender.IsConnected())
                     {
                         treeNodeCollection.Add(this.CreateTreeNode(
-                                                        "appender|" + tableAppender.Name, // id - appender name should be distinct
+                                                        "appender|" + tableAppender.Name, // id
                                                         "-1", // parentId
                                                         queryStrings,
-                                                        tableAppender.TreeName ?? tableAppender.Name,  // get the best friendly name
-                                                        !string.IsNullOrWhiteSpace(tableAppender.IconName) ? tableAppender.IconName : "icon-list",
+                                                        title,
+                                                        tableAppender.ReadOnly ? icon + " azure-logger-appender-read-only" : icon,
                                                         false, // has children
                                                         this.BuildRoute("ViewLog", tableAppender.Name)));
                     }
                     else
                     {
-                        // no connection
                         treeNodeCollection.Add(this.CreateTreeNode(
                                                         "noConnection|" + tableAppender.Name,
                                                         "-1",
                                                         queryStrings,
-                                                        tableAppender.TreeName ?? tableAppender.Name,  // get the best friendly name
-                                                        "icon-alert-alt red",
+                                                        title,
+                                                        icon + " azure-logger-appender-not-connected",
                                                         false,
                                                         "/developer/"));
                     }
@@ -89,6 +83,7 @@
             }
             else if (id.StartsWith("appender"))
             {
+                menuItemCollection.Items.Add(new MenuItem("AboutLog", "About Log") { Icon = "help-alt" });
                 menuItemCollection.Items.Add(new MenuItem("WipeLog", "Wipe Log") { Icon = "alert" }); // red class doesn't work here
             }
             else if (id.StartsWith("noConnection"))

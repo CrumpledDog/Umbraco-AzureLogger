@@ -7,7 +7,8 @@
             <select ng-model="uiFilters.minLevel"
                     ng-disabled="currentlyFiltering"
                     enter-key="handleFilters()"
-                    placeholder="Min Level"
+                    selectPlaceholder="Min Level"
+                    Placeholder="Min Level"
                     class="filter-min-level">
                 <option value="0">DEBUG</option>
                 <option value="1">INFO</option>
@@ -22,7 +23,7 @@
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
                        auto-complete="machineNames"
-                       placeholder="Machine Name"
+                       Placeholder="Machine Name"
                        class="filter-machine" />
                 <a href=""
                    ng-if="!currentlyFiltering && uiFilters.hostName != ''"
@@ -37,7 +38,7 @@
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
                        auto-complete="loggerNames"
-                       placeholder="Logger Name"
+                       Placeholder="Logger Name"
                        class="filter-logger" />
                 <a href=""
                    ng-if="!currentlyFiltering && uiFilters.loggerName != ''"
@@ -51,7 +52,7 @@
                        ng-model="uiFilters.message"
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
-                       placeholder="Message Text"
+                       Placeholder="Message Text"
                        class="filter-message" />
                 <a href=""
                    ng-if="!currentlyFiltering && uiFilters.message != ''"
@@ -65,7 +66,7 @@
                        ng-model="uiFilters.sessionId"
                        ng-disabled="currentlyFiltering"
                        enter-key="handleFilters()"
-                       placeholder="Session Id"
+                       Placeholder="Session Id"
                        class="filter-session" />
                 <a href=""
                    ng-if="!currentlyFiltering && uiFilters.sessionId != ''"
@@ -78,13 +79,14 @@
                class="btn"
                ng-class="{ 'btn-primary': !currentlyFiltering && !filtersMatch() }"
                ng-disabled="currentlyFiltering || filtersMatch()"
-               ng-click="handleFilters()">Update</a>
+               ng-click="handleFilters()">Filter</a>
 
         </div>
 
         <div class="info">
             <span ng-if="currentlyLoading">Loading... </span>
             [ {{logItems.length}} ]
+            <span ng-if="readOnlyAppender">Read Only</span>
         </div>
 
     </div>
@@ -93,7 +95,25 @@
 
     <div class="umb-panel-body umb-scrollable" monitor-width="logItemsViewWidth" ng-class="{ 'narrow': logItemsViewWidth < 1020 }">
 
+        <dl class="umb-pane query-filters">
+            <dt>Min Level:</dt>
+            <dd>{{queryFilters.minLevel}}</dd>
+
+            <dt ng-show="queryFilters.hostName != ''">Machine Name:</dt>
+            <dd ng-show="queryFilters.hostName != ''">{{queryFilters.hostName}}</dd>
+
+            <dt ng-show="queryFilters.loggerName != ''">Logger Name:</dt>
+            <dd ng-show="queryFilters.loggerName != ''">{{queryFilters.loggerName}}</dd>
+
+            <dt ng-show="queryFilters.message != ''">Message Text:</dt>
+            <dd ng-show="queryFilters.message != ''">{{queryFilters.message}}</dd>
+
+            <dt ng-show="queryFilters.sessionId != ''">Session Id:</dt>
+            <dd ng-show="queryFilters.sessionId != ''">{{queryFilters.sessionId}}</dd>
+        </dl>
+
         <div class="umb-pane" lazy-load="getMoreLogItems()">
+
             <div ng-hide="currentlyFiltering" ng-repeat="logItem in logItems" class="level-{{logItem.level.toLowerCase()}}">
 
                 <div class="day-breaker" ng-if="differentDays(logItem, logItems[$index - 1])">
@@ -188,7 +208,7 @@
             <!-- angular can't handle 10,000s of this data, so reset start time filter (not saveable) -->
             <!--<a ng-show="logItems.length >= logItemLimit">Reset from this log entry event time</a>-->
 
-            <div class="info-banner" ng-show="currentlyFiltering || currentlyLoading">Searching</div>
+            <div class="info-banner" ng-show="currentlyFiltering || currentlyLoading">Searching - <a href="" ng-click="cancelGetMoreLogItems()">Cancel</a></div>
             <div class="info-banner" ng-show="finishedLoading && logItems.length == 0">No Log Items</div>
             <div class="info-banner" ng-show="finishedLoading && logItems.length > 0">Finished Loading</div>
 

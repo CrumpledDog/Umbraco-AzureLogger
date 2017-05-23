@@ -56,7 +56,9 @@ Currently only NuGet packages are available
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ivwi8cxt3cs05xxe?svg=true)](https://ci.appveyor.com/project/JeavonLeopold/umbraco-azure-logger)
 
-This Umbraco package adds a log4net appender that uses Azure table storage and extends the Umbraco developer tree with functionality to view these logs, (using Azure table storage for logs in preference to the file-system has an additional benefit of reducing file replication activity in load balanced environments where the file system is being synchronised such as Azure Web Apps).
+This Umbraco package adds a log4net appender that uses Azure table storage and extends the Umbraco developer tree with functionality to view these logs. 
+
+Using Azure table storage for logs in preference to the file-system has an additional benefit of reducing file replication activity in load balanced environments where the file system is being synchronised such as Azure Web Apps.
 
 Once installed, edit the ConnectionString named "LoggingTableStorage" added to web.config include the name and key of your Azure storage account (ensure the account has the Table service enabled).
 
@@ -71,14 +73,14 @@ Example:
 	    <appender-ref ref="AsynchronousLog4NetAppender" />
 	    <appender-ref ref="AllTableAppender"/>
 	    <appender-ref ref="WarningsTableAppender"/>
+	    <appender-ref ref="ReadOnlyTableAppender"/> <!-- enable the ui to read the logs, but prevent this server from writing -->
 	  </root>
 
 	  <appender name="AllTableAppender" type="Our.Umbraco.AzureLogger.Core.TableAppender, Our.Umbraco.AzureLogger.Core">
 	    <param name="ConnectionString" value="LoggingTableStorage"/>
 	    <param name="TableName" value="UALUmbracoTraceLog"/>
 	    <param name="TreeName" value="All Events"/>
-	    <bufferSize value="5"/>
-	    <!-- 0 indexed -->
+	    <bufferSize value="5"/><!-- 0 indexed -->
 	  </appender>
 
 	  <appender name="WarningsTableAppender" type="Our.Umbraco.AzureLogger.Core.TableAppender, Our.Umbraco.AzureLogger.Core">
@@ -91,9 +93,21 @@ Example:
 	      <levelMin value="WARN"/>
 	      <levelMax value="ERROR"/>
 	    </filter>
-	    <bufferSize value="0"/>
-	    <!-- 1 item in buffer -->
+	    <bufferSize value="0"/><!-- 1 item in buffer -->
 	  </appender>
+	  
+	  <appender name="ReadOnlyTableAppender" type="Out.Umbraco.AzureLogger.Core.TableAppender, Our.Umbraco.AzureLogger.Core">
+	    <param name="ConnectionString" value="LoggingTableStorage"/>
+	    <param name="TableName" value="UALReadOnly"/>
+	    <param name="ReadOnly" value="true"/>
+	  </appneder>
+
+The ConnectionString param can either be the actual connection string, or a name of a connection string as set in web.config:
+
+	  <connectionStrings>
+	    <!-- local Azure Storage Emulator -->
+	    <add name="LoggingTableStorage" connectionString="UseDevelopmentStorage=true" />
+	  </connectionStrings>
 
 As a useful enhancement we also now store to URL and SessionId which triggered the log entry to be made, this can be very handy for tracking down issues.
 
@@ -110,7 +124,7 @@ NuGet & Umbraco packages are available
 
 |Umbraco Packages  |                  |
 |:-----------------|:-----------------|
-|**Release**|[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/collaboration/azurelogger/) 
+|**Release**|[![Our Umbraco project page](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.org/projects/developer-tools/azure-logger-for-umbraco/) 
 |**Pre-release**| [![AppVeyor Artifacts](https://img.shields.io/badge/appveyor-umbraco-orange.svg)](https://ci.appveyor.com/project/JeavonLeopold/umbraco-azure-logger/build/artifacts)
 
 ## Licensing ##

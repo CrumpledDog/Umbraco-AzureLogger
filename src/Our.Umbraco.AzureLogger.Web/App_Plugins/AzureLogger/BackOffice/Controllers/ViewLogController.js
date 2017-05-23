@@ -10,10 +10,10 @@
     function ViewLogController($scope, $routeParams, navigationService, $q, $timeout, azureLoggerResource) {
 
         var appenderName = $routeParams.id;
-        var queryFilters = { hostName: '', loggerName: '', minLevel: '0', message: '', sessionId: '' };
         var lastPartitionKey = null; // partition key of last item checked in last query (where to start next query)
         var lastRowKey = null; // row key of last item checked in last query (where to start next query)
 
+        $scope.readOnlyAppender = null;
         $scope.logItems = [];
         $scope.machineNames = [];
         $scope.loggerNames = [];
@@ -22,12 +22,14 @@
         // TODO: $scope.startEventTimestamp; // set with date picker
         // TODO: $scope.threadIdentity; // built from AppDomainId + ProcessId + ThreadName (set by clicking in details view)
         // TODO: $scope.logItemLimit = 1000; // size of logItems array before it is reset (and a new start date time in the filter)
-        $scope.uiFilters = angular.copy(queryFilters); // set the ui filter state to match
+        $scope.queryFilters = { hostName: '', loggerName: '', minLevel: '0', message: '', sessionId: '' };
+        $scope.uiFilters = angular.copy($scope.queryFilters); // set the ui filter state to match
         $scope.currentlyFiltering = false;
 
         $scope.filtersMatch = filtersMatch;
         $scope.handleFilters = handleFilters;
         $scope.getMoreLogItems = getMoreLogItems;
+        $scope.cancelGetMoreLogItems = cancelGetMoreLogItems;
         $scope.toggleLogItemDetails = toggleLogItemDetails;
         $scope.differentDays = differentDays;
 
@@ -46,6 +48,11 @@
             // forces the tree to highlight appender used for this view
             // https://our.umbraco.org/forum/umbraco-7/developing-umbraco-7-packages/48870-Make-selected-node-in-custom-tree-appear-selected
             navigationService.syncTree({ tree: 'azureLoggerTree', path: ['-1', 'appender|' + appenderName], forceReload: false });
+
+            azureLoggerResource.getDetails(appenderName)
+            .then(function (response) {
+                $scope.readOnlyAppender = response.data.readOnly;
+            });
 
             // tell the resource that this is now the currently active view
             azureLoggerResource.activeAppenderViewLog = appenderName;
@@ -72,18 +79,18 @@
 
         // checks to see if the ui filters and the query filters represent the same state - returns bool
         function filtersMatch() {
-            return angular.equals($scope.uiFilters, queryFilters);
+            return angular.equals($scope.uiFilters, $scope.queryFilters);
         }
 
-        // handles any filter ui changes - returns a promise
+        // handles any filter ui changes
         function handleFilters() {
 
-            var deferred = $q.defer();
-
             // if already filtering, or there's no update of the query filters required
-            if ($scope.currentlyFiltering || $scope.filtersMatch()) {
-                deferred.resolve();
-            } else {
+            if (!$scope.currentlyFiltering && !$scope.filtersMatch()) {
+
+                // TODO: cancel any previous request
+                cancelGetMoreLogItems();
+
                 $scope.currentlyFiltering = true;
 
                 $timeout(function () { // timeout ensures scope is ready
@@ -94,13 +101,13 @@
                     var uiFilterMessage = $scope.uiFilters.message.toLowerCase();
                     var uiFilterSessionId = $scope.uiFilters.sessionId;
 
-                    var queryFilterHostName = queryFilters.hostName.toLowerCase();
-                    var queryFilterLoggerName = queryFilters.loggerName.toLowerCase();
-                    var queryFilterMinLevel = queryFilters.minLevel;
-                    var queryFilterMessage = queryFilters.message.toLowerCase();
-                    var queryFilterSessionId = queryFilters.sessionId;
+                    var queryFilterHostName = $scope.queryFilters.hostName.toLowerCase();
+                    var queryFilterLoggerName = $scope.queryFilters.loggerName.toLowerCase();
+                    var queryFilterMinLevel = $scope.queryFilters.minLevel;
+                    var queryFilterMessage = $scope.queryFilters.message.toLowerCase();
+                    var queryFilterSessionId = $scope.queryFilters.sessionId;
 
-                    queryFilters = angular.copy($scope.uiFilters); // update queryFilters as early as possible
+                    $scope.queryFilters = angular.copy($scope.uiFilters); // update queryFilters as early as possible
 
                     // when true, indicates that the current result set will be reduced
                     var reductive = uiFilterHostName.indexOf(queryFilterHostName) > -1
@@ -145,11 +152,8 @@
                 }) // no delay in timeout
                 .then(function () {
                     $scope.currentlyFiltering = false;
-                    deferred.resolve(); // promise so caller can do somthing else when this has completed
                 });
             }
-
-            return deferred.promise;
         }
 
         // returns a promise with a bool result - the bool indicates whether the caller should try again
@@ -166,8 +170,8 @@
             else {
                 $scope.currentlyLoading = true;
 
-                azureLoggerResource.readLogItemIntros(appenderName, lastPartitionKey, lastRowKey, queryFilters)
-                .then(function (response) {
+                azureLoggerResource.readLogItemIntros(appenderName, lastPartitionKey, lastRowKey, $scope.queryFilters)
+                .then(function (response) { // success
 
                     $scope.logItems = $scope.logItems.concat(response.data.logItemIntros);
                     lastPartitionKey = response.data.lastPartitionKey;
@@ -176,10 +180,20 @@
                     $scope.currentlyLoading = false;
 
                     deferred.resolve(!$scope.finishedLoading); // when true indicates the caller could try again
+
+                }, function (response) { // failure
+
+                    $scope.currentlyLoading = false;
+                    deferred.resolve(false);
+
                 });
             }
 
             return deferred.promise;
+        }
+
+        function cancelGetMoreLogItems() {
+            azureLoggerResource.cancelReadLogItemIntros();
         }
 
         function toggleLogItemDetails($event, logItem) {

@@ -1,7 +1,7 @@
 os: Visual Studio 2015
 
 # Version format
-version: 0.2.0.{build}
+version: 0.2.1.{build}
 
 cache:
   - src\packages -> **\packages.config   # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
@@ -9,7 +9,8 @@ cache:
 branches:
   only:
     - develop
-    - master
+    - file-config-multi-appenders
+    - /release.*/
 
 # UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
@@ -42,7 +43,7 @@ deploy:
     draft: false
     prerelease: false
     on:
-      branch: master
+      branch: /release.*/
       appveyor_repo_tag: true        # deploy on tag push only
 
      # NuGet Deployment for releases
@@ -52,5 +53,5 @@ deploy:
       secure: adk3pI9HCByZg2VRxplX9UR6qHf97bA3as6dusxLswCKI8BQQE8DO5a0frLrI+EO
     artifact: /.*\.nupkg/
     on:
-      branch: master
+      branch: /release.*/
       appveyor_repo_tag: true

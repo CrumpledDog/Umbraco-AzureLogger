@@ -5,6 +5,7 @@
     using Our.Umbraco.AzureLogger.Core;
     using Our.Umbraco.AzureLogger.Core.Models;
     using Our.Umbraco.AzureLogger.Core.Models.TableEntities;
+    using Our.Umbraco.AzureLogger.Core.Services;
     using System;
     using System.Linq;
     using System.Web.Http;
@@ -13,9 +14,49 @@
     public class ApiController : UmbracoAuthorizedApiController
     {
         /// <summary>
+        /// Gets details for a given appender
+        /// </summary>
+        /// <param name="appenderName">name of the log4net appender</param>
+        /// <returns>the details for an appender</returns>
+        [HttpGet]
+        public object GetDetails([FromUri]string appenderName)
+        {
+            TableAppender tableAppender = TableService.Instance.GetTableAppender(appenderName);
+
+            string name = null;
+            bool? connected = null;
+            string connectionString = null;
+            string tableName = null;
+            bool? readOnly = null;
+            int bufferSize = 0; 
+
+            // TODO: log entry count, first datetime, latest datetime
+
+            if (tableAppender != null)
+            {
+                name = tableAppender.Name;
+                connected = tableAppender.IsConnected();
+                connectionString = tableAppender.GetConnectionString();
+                tableName = tableAppender.TableName;
+                readOnly = tableAppender.ReadOnly;
+                bufferSize = tableAppender.BufferSize;
+            }
+
+            return new
+            {
+                name = name,
+                connected = connected,
+                connectionString = connectionString,
+                tableName = tableName,
+                readOnly = readOnly,
+                bufferSize = bufferSize
+            };
+        }
+
+        /// <summary>
         /// Gets all known machine names and logger names (for the auto-suggest)
         /// </summary>
-        /// <param name="appenderName"></param>
+        /// <param name="appenderName">name of the log4net appender</param>
         /// <returns></returns>
         [HttpGet]
         public object GetIndexes([FromUri]string appenderName)
@@ -28,54 +69,44 @@
         }
 
         /// <summary>
-        /// Gets the log items to render in the main list
+        /// Gets as many log items as possible (within a single query, or a set duration) to render in the main list
         /// </summary>
         /// <param name="appenderName">name of the log4net appender</param>
-        /// <param name="partitionKey">the last known partitionKey</param>
-        /// <param name="rowKey">the last known rowKey</param>
-        /// <param name="take">number of log items to get</param>
-        /// <param name="queryFilters">using dynamic to avoid making a strongly typed model</param>
+        /// <param name="partitionKey">the last known partitionKey (or null)</param>
+        /// <param name="rowKey">the last known rowKey (or null)</param>
+        /// <param name="queryFilters">filter critera: debug level, machine name, logger name, message text, session id</param>
         /// <returns></returns>
         [HttpPost]
-        public object ReadLogItemIntros([FromUri]string appenderName, [FromUri] string partitionKey, [FromUri] string rowKey, [FromUri] int take, [FromBody] dynamic queryFilters)
+        public object ReadLogItemIntros([FromUri]string appenderName, [FromUri] string partitionKey, [FromUri] string rowKey, [FromBody] dynamic queryFilters)
         {
-            LogItemIntro[] logItemIntros;
+            // initialise default return values
+            LogItemIntro[] logItemIntros = new LogItemIntro[] { };
             string lastPartitionKey = null;
-            string lastRowKey= null;
+            string lastRowKey = null;
             bool finishedLoading = false;
 
-            try
-            {
-                logItemIntros = TableService
-                        .Instance
-                        .ReadLogTableEntities(
-                                appenderName,
-                                partitionKey,
-                                rowKey,
-                                (string)queryFilters.hostName,
-                                (string)queryFilters.loggerName,
-                                (Level)Math.Max((int)queryFilters.minLevel, 0),
-                                (string)queryFilters.message,
-                                (string)queryFilters.sessionId,
-                                take) // need to supply take, as result may be a cloud table with items removed (in which case the take doesn't know where to re-start from)
-                        .Select(x => (LogItemIntro)x)
-                        .ToArray();
+            logItemIntros = TableService
+                            .Instance
+                            .ReadLogTableEntities(
+                                    appenderName,
+                                    partitionKey,
+                                    rowKey,
+                                    (string)queryFilters.hostName,
+                                    (string)queryFilters.loggerName,
+                                    (Level)Math.Max((int)queryFilters.minLevel, 0),
+                                    (string)queryFilters.message,
+                                    (string)queryFilters.sessionId)
+                            .Select(x => (LogItemIntro)x)
+                            .ToArray();
 
-                if (logItemIntros.Any())
-                {
-                    lastPartitionKey = logItemIntros.Last().PartitionKey;
-                    lastRowKey = logItemIntros.Last().RowKey;
-                }
-                else
-                {
-                    finishedLoading = true;
-                }
-            }
-            catch (TableQueryTimeoutException exception)
+            if (logItemIntros.Any())
             {
-                logItemIntros = exception.Data.Select(x => (LogItemIntro)((LogTableEntity)x)).ToArray();
-                lastPartitionKey = exception.LastPartitionKey;
-                lastRowKey =  exception.LastRowKey;
+                lastPartitionKey = logItemIntros.Last().PartitionKey;
+                lastRowKey = logItemIntros.Last().RowKey;
+            }
+            else
+            {
+                finishedLoading = true;
             }
 
             return new

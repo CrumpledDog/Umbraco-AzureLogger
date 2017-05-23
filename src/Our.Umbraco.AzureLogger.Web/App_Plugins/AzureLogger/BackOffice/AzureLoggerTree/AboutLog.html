@@ -1,0 +1,74 @@
+﻿<div ng-controller="AzureLogger.AboutLogController" ng-init="init(currentNode)">
+
+    <umb-pane>
+
+        <!-- appender -->
+        <!--<h4>Appender</h4>-->
+        <dl>
+            <dt>Appender Name</dt>
+            <dd>{{ appenderName }}</dd>
+
+            <dt>Connection String</dt>
+            <dd>{{ connectionString }}</dd>
+
+            <dt>Table Name</dt>
+            <dd>{{ tableName }}</dd>
+
+            <dt>Read Only</dt>
+            <dd>{{ readOnly }}</dd>
+
+            <dt>Buffer Size</dt>
+            <dd>{{ bufferSize }}</dd>
+        </dl>
+
+        <!--<hr />-->
+
+        <!-- indexes -->
+        <!--<h4>Indexes</h4>
+        <dl>
+            <dt>Machines</dt>
+            <dd>(count)</dd>
+
+            <dt>Loggers</dt>
+            <dd>(count)</dd>
+        </dl>
+
+        <hr/>-->
+
+        <!-- log entries -->
+        <!--<h4>Entries</h4>
+        <dl>
+            
+            <dt>First Entry</dt>
+            <dd>(date time)</dd>
+
+            <dt>Latest Entry</dt>
+            <dd>(date time)</dd>
+
+            <dt>Total Entries</dt>
+            <dd>(count)</dd>
+            <dd>          
+                <table>
+                    <tr>
+                        <th>Debug</th>
+                        <th>Info</th>
+                        <th>Error</th>
+                        <th>Warn</th>
+                        <th>Fatal</th>
+                    </tr>
+                    <tr>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                </table>            
+            </dd>
+        </dl>-->
+
+        <a href="" class="btn btn-link" ng-click="cancel()"><localize key="general_cancel">Cancel</localize></a>
+
+    </umb-pane>
+
+</div>
