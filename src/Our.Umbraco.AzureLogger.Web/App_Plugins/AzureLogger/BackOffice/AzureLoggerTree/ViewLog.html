@@ -77,8 +77,8 @@
 
             <a href=""
                class="btn"
-               ng-class="{ 'btn-primary': !currentlyFiltering && !filtersMatch() }"
-               ng-disabled="currentlyFiltering || filtersMatch()"
+               ng-class="{ 'btn-primary': !currentlyFiltering }"
+               ng-disabled="currentlyFiltering"
                ng-click="handleFilters()">Filter</a>
 
         </div>

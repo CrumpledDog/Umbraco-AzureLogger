@@ -26,7 +26,6 @@
         $scope.uiFilters = angular.copy($scope.queryFilters); // set the ui filter state to match
         $scope.currentlyFiltering = false;
 
-        $scope.filtersMatch = filtersMatch;
         $scope.handleFilters = handleFilters;
         $scope.getMoreLogItems = getMoreLogItems;
         $scope.cancelGetMoreLogItems = cancelGetMoreLogItems;
@@ -78,15 +77,15 @@
         }
 
         // checks to see if the ui filters and the query filters represent the same state - returns bool
-        function filtersMatch() {
-            return angular.equals($scope.uiFilters, $scope.queryFilters);
-        }
+        //function filtersMatch() {
+        //    return angular.equals($scope.uiFilters, $scope.queryFilters);
+        //}
 
         // handles any filter ui changes
         function handleFilters() {
 
             // if already filtering, or there's no update of the query filters required
-            if (!$scope.currentlyFiltering && !$scope.filtersMatch()) {
+            if (!$scope.currentlyFiltering) {
 
                 // TODO: cancel any previous request
                 cancelGetMoreLogItems();
