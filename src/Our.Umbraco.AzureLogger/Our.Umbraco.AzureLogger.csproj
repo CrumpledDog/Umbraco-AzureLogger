@@ -42,5 +42,24 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Web\AzureLogger.css" />
+    <EmbeddedResource Include="Web\AzureLoggerResource.js" />
+    <EmbeddedResource Include="Web\AzureLoggerTree\AboutLog.html" />
+    <EmbeddedResource Include="Web\AzureLoggerTree\ViewLog.css" />
+    <EmbeddedResource Include="Web\AzureLoggerTree\ViewLog.html" />
+    <EmbeddedResource Include="Web\AzureLoggerTree\WipeLog.html" />
+    <EmbeddedResource Include="Web\Controllers\AboutLogController.js" />
+    <EmbeddedResource Include="Web\Controllers\ViewLogController.js" />
+    <EmbeddedResource Include="Web\Controllers\WipeLogController.js" />
+    <EmbeddedResource Include="Web\Directives\AutoCompleteDirective.css" />
+    <EmbeddedResource Include="Web\Directives\AutoCompleteDirective.js" />
+    <EmbeddedResource Include="Web\Directives\EnterKeyDirective.js" />
+    <EmbeddedResource Include="Web\Directives\LazyLoadDirective.js" />
+    <EmbeddedResource Include="Web\Directives\MonitorWidthDirective.js" />
+    <EmbeddedResource Include="Web\Directives\SelectPlaceholderDirective.js" />
+    <EmbeddedResource Include="Web\Filters\HighlightFilter.css" />
+    <EmbeddedResource Include="Web\Filters\HighlightFilter.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
