@@ -17,7 +17,7 @@
 		<tags></tags>
 		<dependencies>
 			<dependency id="UmbracoCms.Core" version="0.0.0" />
-			<dependency id="WindowsAzure.Storage" version="7.2.1" />
+			<dependency id="WindowsAzure.Storage" version="8.7.0" />
 	</dependencies>
 	</metadata>
 </package>
