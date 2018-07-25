@@ -1,7 +1,7 @@
-os: Visual Studio 2015
+os: Visual Studio 2017
 
 # Version format
-version: 0.2.1.{build}
+version: 0.2.2.{build}
 
 cache:
   - src\packages -> **\packages.config   # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
@@ -11,6 +11,7 @@ branches:
     - develop
     - file-config-multi-appenders
     - /release.*/
+    - /v*/
 
 # UMBRACO_PACKAGE_PRERELEASE_SUFFIX if a rtm release build this should be blank, otherwise if empty will default to alpha
 # example UMBRACO_PACKAGE_PRERELEASE_SUFFIX=beta
@@ -28,7 +29,7 @@ deploy:
     # Umbraco MyGet community feed
   - provider: NuGet
     server: https://www.myget.org/F/umbraco-packages/api/v2/package
-    symbol_server: https://nuget.symbolsource.org/MyGet/umbraco-packages
+    symbol_server: https://www.myget.org/F/umbraco-packages/symbols/api/v2/package
     api_key:
       secure: SASQGWG/4zNns7bwSSsJ5RPvKcKfJsBeEPuw69wsVPA3PO739QmzVtc5VwQwgvbr
     artifact: /.*\.nupkg/

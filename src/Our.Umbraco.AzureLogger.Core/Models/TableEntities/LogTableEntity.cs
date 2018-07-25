@@ -125,7 +125,7 @@
         {
             return new LogItemDetail()
                 {
-                    Timestamp = logTableEntity.Timestamp.LocalDateTime,
+                    Timestamp = logTableEntity.Timestamp.UtcDateTime,
                     Domain = logTableEntity.Domain,
                     Identity = logTableEntity.Identity,
                     Message = logTableEntity.Message,
