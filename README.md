@@ -48,7 +48,7 @@ Example:
 	    <param name="ConnectionString" value="LoggingTableStorage"/>
 	    <param name="TableName" value="UALReadOnly"/>
 	    <param name="ReadOnly" value="true"/>
-	  </appneder>
+	  </appender>
 
 The ConnectionString param can either be the actual connection string, or a name of a connection string as set in web.config:
 
